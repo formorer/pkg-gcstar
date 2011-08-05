@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCminicars">
+
+	<lang>GCminicars</lang>
+
+	<options>
+
+		<defaults>
+			<image>no_minicars.png</image>
+			<groupby>scale</groupby>
+		</defaults>
+
+		<fields>
+			<cover>picture</cover>
+			<id>gcsautoid</id>
+			<play>playlist</play>
+			<title>name</title>
+		</fields>
+
+		<overlay>
+			<image>minicars.png</image>
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>12</paddingRight>
+			<paddingTop>0</paddingTop>
+			<paddingBottom>12</paddingBottom>
+		</overlay>
+
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+
+	</options>
+
+	<groups>
+		<group id="Main" label="Main" />
+		<group id="Details" label="Details" />
+		<group id="Catalogs" label="Catalogs" />
+		<group id="Pictures" label="Pictures" />
+		<group id="PanelLending" label="PanelLending" />
+		<group id="Realmodel" label="Realmodel" />
+	</groups>
+
+	<filters>
+
+		<group label="Main">
+			<filter comparison="range" field="year" labelselect="Intervalle" numeric="true" quick="true" />
+			<filter comparison="contain" field="picture" numeric="true" quick="false" />
+			<filter comparison="eq" field="exchange" numeric="false" quick="true" />
+		</group>
+
+		<group label="Details">
+			<filter comparison="ge" field="acquisition" labelselect="&gt;=" numeric="false" quick="false" />
+		</group>
+
+	</filters>
+
+	<random></random>
+
+	<fields lending="true" tags="true">
+
+<!-- Definition des Champs Communs -->
+
+		<field value="playlist" format="audio" group="" init="..\lib\gcstar\GCHelp\GCHelpMinicars.pdf" label="Help" type="file" />
+		<field value="name" group="" init="%scale% %manufacturer% %constructor% %modele% %version% (%year%)" label="Name" type="formatted" />
+
+<!-- Definition des Champs "Main" -->
+
+		<field value="gcsautoid" displayed="" group="" imported="false" init="" label="" type="number" />
+		<field value="rating1" group="Main" label="Rating1" max="10" init="0" type="number" displayas="graphical"/>
+
+		<field value="picture" default="view" group="Main" init="" label="Picture" type="image" />
+		<field value="logo1" default="view" group="Main" init="" label="Logo1" type="image" />
+		<field value="logo2" default="view" group="Main" init="" label="Logo2" type="image" />
+		<field value="scale" flat="true" group="Main" history="true" init="" label="Scale" type="history text" />
+		<field value="type1" flat="true" group="Main" history="true" init="" label="Type1" type="history text" />
+		<field value="manufacturer" flat="true" group="Main" history="true" init="" label="Manufacturer" type="history text" />
+		<field value="version" flat="true" group="Main" history="true" init="" label="Version" type="short text" />
+		<field value="modele" group="Main" label="Modele" history="false" type="history text" init="" />
+		<field value="constructor" flat="true" group="Main" history="true" init="" label="Constructor" type="history text" />
+		<field value="year" group="Main" init="" label="Year" type="number" />
+		<field value="comments1" group="Main" init="" label="Comments1" type="long text" />
+		<field value="exchange" group="Main" init="0" label="Exchange" type="yesno" />
+		<field value="wanted" group="Main" init="0" label="Wanted" type="yesno" />
+		<field value="pub" group="Main" label="Pub" history="false" type="history text" init="" />
+		<field value="transformation" group="Main" init="0" label="Transformation" type="yesno" />
+		<field value="kit" group="Main" init="0" label="Kit" type="yesno" />
+		<field value="reference" group="Main" init="" label="Reference" type="short text" />
+		<field value="color" flat="true" group="Main" history="true" init="" label="Color" type="short text" />
+
+<!-- Definition des Champs "Details" -->
+
+		<field value="material" flat="true" group="Details" history="true" init="" label="Material" type="single list" />
+		<field value="added" group="Details" init="current" label="PanelAdded" type="date" />
+		<field value="rating2" group="Details" init="0" label="Rating2" min="0" max="10" type="number" displayas="graphical" />
+		<field value="rating3" group="Details" init="0" label="Rating3" min="0" max="10" type="number" displayas="graphical" />
+		<field value="acquisition" group="Details" init="" label="Acquisition" type="date" />
+		<field value="comments2" group="Details" init="" label="Comments2" type="long text" />
+		<field value="buyprice" group="Details" init="" label="Buyprice" type="number" />
+		<field value="finishline" group="Details" init="" label="Finishline" type="number" />
+		<field value="carnumber" group="Details" init="" label="Carnumber" type="number" />
+		<field value="courseyear" group="Details" init="" label="Courseyear" type="date" />
+		<field value="courselocation" group="Details" history="true" init="" label="Courselocation" type="history text" />
+		<field value="location" group="Details" init="" label="Location" type="short text" />
+		<field value="box1" flat="true" group="Details" history="true" init="" label="Box1" type="history text" />
+		<field value="box2" flat="true" group="Details" history="true" init="" label="Box2" type="history text" />
+		<field value="condition" flat="true" group="Details" history="true" init="" label="Condition" type="history text" />
+		<field value="pilots" group="Details" init="" label="Pilots" type="short text" />
+		<field value="copilots" group="Details" init="" label="Copilots" type="short text" />
+		<field value="course" flat="true" group="Details" history="true" init="" label="Course" type="history text" />
+		<field value="pub2" group="Details" init="" label="Pub2" type="short text" />
+		<field value="edition" flat="true" group="Details" history="true" init="" label="Edition" type="history text" />
+		<field value="estimate" group="Details" init="" label="Estimate" type="number" />
+		<field value="weight" group="Details" init="" label="Weight" type="short text" />
+		<field value="parts" group="Details" init="" label="Parts" type="number" />
+		<field value="decorations" group="Details" init="" label="Decorations" type="number" />
+		<field value="team" group="Details" history="true" init="" label="Team" type="history text" />
+		<field value="personalref" group="Details" init="" label="Personalref" type="short text" />
+		<field value="madein" flat="true" group="Details" history="true" init="" label="Madein" type="history text" />
+		<field value="interior" group="Details" init="" label="Interior" type="short text" />
+		<field value="serial" group="Details" init="" label="Serial" type="short text" />
+		<field value="serialnumber" group="Details" init="" label="Serialnumber" type="short text" />
+		<field value="lwh" group="Details" history="true" init="" label="Lwh" type="short text" />
+		<field value="designed" group="Details" history="true" init="" label="Designed" type="history text" />
+		<field value="containbox" group="Details" init="" label="Containbox" type="short text" />
+		<field value="framecar" group="Details" init="" label="Framecar" type="short text" />
+		<field value="bodycar" group="Details" init="" label="Bodycar" type="short text" />
+		<field value="registrationnumber1" group="Details" init="" label="Registrationnumber1" type="short text" />
+		<field value="registrationnumber2" group="Details" init="" label="Registrationnumber2" type="short text" />
+		<field value="collectiontype" group="Details" history="true" init="" label="Collectiontype" type="history text" />
+		<field value="wheels" group="Details" init="" label="Wheels" type="short text" />
+		<field value="characters" group="Details" init="" label="Characters" type="short text" />
+		<field value="filmcar" group="Details" init="" label="Filmcar" type="short text" />
+		<field value="filmpart" group="Details" init="" label="Filmpart" type="short text" />
+		<field value="decorationset" group="Details" init="" label="Decorationset" type="short text" />
+		<field value="molding" group="Details" init="" label="Molding" type="short text" />
+		<field value="detailsparts" group="Details" init="" label="Detailsparts" type="short text" />
+		<field value="detailsdecorations" group="Details" init="" label="Detailsdecorations" type="short text" />
+		<field value="colormirror" group="Details" init="%color%" label="Colormirror" type="formatted" />
+		<field value="steeringwheel" group="Details" init="" label="Steeringwheel" type="short text" />
+
+<!-- Definition des Champs "Catalogs" -->
+
+		<field value="websitec" group="Catalogs" init="" label="Websitec" type="url" />
+		<field value="websitem" group="Catalogs" init="" label="Websitem" type="url" />
+		<field value="websiteo" group="Catalogs" init="" label="Websiteo" type="url" />
+		<field value="barcode" group="Catalogs" init="" label="Barcode" type="number" />
+		<field value="catalogyear" group="Catalogs" init="" label="Catalogyear" type="date" />
+		<field value="catalogpage" group="Catalogs" init="" label="Catalogpage" type="short text" />
+		<field value="catalogedition" group="Catalogs" init="" label="Catalogedition" type="short text" />
+		<field value="catalogprice" group="Catalogs" init="" label="Catalogprice" type="number" />
+		<field value="picture2" default="view" group="Catalogs" init="" label="Picture2" type="image" />
+		<field value="catalog1" default="view" group="Catalogs" init="" label="Catalog1" type="image" />
+		<field value="catalog2" default="view" group="Catalogs" init="" label="Catalog2" type="image" />
+		<field value="comments3" group="Catalogs" init="" label="Comments3" type="long text" />
+		<field value="year3" group="Catalogs" init="" label="Year3" type="date" />
+		<field value="referencemirror" group="Catalogs" init="%reference%" label="Referencemirror" type="formatted" />
+
+<!-- Definition des Champs "Pictures" -->
+
+		<field value="top" default="view" group="Pictures" init="" label="Top" type="image" />
+		<field value="back" default="view" group="Pictures" init="" label="Back" type="image" />
+		<field value="edge1" default="view" group="Pictures" init="" label="Edge1" type="image" />
+		<field value="edge2" default="view" group="Pictures" init="" label="Edge2" type="image" />
+		<field value="edge3" default="view" group="Pictures" init="" label="Edge3" type="image" />
+		<field value="edge4" default="view" group="Pictures" init="" label="Edge4" type="image" />
+		<field value="edge5" default="view" group="Pictures" init="" label="Edge5" type="image" />
+		<field value="edge6" default="view" group="Pictures" init="" label="Edge6" type="image" />
+		<field value="edge7" default="view" group="Pictures" init="" label="Edge7" type="image" />
+		<field value="edge8" default="view" group="Pictures" init="" label="Edge8" type="image" />
+		<field value="edge9" default="view" group="Pictures" init="" label="Edge9" type="image" />
+		<field value="otherscomments" group="Pictures" init="" label="OthersComments" type="long text" />
+		<field value="othersdetails" group="Pictures" init="" label="OthersDetails" type="long text" />
+
+<!-- Definition des Champs "PanelLending" -->
+
+		<field value="comments4" group="PanelLending" init="" label="Comments4" type="long text" />
+
+<!-- Definition des Champs "Realmodel" -->
+
+		<field value="front2" default="view" group="Realmodel" init="" label="Head" type="image" />
+		<field value="back2" default="view" group="Realmodel" init="" label="Tail" type="image" />
+		<field value="edge10" default="view" group="Realmodel" init="" label="Edge10" type="image" />
+		<field value="edge20" default="view" group="Realmodel" init="" label="Edge20" type="image" />
+		<field value="edge30" default="view" group="Realmodel" init="" label="Edge30" type="image" />
+		<field value="edge40" default="view" group="Realmodel" init="" label="Edge40" type="image" />
+		<field value="comments5" group="Realmodel" init="" label="Comments5" type="long text" />
+		<field value="difference" group="Realmodel" init="" label="Difference" type="long text" />
+
+	</fields>
+	
+<!-- Lecture / Ecriture -->
+
+	<panels>
+		<panel editable="true" label="PanelForm" name="form">
+			<item type="line">
+					<item cols="4" rows="1" type="table" expand="true" >
+						<item col="0" row="1" expand="true" for="name" type="value" />
+						<!--<item col="2" row="1" for="playlist" type="label" />
+						<item col="3" row="1" for="playlist" type="launcher" label="Help1" />-->
+					</item>
+			</item>
+			<item expand="true" type="notebook">
+
+<!-- Onglet "Main" -->
+
+				<item expand="true" title="Main" type="tab" value="bla">
+					<item type="line" align="center" >
+						<item cols="2" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="exchange" type="value" />
+							<item row="0" col="1" expand="true" for="wanted" type="value" />
+						</item>
+					</item>
+					<item type="line">
+						<item cols="1" rows="11" type="table" expand="true">
+							<item col="0" for="rating1" row="2" type="label" align="center" />
+							<item col="0" for="rating1" expand="false" row="3" type="value" />
+							<item row="9" col="0" expand="true" type="label" label="Picture1" align="center" />					
+							<item row="8" col="0" expand="false" for="picture" height="180" type="value" width="240" />
+						</item>
+						<item cols="2" rows="10" type="table" expand="true">
+							<item row="1" col="0" for="scale" type="label" />
+							<item row="1" col="1" for="scale" expand="true" type="value" />
+							<item row="2" col="0" for="manufacturer" type="label" />
+							<item row="2" col="1" for="manufacturer" expand="true" type="value" />
+							<item row="3" col="0" for="type1" type="label" />
+							<item row="3" col="1" for="type1" expand="true" type="value" />
+							<item row="4" col="0" for="constructor" type="label" />
+							<item row="4" col="1" for="constructor" expand="true" type="value" />
+							<item row="5" col="0" for="modele" type="label" />
+							<item row="5" col="1" for="modele" expand="true" type="value" />
+							<item row="6" col="0" for="version" type="label" />
+							<item row="6" col="1" for="version" expand="true" type="value" />
+							<item row="7" col="0" for="color" type="label" />
+							<item row="7" col="1" for="color" expand="true" type="value" />
+							<item row="8" col="0" for="pub" type="label" />
+							<item row="8" col="1" for="pub" expand="true" type="value" />
+							<item row="9" col="0" for="year" type="label" />
+							<item row="9" col="1" for="year" expand="true" type="value" />
+							<item row="10" col="0" for="reference" type="label" />
+							<item row="10" col="1" for="reference" expand="true" type="value" />
+						</item>
+						<item cols="1" rows="4" type="table" expand="true">
+							<item row="3" expand="true" type="label" label="Constructor" align="center" />					
+							<item row="1" expand="true" type="label" label="Manufacturer" align="center" />					
+							<item row="0" for="logo1" expand="false" height="120" type="value" width="120" />
+							<item row="2" for="logo2" expand="false" height="120" type="value" width="120" />
+						</item>
+					</item>
+
+					<item type="box" expand="false">
+						<item cols="2" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="kit" type="value" />
+							<item row="0" col="1" expand="true" for="transformation" type="value" />
+						</item>
+						<item for="comments1" type="label" />
+						<item for="comments1" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "Details" -->
+
+				<item expand="true" title="Details" type="tab" value="bla">
+					<item type="label" label="MiscCharacteristics" align="center" />
+					<item cols="4" expand="true" rows="29" type="table" >
+						<item row="0" col="0" collapsed="%material%" colspan="2" title="Material" type="expander">
+							<item for="material" type="value" />
+						</item>
+						<item col="2" row="0" for="molding" type="label" />
+						<item col="3" row="0" for="molding" type="value" />
+						<item col="0" row="1" for="condition" type="label" />
+						<item col="1" row="1" for="condition" type="value" />
+						<item col="2" row="1" for="added" type="label" />
+						<item col="3" row="1" for="added" type="value" />
+						<item col="0" row="2" for="edition" type="label" />
+						<item col="1" row="2" for="edition" type="value" />
+						<item col="2" row="2" for="collectiontype" type="label" />
+						<item col="3" row="2" for="collectiontype" type="value" />
+
+						<item col="0" row="3" for="serial" type="label" />
+						<item col="1" row="3" for="serial" type="value" />
+						<item col="2" row="3" for="serialnumber" type="label" />
+						<item col="3" row="3" for="serialnumber" type="value" />
+						<item col="0" row="4" for="designed" type="label" />
+						<item col="1" row="4" for="designed" type="value" />
+						<item col="2" row="4" for="madein" type="label" />
+						<item col="3" row="4" for="madein" type="value" />
+
+						<item col="0" row="5" for="box1" type="label" />
+						<item col="1" row="5" for="box1" type="value" />
+						<item col="2" row="5" for="box2" type="label" />
+						<item col="3" row="5" for="box2" type="value" />
+						<item col="0" row="6" for="containbox" type="label" />
+						<item col="1" row="6" for="containbox" type="value" />
+
+						<item col="0" row="7" for="rating2" type="label" />
+						<item col="1" row="7" for="rating2" type="value" align="center"/>
+						<item col="2" row="7" for="rating3" type="label" />
+						<item col="3" row="7" for="rating3" type="value" align="center"/>
+						<item col="0" row="8" for="acquisition" type="label" />
+						<item col="1" row="8" for="acquisition" type="value" />
+						<item col="2" row="8" for="location" type="label" />
+						<item col="3" row="8" for="location" type="value" />
+						<item col="0" row="9" for="buyprice" type="label" />
+						<item col="1" row="9" for="buyprice" type="value" />
+						<item col="2" row="9" for="estimate" type="label" />
+						<item col="3" row="9" for="estimate" type="value" />
+
+						<item col="0" row="10" for="comments2" type="label" />
+						<item col="0" row="11" colspan="4" for="comments2" expand="true" type="value" />
+
+						<item col="1" row="12" type="label" label="Diorama" align="center" />
+						<item col="0" row="13" for="decorationset" type="label" />
+						<item col="1" row="13" for="decorationset" type="value" />
+						<item col="0" row="14" for="characters" type="label" />
+						<item col="1" row="14" for="characters" type="value" />
+
+						<item col="3" row="12" type="label" label="CarFromFilm" align="center" />
+						<item col="2" row="13" for="filmcar" type="label" />
+						<item col="3" row="13" for="filmcar" type="value" />
+						<item col="2" row="14" for="filmpart" type="label" />
+						<item col="3" row="14" for="filmpart" type="value" />
+
+						<item col="1" row="15" type="label" label="VehiculeDetails" align="center" />
+						<item col="0" row="16" for="parts" type="label" />
+						<item col="1" row="16" for="parts" type="value" />
+						<item col="0" row="17" for="detailsparts" type="label" />
+						<item col="1" row="17" for="detailsparts" type="value" />
+						<item col="0" row="18" for="decorations" type="label" />
+						<item col="1" row="18" for="decorations" type="value" />
+						<item col="0" row="19" for="detailsdecorations" type="label" />
+						<item col="1" row="19" for="detailsdecorations" type="value" />
+						<item col="0" row="20" for="lwh" type="label" />
+						<item col="1" row="20" for="lwh" type="value" />
+						<item col="0" row="21" for="weight" type="label" />
+						<item col="1" row="21" for="weight" type="value" />
+						<item col="0" row="22" for="framecar" type="label" />
+						<item col="1" row="22" for="framecar" type="value" />
+						<item col="0" row="23" for="bodycar" type="label" />
+						<item col="1" row="23" for="bodycar" type="value" />
+						<item col="0" row="24" for="colormirror" type="label" />
+						<item col="1" row="24" for="colormirror" type="value" />
+						<item col="0" row="25" for="interior" type="label" />
+						<item col="1" row="25" for="interior" type="value" />
+						<item col="0" row="26" for="wheels" type="label" />
+						<item col="1" row="26" for="wheels" type="value" />
+						<item col="0" row="27" for="registrationnumber1" type="label" />
+						<item col="1" row="27" for="registrationnumber1" type="value" />
+						<item col="2" row="27" for="registrationnumber2" type="label" />
+						<item col="3" row="27" for="registrationnumber2" type="value" />
+						<item col="0" row="28" for="steeringwheel" type="label" />
+						<item col="1" row="28" for="steeringwheel" type="value" />
+
+						<item col="3" row="15" type="label" label="RacingCar" align="center" />
+						<item col="2" row="16" for="course" type="label" />
+						<item col="3" row="16" for="course" type="value" />
+						<item col="2" row="17" for="courselocation" type="label" />
+						<item col="3" row="17" for="courselocation" type="value" />
+						<item col="2" row="18" for="courseyear" type="label" />
+						<item col="3" row="18" for="courseyear" type="value" />
+						<item col="2" row="19" for="team" type="label" />
+						<item col="3" row="19" for="team" type="value" />
+						<item col="2" row="20" for="pilots" type="label" />
+						<item col="3" row="20" for="pilots" type="value" />
+						<item col="2" row="21" for="copilots" type="label" />
+						<item col="3" row="21" for="copilots" type="value" />
+						<item col="2" row="22" for="carnumber" type="label" />
+						<item col="3" row="22" for="carnumber" type="value" />
+						<item col="2" row="23" for="pub2" type="label" />
+						<item col="3" row="23" for="pub2" type="value" />
+						<item col="2" row="24" for="finishline" type="label" />
+						<item col="3" row="24" for="finishline" type="value" />
+
+					</item>
+
+				</item>
+
+<!-- Onglet "Catalogs" -->
+
+				<item expand="true" title="Catalogs" type="tab" value="bla">
+					<item type="line">
+						<item cols="1" rows="9" type="table" expand="true">
+							<item row="8" col="0" expand="true" type="label" label="OfficialPicture" align="center" />					
+							<item row="7" col="0" expand="false" for="picture2" height="180" type="value" width="240" />
+						</item>
+						<item cols="2" rows="11" type="table" expand="true">
+							<item col="0" row="0" for="barcode" type="label" />
+							<item col="1" row="0" for="barcode" type="value" />
+							<item col="0" row="1" for="referencemirror" type="label" />
+							<item col="1" row="1" for="referencemirror" type="value" />
+							<item col="0" row="2" for="year3" type="label" />
+							<item col="1" row="2" for="year3" type="value" />
+							<item col="0" row="3" for="catalogyear" type="label" />
+							<item col="1" row="3" for="catalogyear" type="value" />
+							<item col="0" row="4" for="catalogedition" type="label" />
+							<item col="1" row="4" for="catalogedition" type="value" />
+							<item col="0" row="5" for="catalogpage" type="label" />
+							<item col="1" row="5" for="catalogpage" type="value" />
+							<item col="0" row="6" for="catalogprice" type="label" />
+							<item col="1" row="6" for="catalogprice" type="value" />
+							<item col="0" row="7" for="personalref" type="label" />
+							<item col="1" row="7" for="personalref" type="value" />
+							<item col="0" row="8" for="websitem" type="label" />
+							<item col="1" row="8" for="websitem" expand="default" type="value" />
+							<item col="0" row="9" for="websitec" type="label" />
+							<item col="1" row="9" for="websitec" expand="default" type="value" />
+							<item col="0" row="10" for="websiteo" type="label" />
+							<item col="1" row="10" for="websiteo" expand="default" type="value" />
+						</item>
+						<item cols="1" rows="4" type="table" expand="true">
+							<item row="1" expand="true" type="label" label="CatalogCoverPicture" align="center" />					
+							<item row="3" expand="true" type="label" label="CatalogPagePicture" align="center" />					
+							<item row="0" for="catalog1" expand="false" height="120" type="value" width="120" />
+							<item row="2" for="catalog2" expand="false" height="120" type="value" width="120" />
+						</item>
+					</item>
+
+					<item type="box" expand="false">
+						<item for="comments3" type="label" />
+						<item for="comments3" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "Pictures" -->
+
+				<item expand="true" title="Pictures" type="tab" value="bla" >
+
+					<item align="left" for="othersdetails" type="label" />
+					<item expand="true" type="line">
+						<item for="othersdetails" expand="true" type="value" />
+					</item>
+
+					<item type="line" >
+						<item cols="3" rows="11" type="table" expand="true" >
+							<item row="1" col="0" expand="false" for="edge1" type="value" height="180" width="240" align="center" />
+							<item row="1" col="1" expand="false" for="edge2" type="value" height="180" width="240" align="center" />
+							<item row="1" col="2" expand="false" for="edge3" type="value" height="180" width="240" align="center" />
+							<item row="5" col="0" expand="false" for="edge4" type="value" height="180" width="240" align="center" />
+							<item row="5" col="1" expand="false" for="edge5" type="value" height="180" width="240" align="center" />
+							<item row="5" col="2" expand="false" for="edge6" type="value" height="180" width="240" align="center" />
+							<item row="9" col="0" expand="false" for="edge7" type="value" height="180" width="240" align="center" />
+							<item row="9" col="1" expand="false" for="edge8" type="value" height="180" width="240" align="center" />
+							<item row="9" col="2" expand="false" for="edge9" type="value" height="180" width="240" align="center" />
+
+							<item row="2" col="0" expand="true" type="label" label="AVG" align="center" />
+							<item row="2" col="1" expand="true" type="label" label="AV" align="center" />
+							<item row="2" col="2" expand="true" type="label" label="AVD" align="center" />
+							<item row="6" col="0" expand="true" type="label" label="G" align="center" />
+							<item row="6" col="1" expand="true" type="label" label="BOX" align="center" />
+							<item row="6" col="2" expand="true" type="label" label="D" align="center" />
+							<item row="10" col="0" expand="true" type="label" label="ARG" align="center" />
+							<item row="10" col="1" expand="true" type="label" label="AR" align="center" />
+							<item row="10" col="2" expand="true" type="label" label="ARD" align="center" />
+
+						</item>
+					</item>
+
+					<item type="line" >
+						<item cols="2" rows="2" type="table" expand="true" >
+							<item row="0" col="0" expand="false" for="top" type="value" height="180" width="240" align="center" />
+							<item row="0" col="1" expand="false" for="back" type="value" height="180" width="240" align="center" />
+							<item row="1" col="0" expand="true" type="label" label="Top1" align="center" />
+							<item row="1" col="1" expand="true" type="label" label="Back1" align="center" />
+
+						</item>
+					</item>
+
+					<item align="left" for="otherscomments" type="label" />
+					<item expand="true" type="line">
+						<item for="otherscomments" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "PanelLending" -->
+
+				<item title="PanelLending" type="tab" value="lending">
+						<item type="label" label="LendingExplanation" align="center" />
+					<item rows="3" type="table">
+						<item col="0" for="borrower" row="0" type="label" />
+						<item col="1" for="borrower" row="0" type="value" />
+						<item col="2" for="mailButton" row="0" type="special" />
+						<item col="0" for="lendDate" row="1" type="label" />
+						<item col="1" for="lendDate" row="1" type="value" />
+						<item col="2" for="itemBackButton" row="1" type="special" />
+					</item>
+					<item align="left" for="borrowings" type="label" />
+					<item expand="true" type="line">
+						<item type="box" width="64" />
+						<item expand="true" for="borrowings" type="value" />
+						<item type="box" width="64" />
+					</item>
+					<item align="left" for="comments4" type="label" />
+					<item expand="true" type="line">
+						<item for="comments4" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "Realmodel" -->
+
+				<item expand="true" title="Realmodel" type="tab" value="bla" >
+
+					<item align="left" for="difference" type="label" />
+					<item expand="true" type="line">
+						<item for="difference" expand="true" type="value" />
+					</item>
+
+					<item type="line" >
+						<item cols="2" rows="5" type="table" expand="true" >
+							<item row="0" col="0" expand="true" type="label" label="Front2" align="center" />
+							<item row="0" col="1" expand="true" type="label" label="Back2" align="center" />
+							<item row="1" col="0" expand="false" for="front2" type="value" height="180" width="240" align="center" />
+							<item row="1" col="1" expand="false" for="back2" type="value" height="180" width="240" align="center" />
+							<item row="2" col="0" expand="true" colspan="2" type="label" label="Others" align="center" />
+							<item row="3" col="0" expand="false" for="edge10" type="value" height="180" width="240" align="center" />
+							<item row="3" col="1" expand="false" for="edge20" type="value" height="180" width="240" align="center" />
+							<item row="4" col="0" expand="false" for="edge30" type="value" height="180" width="240" align="center" />
+							<item row="4" col="1" expand="false" for="edge40" type="value" height="180" width="240" align="center" />
+						</item>
+					</item>
+
+					<item align="left" for="comments5" type="label" />
+					<item expand="true" type="line">
+						<item for="comments5" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "PanelTags" -->
+
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line">
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+
+<!-- "Lecture Seule" -->
+
+
+		<panel editable="false" label="PanelReadOnly" name="readonly">
+
+			<item type="line">
+				<item expand="true" for="name" type="value" />
+			</item>
+			<item expand="true" type="notebook">
+
+<!-- Onglet "Main" -->
+
+				<item expand="true" title="Main" type="tab" value="bla">
+					<item type="line" align="center" >
+						<item cols="2" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="exchange" type="value" />
+							<item row="0" col="1" expand="true" for="wanted" type="value" />
+						</item>
+					</item>
+					<item type="line">
+						<item cols="1" rows="11" type="table" expand="true">
+							<item col="0" for="rating1" row="2" type="label" align="center" />
+							<item col="0" for="rating1" expand="false" row="3" type="value" />
+							<item row="9" col="0" expand="true" type="label" label="Picture1" align="center" />					
+							<item row="8" col="0" expand="false" for="picture" height="180" type="value" width="240" />
+						</item>
+						<item cols="2" rows="10" type="table" expand="true">
+							<item row="1" col="0" for="scale" type="label" />
+							<item row="1" col="1" for="scale" expand="true" type="value" />
+							<item row="2" col="0" for="manufacturer" type="label" />
+							<item row="2" col="1" for="manufacturer" expand="true" type="value" />
+							<item row="3" col="0" for="type1" type="label" />
+							<item row="3" col="1" for="type1" expand="true" type="value" />
+							<item row="4" col="0" for="constructor" type="label" />
+							<item row="4" col="1" for="constructor" expand="true" type="value" />
+							<item row="5" col="0" for="modele" type="label" />
+							<item row="5" col="1" for="modele" expand="true" type="value" />
+							<item row="6" col="0" for="version" type="label" />
+							<item row="6" col="1" for="version" expand="true" type="value" />
+							<item row="7" col="0" for="color" type="label" />
+							<item row="7" col="1" for="color" expand="true" type="value" />
+							<item row="8" col="0" for="pub" type="label" />
+							<item row="8" col="1" for="pub" expand="true" type="value" />
+							<item row="9" col="0" for="year" type="label" />
+							<item row="9" col="1" for="year" expand="true" type="value" />
+							<item row="10" col="0" for="reference" type="label" />
+							<item row="10" col="1" for="reference" expand="true" type="value" />
+						</item>
+						<item cols="1" rows="4" type="table" expand="true">
+							<item row="3" expand="true" type="label" label="Constructor" align="center" />					
+							<item row="1" expand="true" type="label" label="Manufacturer" align="center" />					
+							<item row="0" for="logo1" expand="false" height="120" type="value" width="120" />
+							<item row="2" for="logo2" expand="false" height="120" type="value" width="120" />
+						</item>
+					</item>
+
+					<item type="box" expand="false">
+						<item cols="2" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="kit" type="value" />
+							<item row="0" col="1" expand="true" for="transformation" type="value" />
+						</item>
+						<item for="comments1" type="label" />
+						<item for="comments1" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "Details" -->
+
+				<item expand="true" title="Details" type="tab" value="bla">
+					<item type="label" label="MiscCharacteristics" align="center" />
+					<item cols="4" expand="true" rows="29" type="table" >
+						<item row="0" col="0" collapsed="%material%" colspan="2" title="Material" type="expander">
+							<item for="material" type="value" />
+						</item>
+						<item col="2" row="0" for="molding" type="label" />
+						<item col="3" row="0" for="molding" type="value" />
+						<item col="0" row="1" for="condition" type="label" />
+						<item col="1" row="1" for="condition" type="value" />
+						<item col="2" row="1" for="added" type="label" />
+						<item col="3" row="1" for="added" type="value" />
+						<item col="0" row="2" for="edition" type="label" />
+						<item col="1" row="2" for="edition" type="value" />
+						<item col="2" row="2" for="collectiontype" type="label" />
+						<item col="3" row="2" for="collectiontype" type="value" />
+
+						<item col="0" row="3" for="serial" type="label" />
+						<item col="1" row="3" for="serial" type="value" />
+						<item col="2" row="3" for="serialnumber" type="label" />
+						<item col="3" row="3" for="serialnumber" type="value" />
+						<item col="0" row="4" for="designed" type="label" />
+						<item col="1" row="4" for="designed" type="value" />
+						<item col="2" row="4" for="madein" type="label" />
+						<item col="3" row="4" for="madein" type="value" />
+
+						<item col="0" row="5" for="box1" type="label" />
+						<item col="1" row="5" for="box1" type="value" />
+						<item col="2" row="5" for="box2" type="label" />
+						<item col="3" row="5" for="box2" type="value" />
+						<item col="0" row="6" for="containbox" type="label" />
+						<item col="1" row="6" for="containbox" type="value" />
+
+						<item col="0" row="7" for="rating2" type="label" />
+						<item col="1" row="7" for="rating2" type="value" align="center"/>
+						<item col="2" row="7" for="rating3" type="label" />
+						<item col="3" row="7" for="rating3" type="value" align="center"/>
+						<item col="0" row="8" for="acquisition" type="label" />
+						<item col="1" row="8" for="acquisition" type="value" />
+						<item col="2" row="8" for="location" type="label" />
+						<item col="3" row="8" for="location" type="value" />
+						<item col="0" row="9" for="buyprice" type="label" />
+						<item col="1" row="9" for="buyprice" type="value" />
+						<item col="2" row="9" for="estimate" type="label" />
+						<item col="3" row="9" for="estimate" type="value" />
+
+						<item col="0" row="10" for="comments2" type="label" />
+						<item col="0" row="11" colspan="4" for="comments2" expand="true" type="value" />
+
+						<item col="1" row="12" type="label" label="Diorama" align="center" />
+						<item col="0" row="13" for="decorationset" type="label" />
+						<item col="1" row="13" for="decorationset" type="value" />
+						<item col="0" row="14" for="characters" type="label" />
+						<item col="1" row="14" for="characters" type="value" />
+
+						<item col="3" row="12" type="label" label="CarFromFilm" align="center" />
+						<item col="2" row="13" for="filmcar" type="label" />
+						<item col="3" row="13" for="filmcar" type="value" />
+						<item col="2" row="14" for="filmpart" type="label" />
+						<item col="3" row="14" for="filmpart" type="value" />
+
+						<item col="1" row="15" type="label" label="VehiculeDetails" align="center" />
+						<item col="0" row="16" for="parts" type="label" />
+						<item col="1" row="16" for="parts" type="value" />
+						<item col="0" row="17" for="detailsparts" type="label" />
+						<item col="1" row="17" for="detailsparts" type="value" />
+						<item col="0" row="18" for="decorations" type="label" />
+						<item col="1" row="18" for="decorations" type="value" />
+						<item col="0" row="19" for="detailsdecorations" type="label" />
+						<item col="1" row="19" for="detailsdecorations" type="value" />
+						<item col="0" row="20" for="lwh" type="label" />
+						<item col="1" row="20" for="lwh" type="value" />
+						<item col="0" row="21" for="weight" type="label" />
+						<item col="1" row="21" for="weight" type="value" />
+						<item col="0" row="22" for="framecar" type="label" />
+						<item col="1" row="22" for="framecar" type="value" />
+						<item col="0" row="23" for="bodycar" type="label" />
+						<item col="1" row="23" for="bodycar" type="value" />
+						<item col="0" row="24" for="colormirror" type="label" />
+						<item col="1" row="24" for="colormirror" type="value" />
+						<item col="0" row="25" for="interior" type="label" />
+						<item col="1" row="25" for="interior" type="value" />
+						<item col="0" row="26" for="wheels" type="label" />
+						<item col="1" row="26" for="wheels" type="value" />
+						<item col="0" row="27" for="registrationnumber1" type="label" />
+						<item col="1" row="27" for="registrationnumber1" type="value" />
+						<item col="2" row="27" for="registrationnumber2" type="label" />
+						<item col="3" row="27" for="registrationnumber2" type="value" />
+						<item col="0" row="28" for="steeringwheel" type="label" />
+						<item col="1" row="28" for="steeringwheel" type="value" />
+
+						<item col="3" row="15" type="label" label="RacingCar" align="center" />
+						<item col="2" row="16" for="course" type="label" />
+						<item col="3" row="16" for="course" type="value" />
+						<item col="2" row="17" for="courselocation" type="label" />
+						<item col="3" row="17" for="courselocation" type="value" />
+						<item col="2" row="18" for="courseyear" type="label" />
+						<item col="3" row="18" for="courseyear" type="value" />
+						<item col="2" row="19" for="team" type="label" />
+						<item col="3" row="19" for="team" type="value" />
+						<item col="2" row="20" for="pilots" type="label" />
+						<item col="3" row="20" for="pilots" type="value" />
+						<item col="2" row="21" for="copilots" type="label" />
+						<item col="3" row="21" for="copilots" type="value" />
+						<item col="2" row="22" for="carnumber" type="label" />
+						<item col="3" row="22" for="carnumber" type="value" />
+						<item col="2" row="23" for="pub2" type="label" />
+						<item col="3" row="23" for="pub2" type="value" />
+						<item col="2" row="24" for="finishline" type="label" />
+						<item col="3" row="24" for="finishline" type="value" />
+
+					</item>
+
+				</item>
+
+<!-- Onglet "Catalogs" -->
+
+				<item expand="true" title="Catalogs" type="tab" value="bla">
+					<item type="line">
+						<item cols="1" rows="9" type="table" expand="true">
+							<item row="8" col="0" expand="true" type="label" label="OfficialPicture" align="center" />					
+							<item row="7" col="0" expand="false" for="picture2" height="180" type="value" width="240" />
+						</item>
+						<item cols="2" rows="11" type="table" expand="true">
+							<item col="0" row="0" for="barcode" type="label" />
+							<item col="1" row="0" for="barcode" type="value" />
+							<item col="0" row="1" for="referencemirror" type="label" />
+							<item col="1" row="1" for="referencemirror" type="value" />
+							<item col="0" row="2" for="year3" type="label" />
+							<item col="1" row="2" for="year3" type="value" />
+							<item col="0" row="3" for="catalogyear" type="label" />
+							<item col="1" row="3" for="catalogyear" type="value" />
+							<item col="0" row="4" for="catalogedition" type="label" />
+							<item col="1" row="4" for="catalogedition" type="value" />
+							<item col="0" row="5" for="catalogpage" type="label" />
+							<item col="1" row="5" for="catalogpage" type="value" />
+							<item col="0" row="6" for="catalogprice" type="label" />
+							<item col="1" row="6" for="catalogprice" type="value" />
+							<item col="0" row="7" for="personalref" type="label" />
+							<item col="1" row="7" for="personalref" type="value" />
+							<item col="0" row="8" for="websitem" type="label" />
+							<item col="1" row="8" for="websitem" expand="default" type="value" />
+							<item col="0" row="9" for="websitec" type="label" />
+							<item col="1" row="9" for="websitec" expand="default" type="value" />
+							<item col="0" row="10" for="websiteo" type="label" />
+							<item col="1" row="10" for="websiteo" expand="default" type="value" />
+						</item>
+						<item cols="1" rows="4" type="table" expand="true">
+							<item row="1" expand="true" type="label" label="CatalogCoverPicture" align="center" />					
+							<item row="3" expand="true" type="label" label="CatalogPagePicture" align="center" />					
+							<item row="0" for="catalog1" expand="false" height="120" type="value" width="120" />
+							<item row="2" for="catalog2" expand="false" height="120" type="value" width="120" />
+						</item>
+					</item>
+
+					<item type="box" expand="false">
+						<item for="comments3" type="label" />
+						<item for="comments3" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "Pictures" -->
+
+				<item expand="true" title="Pictures" type="tab" value="bla" >
+
+					<item align="left" for="othersdetails" type="label" />
+					<item expand="true" type="line">
+						<item for="othersdetails" expand="true" type="value" />
+					</item>
+
+					<item type="line" >
+						<item cols="3" rows="11" type="table" expand="true" >
+							<item row="1" col="0" expand="false" for="edge1" type="value" height="180" width="240" align="center" />
+							<item row="1" col="1" expand="false" for="edge2" type="value" height="180" width="240" align="center" />
+							<item row="1" col="2" expand="false" for="edge3" type="value" height="180" width="240" align="center" />
+							<item row="5" col="0" expand="false" for="edge4" type="value" height="180" width="240" align="center" />
+							<item row="5" col="1" expand="false" for="edge5" type="value" height="180" width="240" align="center" />
+							<item row="5" col="2" expand="false" for="edge6" type="value" height="180" width="240" align="center" />
+							<item row="9" col="0" expand="false" for="edge7" type="value" height="180" width="240" align="center" />
+							<item row="9" col="1" expand="false" for="edge8" type="value" height="180" width="240" align="center" />
+							<item row="9" col="2" expand="false" for="edge9" type="value" height="180" width="240" align="center" />
+
+							<item row="2" col="0" expand="true" type="label" label="AVG" align="center" />
+							<item row="2" col="1" expand="true" type="label" label="AV" align="center" />
+							<item row="2" col="2" expand="true" type="label" label="AVD" align="center" />
+							<item row="6" col="0" expand="true" type="label" label="G" align="center" />
+							<item row="6" col="1" expand="true" type="label" label="BOX" align="center" />
+							<item row="6" col="2" expand="true" type="label" label="D" align="center" />
+							<item row="10" col="0" expand="true" type="label" label="ARG" align="center" />
+							<item row="10" col="1" expand="true" type="label" label="AR" align="center" />
+							<item row="10" col="2" expand="true" type="label" label="ARD" align="center" />
+
+						</item>
+					</item>
+
+					<item type="line" >
+						<item cols="2" rows="2" type="table" expand="true" >
+							<item row="0" col="0" expand="false" for="top" type="value" height="180" width="240" align="center" />
+							<item row="0" col="1" expand="false" for="back" type="value" height="180" width="240" align="center" />
+							<item row="1" col="0" expand="true" type="label" label="Top1" align="center" />
+							<item row="1" col="1" expand="true" type="label" label="Back1" align="center" />
+
+						</item>
+					</item>
+
+					<item align="left" for="otherscomments" type="label" />
+					<item expand="true" type="line">
+						<item for="otherscomments" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "PanelLending" -->
+
+				<item title="PanelLending" type="tab" value="lending">
+						<item type="label" label="LendingExplanation" align="center" />
+					<item rows="3" type="table">
+						<item col="0" for="borrower" row="0" type="label" />
+						<item col="1" for="borrower" row="0" type="value" />
+						<item col="2" for="mailButton" row="0" type="special" />
+						<item col="0" for="lendDate" row="1" type="label" />
+						<item col="1" for="lendDate" row="1" type="value" />
+						<item col="2" for="itemBackButton" row="1" type="special" />
+					</item>
+					<item align="left" for="borrowings" type="label" />
+					<item expand="true" type="line">
+						<item type="box" width="64" />
+						<item expand="true" for="borrowings" type="value" />
+						<item type="box" width="64" />
+					</item>
+					<item align="left" for="comments4" type="label" />
+					<item expand="true" type="line">
+						<item for="comments4" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "Realmodel" -->
+
+				<item expand="true" title="Realmodel" type="tab" value="bla" >
+
+					<item align="left" for="difference" type="label" />
+					<item expand="true" type="line">
+						<item for="difference" expand="true" type="value" />
+					</item>
+
+					<item type="line" >
+						<item cols="2" rows="5" type="table" expand="true" >
+							<item row="0" col="0" expand="true" type="label" label="Front2" align="center" />
+							<item row="0" col="1" expand="true" type="label" label="Back2" align="center" />
+							<item row="1" col="0" expand="false" for="front2" type="value" height="180" width="240" align="center" />
+							<item row="1" col="1" expand="false" for="back2" type="value" height="180" width="240" align="center" />
+							<item row="2" col="0" expand="true" colspan="2" type="label" label="Others" align="center" />
+							<item row="3" col="0" expand="false" for="edge10" type="value" height="180" width="240" align="center" />
+							<item row="3" col="1" expand="false" for="edge20" type="value" height="180" width="240" align="center" />
+							<item row="4" col="0" expand="false" for="edge30" type="value" height="180" width="240" align="center" />
+							<item row="4" col="1" expand="false" for="edge40" type="value" height="180" width="240" align="center" />
+						</item>
+					</item>
+
+					<item align="left" for="comments5" type="label" />
+					<item expand="true" type="line">
+						<item for="comments5" expand="true" type="value" />
+					</item>
+				</item>
+
+<!-- Onglet "PanelTags" -->
+
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" collapse="true"/>
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line">
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+
+	</panels>
+</collection>

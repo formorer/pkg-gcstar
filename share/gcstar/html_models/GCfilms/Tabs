@@ -1,0 +1,245 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template made by Tian. It emulates a notebook display.
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+body {
+ margin:0;
+ padding:0;
+ background:white;
+}
+h1 {
+ text-align:center;
+ color:#7c551a;
+}
+h2 {
+ background:transparent;
+ margin:0 0 1em;
+ color:#ffffff;
+}
+.movie {
+ height:18em;
+ clear:both;
+ margin:1em;
+ padding:0.5em;
+ background:#e3c79e;
+ border:1px dashed #7c551a;
+}
+.imgbox {
+ text-align:center;
+ float:left;
+ margin-right:1em;
+ width:120px;
+}
+h3 {
+ color:#513D23;
+ background:#ffffff;
+ cursor:default;
+ margin:0;
+ padding:0.4em;
+ display:none;
+ font-size:100%;
+ border-left:0.1em solid black;
+ border-bottom:0.1em solid white;
+ border-right:0.1em solid black;
+ border-top:0.1em solid black;
+ -moz-border-radius-topright:2em;
+ z-index:99;
+ position:relative;
+}
+div > h3
+{
+ display:block;
+}
+.details h3, .synopsis h3 {
+ background:#ffffff;
+ border-bottom:0.1em solid black;
+}
+.info, .details, .synopsis {
+ float:left;
+ width:12em;
+}
+.info dl, .details dl, .synopsis p {
+ border:0.1em solid black;
+ padding:1em 0.5em 0.5em;
+ margin:-0.1em 0 0;
+ z-index:1;
+ position:relative;
+ width:45em;
+ height:10em;
+ background:white;
+}
+.details dl, .synopsis p {
+ display:none;
+ margin-left:-11.8em;
+ width:44.8em;
+}
+.synopsis p {
+ margin-left:-23.8em;
+}
+dt {
+ float:left;
+ width:10em;
+ font-weight:bold;
+ height:1.5em;
+ color:#A49480;
+}
+dd {
+ padding:0;
+ margin-left:10em;
+ height:1.5em;
+ color:#555555;
+}
+#note {
+ text-align:center;
+ margin:2em 5em;
+ background:#e3c79e;
+ border:1px solid #7c551a;
+ padding:0.3em;
+}
+#note a {
+ font-weight:bold;
+ color:#7c551a;
+}
+[NOJAVASCRIPT]
+.info:hover dl,.details:hover dl, .synopsis:hover p {
+ padding-top:1em;
+ display:block;
+ color:#555555;
+ z-index:2;
+}
+.details:hover dl, .synopsis:hover p {
+ border:0;
+ border-top:0.1em solid black;
+ margin-top:-0.1em;
+ margin-left:-11.9em;
+ height:9.9em;
+ z-index:100;
+}
+.synopsis:hover p {
+ margin-left:-23.9em;
+}
+.info:hover h3, .details:hover h3, .synopsis:hover h3 {
+ background:#ffffff;
+ border-bottom:0;
+ border-bottom:0.1em solid white;
+ z-index:999;
+}
+[/NOJAVASCRIPT]
+[JAVASCRIPT]
+h3 {
+ cursor:pointer;
+ background:#e8ded0 ! important;
+}
+.details_active dl, .synopsis_active p {
+ padding-top:1em;
+ display:block;
+ color:#555555;
+ z-index:2;
+}
+.details_active dl, .synopsis_active p {
+ border:0;
+ border-top:0.1em solid black;
+ margin-top:-0.1em;
+ margin-left:-11.9em;
+ height:9.9em;
+ z-index:100;
+}
+.synopsis_active p {
+ margin-left:-23.9em;
+}
+.info_active h3, .details_active h3, .synopsis_active h3 {
+ background:#ffffff ! important;
+ border-bottom:0.1em solid white;
+ z-index:999;
+}
+.synopsis p {
+ overflow:auto;
+}
+[/JAVASCRIPT]
+</style>
+[JAVASCRIPT]
+<script type="text/javascript">
+<!--
+ function showMe(cssClass, objectId)
+ {
+  divs = document.getElementById('movie'+objectId).getElementsByTagName("div")
+  for(i=0; i < divs.length; i++)
+  {
+   if ((divs[i].className != 'imgbox') && (divs[i].className.substr(0,4) != 'note'))
+   {
+    if (divs[i].className.indexOf(cssClass) != -1)
+    {
+     divs[i].className = cssClass + '_active ' + cssClass
+    }
+    else
+    {
+     idx = divs[i].className.indexOf(' ')
+     if (idx != -1)
+     {
+      //alert('Setting ' + divs[i].className.substring(idx + 1))
+      divs[i].className = divs[i].className.substring(idx + 1)
+     }
+    }
+   }
+  }
+ }
+-->
+</script>
+[/JAVASCRIPT]
+</head>
+<body>
+<h1>$$PAGETITLE$$</h1>
+[/HEADER]
+[ITEM]
+<div class="movie" id="movie$$IDX$$">
+ <h2>$$title$$</h2>
+ <div class="imgbox">
+  <img src="$$image$$" height="$$HEIGHT_PIC$$" alt="$$title$$" title="$$title$$" />
+ </div>
+ <div class="info[JAVASCRIPT]_active info[/JAVASCRIPT]">
+  <h3[JAVASCRIPT] onclick="showMe('info', $$IDX$$)"[/JAVASCRIPT]>$$info_LABEL$$</h3>
+  <dl>
+   <dt>$$date_LABEL$$</dt>
+   <dd>$$date$$</dd>
+   <dt>$$director_LABEL$$</dt>
+   <dd>$$director$$</dd>
+   <dt>$$time_LABEL$$</dt>
+   <dd>$$time$$</dd>
+   <dt>$$genre_LABEL$$</dt>
+   <dd>$$genre$$</dd>
+   <dt>$$actors_LABEL$$</dt>
+   <dd>$$actors$$</dd>
+  </dl>
+ </div>
+ <div class="details">
+  <h3[JAVASCRIPT] onclick="showMe('details', $$IDX$$)"[/JAVASCRIPT]>$$details_LABEL$$</h3>
+  <dl>
+   <dt>$$rating_LABEL$$</dt>
+   <dd><div class="note$$RATING$$">$$rating$$/10</div></dd>
+   <dt>$$format_LABEL$$</dt>
+   <dd>$$format$$ ($$number$$)</dd>
+   <dt>$$audio_LABEL$$</dt>
+   <dd>$$audio$$</dd>
+   <dt>$$borrower_LABEL$$</dt>
+   <dd>$$borrower$$</dd>
+  </dl>
+ </div>
+ <div class="synopsis">
+  <h3[JAVASCRIPT] onclick="showMe('synopsis', $$IDX$$)"[/JAVASCRIPT]>$$synopsis_LABEL$$</h3>
+  <p>$$synopsis$$</p>
+ </div>
+</div>
+[/ITEM]
+[FOOTER]
+<div id="note">$$GENERATOR_NOTE$$</div>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

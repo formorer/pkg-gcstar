@@ -1,0 +1,73 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template par Florent pour fred. Adapaté de  rootII.
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+body
+{
+ color:black;
+}
+.borrowed1
+{
+ color:#777777;
+ font-style:italic;
+}
+#legend
+{
+ margin:1em;
+ border:1px solid black;
+ display:inline;
+ padding:0.5em;
+}
+#note
+{
+ border-top:1px solid black;
+ margin:3em 8%;
+ margin-bottom:2em;
+ padding-top:0.5em;
+ text-align:center;
+ font-size:90%;
+}
+#note a
+{
+ color:black ! important;
+ text-decoration:underline;
+ font-weight:bold;
+}
+</style>
+</head>
+<body>
+<h1>$$PAGETITLE$$</h1>
+<table border="0" align="center" cellspacing="0" cellpadding="0"  width="80%">
+<tr><td><br><hr></td></tr>
+[/HEADER]
+[ITEM]
+<tr><td>
+<table border="0" cellspacing="10" cellpadding="0" width="100%">
+	<tr><td colspan="3"><strong>$$title$$</strong></td></tr>
+	<tr><td rowspan="5" width="80"><img src="$$cover$$" height="$$HEIGHT_PIC$$" alt="$$title$$" title="$$title$$" border="0"/></td></tr>
+	<tr><td style="font-size:10pt;" width="100"><b>$$authors_LABEL$$$$SEPARATOR$$</b></td><td  style="font-size:10pt;">$$authors$$&nbsp;</td></tr>
+	<tr><td style="font-size:10pt;" width="100"><b>$$publisher_LABEL$$$$SEPARATOR$$</b></td><td  style="font-size:10pt;">$$publisher$$</td></tr>
+	<tr><td style="font-size:10pt;" width="100"><b>$$publication_LABEL$$$$SEPARATOR$$</b></td><td  style="font-size:10pt;">$$publication$$</td></tr>
+	<tr><td style="font-size:10pt;" width="100"><b>$$format_LABEL$$$$SEPARATOR$$</b></td><td style="font-size:10pt;">$$format$$</td></tr>
+	<tr><td colspan="3" style="font-size:10pt;">$$description$$</td></tr>
+</table>
+</td></tr>
+<tr><td><br><hr></td></tr>
+[/ITEM]
+[FOOTER]
+</table>
+<p id="note">$$GENERATOR_NOTE$$ - Design Florent</p>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]
+
+
+

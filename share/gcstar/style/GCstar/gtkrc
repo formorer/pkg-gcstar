@@ -1,0 +1,277 @@
+# style <name> [= <name>]
+# {
+#   <option>
+# }
+#
+# widget <widget_set> style <style_name>
+# widget_class <widget_class_set> style <style_name>
+
+# Here is a list of all the possible states.  Note that some do not apply to
+# certain widgets.
+#
+# NORMAL - The normal state of a widget, without the mouse over top of
+# it, and not being pressed, etc.
+#
+# PRELIGHT - When the mouse is over top of the widget, colors defined
+# using this state will be in effect.
+#
+# ACTIVE - When the widget is pressed or clicked it will be active, and
+# the attributes assigned by this tag will be in effect.
+#
+# INSENSITIVE - When a widget is set insensitive, and cannot be
+# activated, it will take these attributes.
+#
+# SELECTED - When an object is selected, it takes these attributes.
+#
+# Given these states, we can set the attributes of the widgets in each of
+# these states using the following directives.
+#
+# fg - Sets the foreground color of a widget.
+# bg - Sets the background color of a widget.
+# bg_pixmap - Sets the background of a widget to a tiled pixmap.
+# font - Sets the font to be used with the given widget.
+#
+
+style "gcStocks"
+{
+  # Redefine used stock items. Each entry contains the stock item
+  # name and the file name (it should be in the same directory as
+  # this file.
+  stock["gtk-dialog-question"] = 
+  {
+  	{"icons/help/64x64.png", *, *, "gtk-dialog"}
+  }
+  stock["gtk-dialog-info"] = 
+  {
+  	{"icons/about/64x64.png", *, *, "gtk-dialog"}
+  }
+  stock["gtk-dialog-error"] = 
+  {
+  	{"icons/error/64x64.png", *, *, "gtk-dialog"}
+  }
+  stock["gtk-about"] = 
+  {
+  	{"icons/about/16x16.png", *, *, "gtk-menu"},
+  	{"icons/about/16x16.png"}
+  }
+  stock["gtk-add"] = 
+  {
+  	{"icons/add/16x16.png", *, *, "gtk-menu"},
+  	{"icons/add/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/add/24x24.png", *, *, "gtk-button"},
+  	{"icons/add/24x24.png", *, *, "gtk-large-toolbar"},
+    {"icons/add/32x32.png"}
+  }
+  stock["gtk-cancel"] = 
+  {
+  	{"icons/cancel/24x24.png", *, *, "gtk-button"},
+  	{"icons/cancel/32x32.png"}
+  }
+  stock["gtk-no"] = 
+  {
+  	{"icons/cancel/24x24.png", *, *, "gtk-button"},
+  	{"icons/cancel/32x32.png"}
+  }
+  stock["gtk-clear"] = 
+  {
+  	{"icons/clear/24x24.png", *, *, "gtk-button"},
+  	{"icons/clear/32x32.png"}
+  }
+  stock["gtk-convert"] = 
+  {
+  	{"icons/convert/16x16.png", *, *, "gtk-menu"},
+  	{"icons/convert/24x24.png", *, *, "gtk-button"},
+  	{"icons/convert/32x32.png"}
+  }
+  stock["gtk-delete"] = 
+  {
+  	{"icons/delete/16x16.png", *, *, "gtk-menu"},
+  	{"icons/delete/24x24.png", *, *, "gtk-button"},
+  	{"icons/delete/32x32.png"}
+  }
+  stock["gtk-directory"] = 
+  {
+  	{"icons/directory/32x32.png", *, *, "gtk-large-toolbar"},
+  	{"icons/directory/32x32.png"}
+  }
+  stock["gtk-dnd"] = 
+  {
+  	{"icons/dnd/16x16.png", *, *, "gtk-menu"}
+  }
+  stock["gtk-execute"] = 
+  {
+  	{"icons/execute/16x16.png", *, *, "gtk-menu"},
+  	{"icons/execute/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/execute/24x24.png", *, *, "gtk-button"},
+  	{"icons/execute/24x24.png", *, *, "gtk-large-toolbar"},
+  	{"icons/execute/32x32.png"}
+  }
+  stock["gtk-find"] = 
+  {
+  	{"icons/find/16x16.png", *, *, "gtk-menu"},
+  	{"icons/find/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/find/24x24.png", *, *, "gtk-button"},
+  	{"icons/find/24x24.png", *, *, "gtk-large-toolbar"},
+  	{"icons/find/32x32.png"}
+  }
+  stock["gtk-go-back"] = 
+  {
+  	{"icons/go-back/16x16.png", *, *, "gtk-menu"},
+  	{"icons/go-back/16x16.png", *, *, "gtk-button"}
+  }
+  stock["gtk-go-down"] = 
+  {
+  	{"icons/go-down/16x16.png", *, *, "gtk-menu"},
+  	{"icons/go-down/16x16.png", *, *, "gtk-button"}
+  }
+  stock["gtk-go-forward"] = 
+  {
+  	{"icons/go-forward/16x16.png", *, *, "gtk-menu"},
+  	{"icons/go-forward/16x16.png", *, *, "gtk-button"}
+  }
+  stock["gtk-go-up"] = 
+  {
+  	{"icons/go-up/16x16.png", *, *, "gtk-menu"},
+  	{"icons/go-up/16x16.png", *, *, "gtk-button"}
+  }
+  stock["gtk-sort-descending"] =
+  {
+  	{"icons/go-down/16x16.png", *, *, "gtk-menu"},
+  	{"icons/go-down/16x16.png", *, *, "gtk-button"}
+  }
+  stock["gtk-sort-ascending"] =
+  {
+  	{"icons/go-up/16x16.png", *, *, "gtk-menu"},
+  	{"icons/go-up/16x16.png", *, *, "gtk-button"}
+  }
+  stock["gtk-help"] = 
+  {
+  	{"icons/help/16x16.png", *, *, "gtk-menu"}
+  }
+  stock["gtk-home"] = 
+  {
+  	{"icons/home/32x32.png", *, *, "gtk-large-toolbar"},
+  	{"icons/home/32x32.png"}
+  }
+  stock["gtk-jump-to"] = 
+  {
+  	{"icons/jump-to/24x24.png", *, *, "gtk-button"},
+  	{"icons/jump-to/32x32.png"}
+  }
+  stock["gtk-media-play"] = 
+  {
+  	{"icons/media-play/16x16.png", *, *, "gtk-menu"},
+  	{"icons/media-play/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/media-play/24x24.png", *, *, "gtk-button"},
+  	{"icons/media-play/24x24.png", *, *, "gtk-large-toolbar"},
+    {"icons/media-play/32x32.png"}
+  }
+  stock["gtk-media-next"] = 
+  {
+  	{"icons/media-next/24x24.png", *, *, "gtk-button"},
+  	{"icons/media-next/32x32.png"}
+  }
+  stock["gtk-network"] = 
+  {
+  	{"icons/network/32x32.png", *, *, "gtk-large-toolbar"},
+  	{"icons/network/32x32.png"}
+  }
+  stock["gtk-new"] = 
+  {
+  	{"icons/new/16x16.png", *, *, "gtk-menu"},
+  	{"icons/new/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/new/24x24.png", *, *, "gtk-button"},
+  	{"icons/new/24x24.png", *, *, "gtk-large-toolbar"},
+  	{"icons/new/32x32.png"}
+  }
+  stock["gtk-ok"] = 
+  {
+  	{"icons/ok/24x24.png", *, *, "gtk-button"},
+  	{"icons/ok/32x32.png"}
+  }
+  stock["gtk-yes"] = 
+  {
+  	{"icons/ok/24x24.png", *, *, "gtk-button"},
+  	{"icons/ok/32x32.png"}
+  }
+  stock["gtk-open"] = 
+  {
+  	{"icons/open/16x16.png", *, *, "gtk-menu"},
+  	{"icons/open/24x24.png", *, *, "gtk-button"},
+  	{"icons/open/32x32.png"}
+  }
+  stock["gtk-preferences"] = 
+  {
+  	{"icons/preferences/16x16.png", *, *, "gtk-menu"},
+  	{"icons/preferences/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/preferences/24x24.png", *, *, "gtk-button"},
+  	{"icons/preferences/24x24.png", *, *, "gtk-large-toolbar"},
+  	{"icons/preferences/32x32.png"}
+  }
+  stock["gtk-properties"] = 
+  {
+  	{"icons/properties/24x24.png", *, *, "gtk-button"},
+  	{"icons/properties/32x32.png", *, *, "gtk-large-toolbar"},
+  	{"icons/properties/32x32.png"}
+  }
+  stock["gtk-quit"] = 
+  {
+  	{"icons/quit/16x16.png", *, *, "gtk-menu"}
+  }
+  stock["gtk-refresh"] = 
+  {
+  	{"icons/refresh/16x16.png", *, *, "gtk-menu"},
+  	{"icons/refresh/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/refresh/24x24.png", *, *, "gtk-button"},
+  	{"icons/refresh/24x24.png", *, *, "gtk-large-toolbar"},
+  	{"icons/refresh/32x32.png"}
+  }
+  stock["gtk-remove"] = 
+  {
+  	{"icons/remove/24x24.png", *, *, "gtk-button"},
+  	{"icons/remove/32x32.png"}
+  }
+  stock["gtk-revert-to-saved"] = 
+  {
+  	{"icons/revert-to-saved/16x16.png", *, *, "gtk-menu"},
+  	{"icons/revert-to-saved/24x24.png", *, *, "gtk-button"},
+  	{"icons/revert-to-saved/32x32.png"}
+  }
+  stock["gtk-save"] = 
+  {
+  	{"icons/save/16x16.png", *, *, "gtk-menu"},
+  	{"icons/save/16x16.png", *, *, "gtk-small-toolbar"},
+  	{"icons/save/24x24.png", *, *, "gtk-button"},
+  	{"icons/save/24x24.png", *, *, "gtk-large-toolbar"},
+  	{"icons/save/32x32.png"}
+  }
+  stock["gtk-save-as"] = 
+  {
+  	{"icons/save-as/16x16.png", *, *, "gtk-menu"},
+  	{"icons/save-as/24x24.png", *, *, "gtk-button"},
+  	{"icons/save-as/32x32.png"}
+  }
+  stock["gtk-select-color"] = 
+  {
+  	{"icons/select-color/32x32.png", *, *, "gtk-large-toolbar"},
+  	{"icons/select-color/32x32.png"}
+  }
+}
+
+style "gcDefault" = "gcStocks"
+{
+}
+
+style "gcAbout" = "gcDefault"
+{
+  fg[NORMAL] = "#777777"
+  bg[NORMAL] = "#ffffff"
+  bg[PRELIGHT] = "#ffffff"
+  bg[ACTIVE] = "#ffffff"
+  GtkAboutDialog::link-color = "#777777"
+}
+
+# Default rule
+widget "*" style "gcDefault"
+#class "GtkAboutDialog" style : highest "gcAbout"
+#widget "*GtkAboutDialog.GtkVBox.GtkVBox.*" style : highest "gcAbout"

@@ -1,0 +1,21 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## test.dpatch by  <nyall@crackfox>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad gcstar~/install gcstar/install
+--- gcstar~/install	2009-09-20 20:49:02.000000000 -0300
++++ gcstar/install	2009-09-20 20:50:50.000000000 -0300
+@@ -196,8 +196,8 @@
+     chmod 0755, $baseDir.'/bin/'.$binName;
+ 
+     #Copying lib
+-    verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/lib/gcstar';
+-    recursiveCopy('lib/gcstar', $baseDir.'/lib/gcstar');
++    verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/share/gcstar/lib';
++    recursiveCopy('lib/gcstar', $baseDir.'/share/gcstar/lib');
+ 
+     #Copying share
+     verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/share/gcstar';

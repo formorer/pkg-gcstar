@@ -1,0 +1,11 @@
+<metamodel>
+	<model>Simple</model>
+	<fields>
+		<field>type</field>
+		<field>currency</field>
+		<field>value</field>
+		<field>year</field>
+		<field>country</field>
+		<field>condition</field>
+	</fields>
+</metamodel>

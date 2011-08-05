@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCboardgames">
+	<lang>GCboardgames</lang>
+
+	<options>
+
+		<defaults>
+			<image>bg_no.png</image>
+		</defaults>
+
+		<fields>
+			<id>id</id>
+			<title>name</title>
+			<cover>boxpic</cover>
+			<url>web</url>
+			<search>
+				<field>name</field>
+			</search>
+			<results>
+				<field>name</field>
+				<field>released</field>
+			</results>
+		</fields>
+
+		<overlay>
+                        <image>subtle.png</image>
+			<paddingLeft>13</paddingLeft>
+			<paddingRight>13</paddingRight>
+			<paddingTop>13</paddingTop>
+			<paddingBottom>0</paddingBottom>
+		</overlay>
+
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+		<values id="condition">
+			<value displayed="Perfect">4</value>
+			<value displayed="Good">3</value>
+			<value displayed="Average">2</value>
+			<value displayed="Poor">1</value>
+		</values>
+		<values id="completecontents">
+			<value displayed="CompleteNo">0</value>
+			<value displayed="CompleteYes">1</value>
+		</values>
+	</options>
+
+	
+	<groups>
+		<group id="info" label="General"/>
+		<group id="details" label="Details"/>
+		<group id="personal" label="Personal"/>
+	</groups>
+
+	<random>
+		<filter />
+	</random>
+	
+	<fields lending="true" tags="true">
+		<field value="id"
+				type="number"
+				label="Id"
+				init=""
+				group="info"
+				imported="false"/>
+		<field value="name"
+				type="short text"
+				label="Name"
+				init="NewItem"
+				group="info"
+				imported="true"/>
+		<field value="original"
+				type="short text"
+				label="Original"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="boxpic"
+				type="image"
+				label="Box"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="backpic"
+				type="image"
+				label="ContextImgBack"
+				init=""
+				group="info"
+				linkedto="boxpic"
+				imported="true"/>
+		<field value="designedby"
+				type="history text"
+				label="DesignedBy"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="illustratedby"
+				type="history text"
+				label="IllustratedBy"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="publishedby"
+				type="history text"
+				label="PublishedBy"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="players"
+				type="short text"
+				label="Players"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="playingtime"
+				type="short text"
+				label="PlayingTime"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="suggestedage"
+				type="short text"
+				label="SuggestedAge"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="released"
+				type="date"
+				label="Released"
+				init=""
+				group="info"
+				imported="true"
+				sorttype="date"/>
+		<field value="description"
+				type="long text"
+				label="Description"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="category"
+				type="single list"
+				label="Category"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="mechanics"
+				type="single list"
+				label="Mechanics"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="expandedby"
+				type="single list"
+				label="ExpandedBy"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="expansionfor"
+				type="short text"
+				label="ExpansionFor"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="gamefamily"
+				type="short text"
+				label="GameFamily"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="web"
+				type="button"
+				format="url"
+				label="Url"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="rating"
+				type="number"
+				displayas="graphical"
+				label="PanelRating"
+				init="0"
+				max="10"
+				group="personal"
+				imported="false"/>
+		<field value="timesplayed"
+				type="number"
+				label="TimesPlayed"
+				init=""
+				min="0"
+				max="99999"
+				step="1"
+				group="personal"
+				imported="false"/>
+		<field value="added"
+				type="date"
+				label="PanelAdded"
+				init="current"
+				group="personal"
+				imported="false"/>
+		<field value="copies"
+				type="number"
+				label="Copies"
+				init="1"
+				min="0"
+				max="99999"
+				step="1"
+				group="personal"
+				imported="false"/>
+		<field value="completecontents"
+				type="yesno"
+				label="CompleteContents"
+				init="1"
+				notnull="true"
+				group="personal"
+				imported="false"/>
+		<field value="condition"
+				type="options"
+				label="Condition"
+				values="condition"
+				init="3"
+				group="personal"
+				imported="false"/>
+		<field value="photo1"
+				type="image"
+				label="Photo1"
+				init=""
+				default="view"
+				group="details"
+				imported="true"/>
+		<field value="photo2"
+				type="image"
+				label="Photo2"
+				init=""
+				default="view"
+				group="details"
+				imported="true"/>
+		<field value="photo3"
+				type="image"
+				label="Photo3"
+				init=""
+				default="view"
+				group="details"
+				imported="true"/>
+		<field value="photo4"
+				type="image"
+				label="Photo4"
+				init=""
+				default="view"
+				group="details"
+				imported="true"/>
+		<field value="comments"
+				type="long text"
+				label="Comments"
+				init=""
+				group="personal"
+				imported="false"/>
+	</fields>
+
+	
+	<filters>
+		<group label="General">
+			<filter field="name" comparison="contain"/>
+			<filter field="publishedby" comparison="contain" quick="true" numeric="false"/>
+			<filter field="designedby" comparison="contain" quick="true" numeric="false"/>
+			<filter field="category" comparison="contain" quick="true"/>
+		</group>
+		<group label="Details">
+			<filter field="rating" comparison="ge" numeric="true" labelselect="FilterRatingSelect" quick="true"/>
+		</group>
+	</filters>
+	<panels>
+		<panel name="form" label="PanelForm" editable="true">
+			<item type="line">
+				<item type="value" for="name" expand="true" nomargin="true" />
+				<item type="special" for="searchButton" nomargin="true" />
+				<item type="special" for="refreshButton" nomargin="true" />
+			</item>
+			<item type="notebook" expand="true">
+				<item type="tab" value="info" title="General">
+					<item type="line">
+						<item type="label" for="original"/>
+						<item type="value" for="original" expand="true"/>
+					</item>
+					<item type="line">
+						<item type="value" for="boxpic" width="200" height="200"/>
+						<item type="table" title="Information" rows="6" cols="2">
+							<item type="label" for="players" row="0" col="0"/>
+							<item type="value" for="players" row="0" col="1"/>
+							<item type="label" for="playingtime" row="1" col="0"/>
+							<item type="value" for="playingtime" row="1" col="1"/>
+							<item type="label" for="suggestedage" row="2" col="0"/>
+							<item type="value" for="suggestedage" row="2" col="1"/>
+							<item type="label" for="expansionfor" row="3" col="0"/>
+							<item type="value" for="expansionfor" row="3" col="1"/>
+							<item type="label" for="gamefamily" row="4" col="0"/>
+							<item type="value" for="gamefamily" row="4" col="1"/>
+							<item type="label" for="released" row="5" col="0"/>
+							<item type="value" for="released" row="5" col="1"/>
+						</item>
+					</item>
+					<item type="box" expand="true">
+						<item type="label" for="description"/>
+						<item type="value" for="description" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="details" title="Details">
+					<item type="box" expand="true">
+						<item type="table" rows="3" cols="4">
+							<item type="label" for="designedby" row="0" col="0"/>
+							<item type="value" for="designedby" row="0" col="1" expand="default"/>
+							<item type="label" for="publishedby" row="0" col="2"/>
+							<item type="value" for="publishedby" row="0" col="3" expand="default"/>
+							<item type="label" for="illustratedby" row="2" col="0"/>
+							<item type="value" for="illustratedby" row="2" col="1" expand="default"/>
+						</item>
+						<item type="expander" title="Category" collapsed="%category%">
+							<item type="value" for="category"/>
+						</item>
+						<item type="expander" title="Mechanics" collapsed="%mechanics%">
+							<item type="value" for="mechanics"/>
+						</item>
+						<item type="expander" title="ExpandedBy" collapsed="%expandedby%" expanded="true">
+							<item type="value" for="expandedby" />
+						</item>
+					        <item type="table" rows="3" cols="2" expand="true">
+					 		<item type="label" label="Photos" row="0" col="0" colspan="2"/>
+							<item type="value" for="photo1" row="1" col="0" expand="true"  height="150"/>
+							<item type="value" for="photo2" row="1" col="1" expand="true"  height="150"/>
+							<item type="value" for="photo3" row="2" col="0" expand="true"  height="150"/>
+							<item type="value" for="photo4" row="2" col="1" expand="true"  height="150"/>
+						</item>
+					</item>
+
+                                </item>
+				<item type="tab" value="personal" title="Personal">
+					<item type="table" rows="4" cols="4">
+						<item type="label" for="rating" row="0" col="0"/>
+						<item type="value" for="rating" row="0" col="1"/>
+						<item type="label" for="timesplayed" row="0" col="2"/>
+						<item type="value" for="timesplayed" row="0" col="3"/>
+						<item type="label" for="added" row="1" col="0"/>
+						<item type="value" for="added" row="1" col="1"/>
+						<item type="label" for="copies" row="1" col="2"/>
+						<item type="value" for="copies" row="1" col="3"/>
+						<item type="label" for="condition" row="2" col="0"/>
+						<item type="value" for="condition" row="2" col="1"/>
+						<item type="value" for="completecontents" row="2" col="2" colspan="2"/>
+					</item>
+					<item type="table" rows="2" cols="2" expand="true">
+						<item type="label" for="comments" row="0" col="0" colspan="2"/>
+						<item type="value" for="comments" row="1" col="0" colspan="2" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="lending" title="PanelLending">
+					<item type="table" rows="3" cols="3">
+						<item type="label" for="borrower" row="0" col="0"/>
+						<item type="value" for="borrower" row="0" col="1"/>
+						<item type="special" for="mailButton" row="0" col="2"/>
+						<item type="label" for="lendDate" row="1" col="0"/>
+						<item type="value" for="lendDate" row="1" col="1"/>
+						<item type="special" for="itemBackButton" row="1" col="2"/>
+					</item>
+					<item type="label" for="borrowings" align="left"/>
+					<item type="line" expand="true">
+						<item type="box" width="64"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="64"/>
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line" homogeneous="true">
+				<item type="value" for="web" expand="true"/>
+				<item type="special" for="deleteButton" expand="true"/>
+			</item>
+		</panel>
+		<panel name="readonly" label="PanelReadOnly" editable="false">
+			<item type="table" rows="2" cols="2">
+				<item type="value" for="name" style="header" row="0" col="0" colspan="2" expand="true"/>
+				<item type="value" for="original" style="subheader" row="1" col="0" colspan="2" expand="true"/>
+			</item>
+			<item type="line">
+				<item type="box">
+					<item type="value" for="boxpic" width="200" height="200"/>
+				</item>
+				<item type="box" width="6"/>
+				<item type="table" title="Information" rows="6" cols="5" expand="true">\
+					<item type="label" for="players" row="0" col="0"/>
+					<item type="value" for="players" row="0" col="1" expand="true"/>
+					<item type="label" for="playingtime" row="1" col="0"/>
+					<item type="value" for="playingtime" row="1" col="1" expand="true"/>
+					<item type="label" for="suggestedage" row="2" col="0"/>
+					<item type="value" for="suggestedage" row="2" col="1" expand="true"/>
+					<item type="label" for="expansionfor" row="3" col="0"/>
+					<item type="value" for="expansionfor" row="3" col="1" expand="true"/>
+					<item type="label" for="gamefamily" row="4" col="0"/>
+					<item type="value" for="gamefamily" row="4" col="1" expand="true"/>
+					<item type="label" for="released" row="5" col="0"/>
+					<item type="value" for="released" row="5" col="1" expand="true"/>
+				</item>
+			</item>
+			<item type="box" expand="true">
+				<item type="label" for="description"/>
+				<item type="value" for="description" expand="true"/>
+			</item>
+			<item type="expander" title="Details">
+			        <item type="table" rows="5" cols="4" expand="true">
+					<item type="label" for="designedby" row="0" col="0"/>
+					<item type="value" for="designedby" row="0" col="1" expand="true"/>
+					<item type="label" for="publishedby" row="0" col="2"/>
+					<item type="value" for="publishedby" row="0" col="3" expand="true"/>
+					<item type="label" for="illustratedby" row="1" col="0"/>
+					<item type="value" for="illustratedby" row="1" col="1" colspan="3"/>
+					<item type="label" for="category" row="2" col="0" />
+					<item type="value" for="category" row="2" col="1" flat="true" expand="true" colspan="3" />
+					<item type="label" for="mechanics" row="3" col="0" />
+					<item type="value" for="mechanics" row="3" col="1" flat="true" expand="true" colspan="3" />
+					<item type="value" for="expandedby" row="4" col="0" colspan="4"/>
+				</item>
+			</item>
+			<item type="expander" title="Personal">
+				<item type="table" rows="3" cols="4" expand="true">
+					<item type="label" for="rating" row="0" col="0"/>
+					<item type="value" for="rating" row="0" col="1" expand="true"/>
+					<item type="label" for="timesplayed" row="0" col="2"/>
+					<item type="value" for="timesplayed" row="0" col="3" expand="true"/>
+					<item type="label" for="added" row="1" col="0"/>
+					<item type="value" for="added" row="1" col="1" expand="true"/>
+					<item type="label" for="copies" row="1" col="2"/>
+					<item type="value" for="copies" row="1" col="3" expand="true"/>
+					<item type="label" for="condition" row="2" col="0"/>
+					<item type="value" for="condition" row="2" col="1" expand="true"/>
+					<item type="value" for="completecontents" row="2" col="2" colspan="2" expand="true" nomargin="true" values="completecontents"/>
+				</item>
+				<item type="table" rows="2" cols="2" expand="true">
+					<item type="label" for="comments" row="0" col="0" colspan="2"/>
+					<item type="value" for="comments" row="1" col="0" colspan="2" expand="true"/>
+				</item>
+			</item>
+			<item type="expander" title="PanelLending">
+				<item type="table" rows="4" cols="2" expand="true">
+					<item type="label" for="borrower" row="0" col="0"/>
+					<item type="value" for="borrower" row="0" col="1" expand="true"/>
+					<item type="label" for="lendDate" row="1" col="0"/>
+					<item type="value" for="lendDate" row="1" col="1" expand="true"/>
+					<item type="line" row="2" col="0" colspan="2" height="12" expand="true"/>
+					<item type="line"  row="3" col="0" colspan="2" expand="true">
+						<item type="box" width="50" style="page"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="50" style="page"/>
+					</item>
+				</item>
+			</item>
+			<item type="expander" title="PanelTags">
+				<item expand="true" for="tags" type="value" />
+				<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+			</item>
+			<item type="expander" title="Photos">
+			        <item type="table" rows="3" cols="2" expand="true">
+			 		<item type="label" label="Photos" row="0" col="0" colspan="2"/>
+					<item type="value" for="photo1" row="1" col="0" expand="true"  height="150"/>
+					<item type="value" for="photo2" row="1" col="1" expand="true"  height="150"/>
+					<item type="value" for="photo3" row="2" col="0" expand="true"  height="150"/>
+					<item type="value" for="photo4" row="2" col="1" expand="true"  height="150"/>
+				</item>
+			</item>
+		</panel>
+	</panels>
+
+</collection>

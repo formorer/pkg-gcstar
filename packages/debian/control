@@ -1,0 +1,25 @@
+Source: gcstar
+Section: x11
+Priority: optional
+Maintainer: Alexander Wirt <formorer@debian.org>, Nyall <nyall@zombiepigs.net>
+Build-Depends-Indep: libgtk2-perl, libwww-perl, libxml-parser-perl, libxml-simple-perl, libmp3-tag-perl, libogg-vorbis-header-pureperl-perl
+Build-Depends: debhelper (>= 7), dpatch
+Standards-Version: 3.8.0
+Homepage: http://www.gcstar.org/
+
+Package: gcstar
+Architecture: all
+Depends: libgtk2-perl, libwww-perl, libarchive-tar-perl, libxml-simple-perl, libxml-parser-perl, libarchive-zip-perl, libmp3-tag-perl, libogg-vorbis-header-pureperl-perl, libgd-gd2-perl, libgd-graph-perl, libgd-text-perl, libdate-calc-perl, ${perl:Depends}
+Recommends: libgtk2-spell-perl, libdatetime-format-strptime-perl, libmp3-info-perl, libcddb-perl, libnet-freedb-perl
+Provides: gcfilms  
+Replaces: gcfilms 
+Conflicts: gcfilms (<= 6.4)
+Description: Manage your collections of movies, games, books, music and more
+ GCstar is an application for managing your collections. It supports 
+ many types of collections, including movies, books, games, comics, 
+ stamps, coins, and many more. You can even create your own 
+ collection type for whatever unique thing it is that you collect! 
+ Detailed information on each item can be automatically retrieved 
+ from the internet and you can store additional data, such as the 
+ location or who you've lent it to. You may also search and filter 
+ your collections by many criteria.

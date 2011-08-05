@@ -1,0 +1,298 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template made by Tian. It emulates a shelf display.
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+body
+{
+ color:black;
+}
+h1
+{
+ text-align:left;
+ margin-left:0.5em;
+ font-size:200%;
+ font-weight:bold;
+ color:#6c7b8b;
+}
+h2
+{
+ font-size:150%;
+ text-align:center;
+ color:#1c86ee;
+ font-weight:bold;
+ height:3em;
+}
+h3
+{
+ font-size:120%;
+ font-weight:bold;
+ margin:1em 0;
+ color:#6c7b8b;
+ border-bottom:1px dashed #6c7b8b;
+}
+#left
+{
+[JAVASCRIPT]
+ width:48%;
+[/JAVASCRIPT]
+ border:1px dashed #6c7b8b;
+ background:#f0f0f0;
+}
+.imgbox
+{
+ float:left;
+ padding:2em 1em 0em;
+ margin:0;
+}
+img
+{
+ margin:0;
+ padding:0;
+[JAVASCRIPT]
+ cursor:pointer;
+[/JAVASCRIPT]
+}
+.imginfo
+{
+ float:left;
+ margin-top:0.5em;
+[JAVASCRIPT]
+ cursor:default;
+[/JAVASCRIPT]
+}
+.synopsis
+{
+ height:8em;
+ overflow:auto;
+ padding:0.2em;
+ background:#f0f0f0;
+}
+table
+{
+ margin:0 2%;
+ width:95%;
+}
+th
+{
+ font-weight:bold;
+ text-align:left;
+ white-space:nowrap;
+ padding:0.5em;
+ background:#f0f0f0;
+ width:40%;
+}
+td
+{
+ padding:0.5em;
+ background:#f0f0f0;
+ display:block;
+ min-height:1.5em;
+ max-height:10em;
+ overflow:auto;
+}
+#tracks td
+{
+ display:table-cell;
+}
+tr.even td
+{
+ background:#f0f0f0;
+}
+tr.odd td
+{
+ background:#e0e0d0;
+}
+#note
+{
+ text-align:center;
+ padding-top:0.5em;
+[JAVASCRIPT]
+ width:48%;
+[/JAVASCRIPT]
+ color:#6c7b8b;
+}
+#note a
+{
+ font-weight:bold;
+ color:#1c86ee;
+}
+#note a:hover
+{
+ color:#6c7b8b;
+}
+.spacer
+{
+  clear: both;
+}
+[JAVASCRIPT]
+.expander
+{
+ padding:0;
+ width:1em;
+ display:block;
+ float:left;
+ text-align:center;
+ margin-right:0.5em;
+ cursor:pointer;
+}
+[/JAVASCRIPT]
+.info
+{
+ position:fixed;
+ top:0;
+ right:1%;
+ width:48%;
+ display:none;
+}
+.details
+{
+ overflow: auto;
+ height: 500px;
+}
+</style>
+[JAVASCRIPT]
+<script type="text/javascript">
+<!--
+function getBoxes()
+{
+  return document.getElementById("left").getElementsByTagName("div")
+}
+function getHeight()
+{
+  //From http://www.howtocreate.co.uk/tutorials/javascript/browserwindow
+  myHeight = 0;
+  if( typeof( window.innerWidth ) == 'number' ) {
+    //Non-IE
+    myHeight = window.innerHeight;
+  } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+    //IE 6+ in 'standards compliant mode'
+    myHeight = document.documentElement.clientHeight;
+  } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+    //IE 4 compatible
+    myHeight = document.body.clientHeight;
+  }
+  return myHeight - 150;
+}
+function init()
+{
+  // CSS changes from http://www.quirksmode.org/dom/changess.html
+  if (!document.styleSheets) return;
+  var theRules = new Array();
+  if (document.styleSheets[0].cssRules)
+    theRules = document.styleSheets[0].cssRules
+  else if (document.styleSheets[0].rules)
+    theRules = document.styleSheets[0].rules
+  theRules[theRules.length-1].style.height = getHeight()+'px';
+
+  boxes = getBoxes()
+  for(i=0; i < boxes.length; i++)
+  {
+    box =  boxes[i]
+    if (box.className == "movie")
+    {
+      boxes2 = box.getElementsByTagName("div")
+      boxes2[0].onclick = function(evt)
+      {
+        div = this.parentNode
+        showMe(div.getElementsByTagName("div")[1], this)
+      }
+    }
+  }
+  headers = document.getElementById("left").getElementsByTagName("h3")
+  for(i=0; i < headers.length; i++)
+  {
+    header =  headers[i]
+    header.style.cursor = 'pointer'
+    header.innerHTML = '<span class="expander">−</span> ' + header.innerHTML
+    header.onclick = function(evt)
+    {
+      table = this.nextSibling
+      while (table.tagName != "TABLE") { table = table.nextSibling }
+      if (table.style.display == "none")
+      {
+        table.style.display = "table"
+        this.innerHTML = this.innerHTML.replace(/\+<\/span>/, '−</span>')
+      }
+      else
+      {
+        table.style.display = "none"
+        this.innerHTML = this.innerHTML.replace(/−<\/span>/, '+</span>')
+      }     
+    }
+  }
+}
+var currentBox = 0
+var currentImg = 0
+function showMe(box, img)
+{
+  hidePrevious()
+  box.style.display = "block"
+  img.style.background = "#4b4f63"
+  img.style.padding = "1em"
+  currentBox = box
+  currentImg = img
+}
+function hidePrevious()
+{
+  if (currentBox)
+  {
+    currentBox.style.display = "none"
+    currentImg.style.background = "#f0f0f0"
+    currentImg.style.padding = "2em 1em 0em"
+  }
+}
+-->
+</script>
+[/JAVASCRIPT]
+</head>
+<body [JAVASCRIPT]onload="init()"[/JAVASCRIPT]>
+<h1>$$PAGETITLE$$</h1>
+<div id="left">
+[/HEADER]
+[ITEM]
+<div class="movie">
+ <div class="imgbox">
+  <img src="$$COVER_FIELD$$" height="$$HEIGHT_PIC$$" alt="$$TITLE_FIELD$$" title="$$TITLE_FIELD$$" />
+ </div>
+ <div class="info">
+   <h2>$$TITLE_FIELD$$</h2>
+   <div class="details">
+     <h3>$$main_LABEL$$</h3>
+     <table>
+      <tr><th>$$artist_LABEL$$</th><td>$$artist$$</td></tr>
+      <tr><th>$$label_LABEL$$</th><td>$$label$$</td></tr>
+      <tr><th>$$release_LABEL$$</th><td>$$release$$</td></tr>
+      <tr><th>$$running_LABEL$$</th><td>$$running$$</td></tr>
+      <tr><th>$$genre_LABEL$$</th><td>$$genre$$</td></tr>
+     </table>
+
+     <h3>$$details_LABEL$$</h3>
+     <table>
+      <tr><th>$$producer_LABEL$$</th><td>$$producer$$</td></tr>
+      <tr><th>$$composer_LABEL$$</th><td>$$composer$$</td></tr>
+      <tr><th>$$comments_LABEL$$</th><td>$$comments$$</td></tr>
+     </table>
+   
+     <h3>$$tracks_LABEL$$</h3>
+     <table id="tracks">   
+       $$tracks_TABLE$$
+     </table>
+   </div>
+ </div>
+</div>
+[/ITEM]
+[FOOTER]
+<div class="spacer">&nbsp;</div>
+</div>
+<p id="note">$$GENERATOR_NOTE$$</p>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

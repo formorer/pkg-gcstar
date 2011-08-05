@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCfilms">
+	<lang>GCfilms</lang>
+
+	<options>
+
+		<defaults>
+			<image>no.png</image>
+			<groupby>serie</groupby>
+		</defaults>
+
+		<fields>
+			<id>id</id>
+			<title>title</title>
+			<cover>image</cover>
+			<url>webPage</url>
+			<play>trailer</play>
+			<results>
+				<field>title</field>
+				<field>date</field>
+				<field>director</field>
+				<field>actors</field>
+				<field>original</field>
+				<field>country</field>
+				<field>format</field>
+			</results>
+		</fields>
+
+		<overlay>
+			<image>dvd.png</image>
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>16</paddingRight>
+			<paddingTop>16</paddingTop>
+			<paddingBottom>2</paddingBottom>
+		</overlay>
+
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+		<values id="ages">
+			<value displayed="">0</value>
+			<value displayed="AgeUnrated">1</value>
+			<value displayed="AgeAll">2</value>
+			<value displayed="AgeParent">5</value>
+			<value displayed="10">10</value>
+			<value displayed="11">11</value>
+			<value displayed="12">12</value>
+			<value displayed="13">13</value>
+			<value displayed="14">14</value>
+			<value displayed="15">15</value>
+			<value displayed="16">16</value>
+			<value displayed="17">17</value>
+			<value displayed="18">18</value>
+			<value displayed="19">19</value>
+			<value displayed="20">20</value>
+			<value displayed="21">21</value>
+		</values>
+		<values id="seen">
+			<value displayed="SeenNo">0</value>
+			<value displayed="SeenYes">1</value>
+		</values>
+	</options>
+
+	
+	<groups>
+		<group id="main" label="Main"/>
+		<group id="info" label="General"/>
+		<group id="details" label="Details"/>
+	</groups>
+
+	<random>
+		<filter field="seen" comparison="eq" numeric="true" value="0" after="1"/>
+	</random>
+	
+	<fields lending="true" tags="true">
+		<field value="id"
+				type="number"
+				label="Id"
+				init=""
+				group="main"
+				imported="false"/>
+		<field value="title"
+				type="short text"
+				label="Title"
+				init="NewItem"
+				group="main"
+				imported="true"/>
+		<field value="date"
+				type="date"
+				label="Date"
+				init=""
+				group="info"
+				imported="true"
+				sorttype="date"/>
+		<field value="time"
+				type="short text"
+				label="Time"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="director"
+				type="short text"
+				label="Director"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="country"
+				type="short text"
+				label="Country"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="genre"
+				type="single list"
+				label="Genre"
+				init=",,,"
+				group="info"
+				imported="true"/>
+		<field value="image"
+				type="image"
+				label="Image"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="backpic"
+				type="image"
+				label="ContextImgBack"
+				init=""
+				group="info"
+				linkedto="image"
+				imported="true"/>
+		<field value="actors"
+				type="double list"
+				label="Actors"
+				label1="Actor"
+				label2="Role"				
+				init=""
+				group="info"
+				history="false"
+				imported="true"/>
+		<field value="original"
+				type="short text"
+				label="Original"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="synopsis"
+				type="long text"
+				label="Synopsis"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="webPage"
+				type="button"
+				format="url"
+				label="Url"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="seen"
+				type="yesno"
+				label="Seen"
+				init="0"
+				notnull="true"
+				group="details"
+				imported="false"/>
+		<field value="added"
+				type="date"
+				label="PanelAdded"
+				init="current"
+				group="details"
+				imported="false"/>
+		<field value="region"
+				type="history text"
+				label="Region"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="format"
+				type="history text"
+				label="Format"
+				init="DVD"
+				group="details"
+				imported="false"/>
+		<field value="number"
+				type="number"
+				label="Number"
+				init="1"
+				min="0"
+				max="9999"
+				group="details"
+				imported="false"/>
+		<field value="identifier"
+				type="number"
+				label="Identifier"
+				init="0"
+				min="0"
+				max="999999"
+				group="details"
+				imported="false"/>
+		<field value="place"
+				type="history text"
+				label="PanelLocation"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="rating"
+				type="number"
+				displayas="graphical"
+				label="PanelRating"
+				init="0"
+				min="0"
+				max="10"
+				group="details"
+				imported="true"/>
+		<field value="ratingpress"
+				type="number"
+				displayas="graphical"
+				label="PanelPressRating"
+				init="0"
+				min="0"
+				max="10"
+				group="info"
+				imported="true"/>
+		<field value="comment"
+				type="long text"
+				label="Comment"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="audio"
+				type="double list"
+				label="Audio"
+				label1="Audio"
+				label2="Encoding"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="subt"
+				type="single list"
+				label="Subtitles"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="age"
+				type="options"
+				label="MinimumAge"
+				init=""
+				values="ages"
+				separator="4"
+				group="info"
+				imported="true"/>
+		<field value="video"
+				type="history text"
+				label="Video"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="serie"
+				type="history text"
+				label="Serie"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="rank"
+				type="number"
+				label="Rank"
+				init=""
+				min="0"
+				max="999"
+				group="details"
+				imported="false"/>
+		<field value="trailer"
+				type="file"
+				format="video"
+				label="Trailer"
+				init=""
+				group="details"
+				imported="false"/>
+	</fields>
+
+	
+	<filters>
+		<group label="General">
+			<filter field="title" comparison="contain"/>
+			<filter field="original" comparison="contain"/>
+			<filter field="director" comparison="contain"/>
+			<filter field="genre" comparison="contain" quick="true"/>
+			<filter field="actors" comparison="contain"/>
+			<filter field="age" label="FilterAudienceAge" comparison="le" numeric="true" quick="true"/>
+			<filter field="date" comparison="range" numeric="true" preprocess="extractYear"/>
+		</group>
+		<group label="Languages">
+			<filter field="audio" comparison="contain"/>
+			<filter field="subt" comparison="contain"/>
+		</group>
+		<group label="Details">
+			<filter field="seen" comparison="eq" values="both" labeloff="FilterSeenNo" labelon="FilterSeenYes" quick="true"/>
+			<filter field="rating" comparison="ge" numeric="true" labelselect="FilterRatingSelect" quick="true"/>
+		</group>
+		<group label="PanelLending">
+			<filter field="borrower" comparison="eq" quick="true"/>
+		</group>
+	</filters>
+
+
+	<panels>
+		<panel name="form" label="PanelForm" editable="true">
+			<item type="line">
+				<item type="value" for="id" width="5" nomargin="true" />
+				<item type="value" for="title" expand="true" nomargin="true" />
+				<item type="special" for="searchButton" nomargin="true" />
+				<item type="special" for="refreshButton" nomargin="true" />
+			</item>
+			<item type="notebook" expand="true">
+				<item type="tab" value="info" title="General">
+					<item type="line">
+						<item type="label" for="original"/>
+						<item type="value" for="original" expand="true"/>
+					</item>
+					<item type="line">
+						<item type="value" for="image" width="130" height="170"/>
+						<item type="box" width="6"/>
+						<item type="table" rows="5" cols="2">
+							<item type="label" for="date" row="0" col="0"/>
+							<item type="value" for="date" row="0" col="1"/>
+							<item type="label" for="director" row="1" col="0"/>
+							<item type="value" for="director" row="1" col="1"/>
+							<item type="label" for="time" row="2" col="0"/>
+							<item type="value" for="time" row="2" col="1"/>
+							<item type="label" for="country" row="3" col="0"/>
+							<item type="value" for="country" row="3" col="1"/>
+							<item type="label" for="age" row="4" col="0"/>
+							<item type="value" for="age" row="4" col="1"/>
+						</item>
+					</item>
+					<item type="expander" title="Genre" collapsed="%genre%">
+						<item type="value" for="genre"/>
+					</item>
+					<item type="expander" title="Actors" collapsed="%actors%">
+						<item type="value" for="actors"/>
+					</item>
+					<item type="table" rows="1" cols="2" expand="true">
+						<item type="value" for="synopsis" row="0" col="0" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="details" title="Details">
+					<item type="table" rows="7" cols="3">
+						<item type="value" for="seen" row="0" col="0" colspan="2"/>
+						<item type="label" for="identifier" row="0" col="2"/>
+						<item type="value" for="identifier" row="0" col="3"/>
+						<item type="label" for="rating" row="1" col="0"/>
+						<item type="value" for="rating" row="1" col="1" colspan="1"/>
+						<item type="label" for="ratingpress" row="1" col="2"/>
+						<item type="value" for="ratingpress" row="1" col="3"/>
+						<item type="label" for="format" row="2" col="0"/>
+						<item type="value" for="format" row="2" col="1" expand="true"/>
+						<item type="label" for="number" row="2" col="2"/>
+						<item type="value" for="number" row="2" col="3" expand="true"/>
+						<item type="label" for="video" row="3" col="0"/>
+						<item type="value" for="video" row="3" col="1"/>
+						<item type="label" for="region" row="3" col="2"/>
+						<item type="value" for="region" row="3" col="3"/>
+						<item type="label" for="serie" row="4" col="0"/>
+						<item type="value" for="serie" row="4" col="1"/>
+						<item type="label" for="rank" row="4" col="2"/>
+						<item type="value" for="rank" row="4" col="3"/>
+						<item type="label" for="added" row="5" col="0"/>
+						<item type="value" for="added" row="5" col="1"/>
+						<item type="label" for="place" row="5" col="2"/>
+						<item type="value" for="place" row="5" col="3"/>
+						<item type="label" for="trailer" row="6" col="0"/>
+						<item type="line" row="6" col="1" colspan="3">
+						    <item type="value" for="trailer" expand="true" nomargin="true"/>
+						    <item type="launcher" for="trailer" nomargin="true"/>
+						    <item type="extractor" for="trailer" nomargin="true"/>
+					    </item>
+					</item>
+					<item type="expander" title="Languages" collapsed="=audio[@Audio@@Separator@%audio%]=^ - ^=subt[@Subtitles@@Separator@%subt%]=">
+						<item type="line" expand="true">
+							<item type="value" for="audio" expand="true"/>
+							<item type="value" for="subt" expand="true"/>
+						</item>
+					</item>
+					<item type="line" expand="true">
+						<item type="label" for="comment"/>
+						<item type="value" for="comment" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="lending" title="PanelLending">
+					<item type="table" rows="3" cols="3">
+						<item type="label" for="borrower" row="0" col="0"/>
+						<item type="value" for="borrower" row="0" col="1"/>
+						<item type="special" for="mailButton" row="0" col="2"/>
+						<item type="label" for="lendDate" row="1" col="0"/>
+						<item type="value" for="lendDate" row="1" col="1"/>
+						<item type="special" for="itemBackButton" row="1" col="2"/>
+					</item>
+					<item type="label" for="borrowings" align="left"/>
+					<item type="line" expand="true">
+						<item type="box" width="64"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="64"/>
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line" homogeneous="true">
+				<item type="value" for="webPage" expand="true"/>
+				<item type="special" for="deleteButton" expand="true"/>
+			</item>
+		</panel>
+
+		<panel name="compact" label="PanelCompact" editable="true">
+			<item type="line">
+				<item type="value" for="id" width="5"/>
+				<item type="value" for="title" expand="true"/>
+				<item type="special" for="searchButton"/>
+				<item type="special" for="deleteButton"/>
+			</item>
+			<item type="line">
+				<item type="box">
+					<item type="value" for="image" width="130" height="170"/>
+				</item>
+				<item type="box" expand="true">
+					<item type="table" for="title" rows="7" cols="8">
+						<item type="label" for="original" row="0" col="0"/>
+						<item type="value" for="original" row="0" col="1" colspan="4"/>
+						<item type="label" for="country" row="0" col="6"/>
+						<item type="value" for="country" row="0" col="7" width="18" expand="true"/>
+						<item type="label" for="date" row="1" col="0"/>
+						<item type="value" for="date" row="1" col="1" width="18" expand="true"/>
+						<item type="label" for="time" row="1" col="3"/>
+						<item type="value" for="time" row="1" col="4" width="8" expand="true"/>
+						<item type="label" for="age" row="1" col="6"/>
+						<item type="value" for="age" row="1" col="7"/>
+						<item type="label" for="director" row="2" col="0"/>
+						<item type="value" for="director" row="2" col="1" width="18"/>
+						<item type="label" for="ratingpress" row="2" col="3"/>
+						<item type="value" for="ratingpress" row="2" col="4"/>
+						<item type="label" for="video" row="2" col="6"/>
+						<item type="value" for="video" row="2" col="7" width="8"/>
+						<item type="label" for="serie" row="3" col="0"/>
+						<item type="value" for="serie" row="3" col="1" width="8"/>
+						<item type="label" for="rank" row="3" col="3"/>
+						<item type="value" for="rank" row="3" col="4"/>
+						<item type="label" for="place" row="3" col="6"/>
+						<item type="value" for="place" row="3" col="7" width="8"/>
+						<item type="label" for="format" row="4" col="0"/>
+						<item type="value" for="format" row="4" col="1" width="8"/>
+						<item type="label" for="number" row="4" col="3"/>
+						<item type="value" for="number" row="4" col="4"/>
+						<item type="label" for="region" row="4" col="6"/>
+						<item type="value" for="region" row="4" col="7" width="8"/>
+						<item type="label" for="identifier" row="5" col="0"/>
+						<item type="value" for="identifier" row="5" col="1"/>
+						<item type="value" for="seen" row="5" col="6" colspan="2"/>
+						<item type="label" for="rating" row="5" col="3"/>
+						<item type="value" for="rating" row="5" col="4"/>
+						<item type="label" for="trailer" row="6" col="0"/>
+						<item type="value" for="trailer" row="6" col="1" colspan="4" expand="true"/>
+						<item type="label" for="added" row="6" col="6"/>
+						<item type="value" for="added" row="6" col="7"/>
+					</item>
+					<item type="expander" title="Genre" collapsed="%genre%">
+						<item type="value" for="genre"/>
+					</item>
+					<item type="expander" title="Languages" collapsed="=audio[@Audio@@Separator@%audio%]=^ - ^=subt[@Subtitles@@Separator@%subt%]=">
+						<item type="line" expand="true">
+							<item type="value" for="audio"/>
+							<item type="value" for="subt"/>
+						</item>
+					</item>
+					<item type="expander" title="Actors" collapsed="%actors%">
+						<item type="value" for="actors"/>
+					</item>
+				</item>
+			</item>
+			<item type="table" rows="2" cols="2" expand="true">
+				<item type="label" for="synopsis" row="0" col="0"/>
+				<item type="value" for="synopsis" row="0" col="1" expand="true"/>
+				<item type="label" for="comment" row="1" col="0"/>
+				<item type="value" for="comment" row="1" col="1" expand="true"/>
+			</item>
+			<item type="line">
+				<item type="frame" value="lending" title="PanelLending" row="4" col="4" expand="true" nomargin="true">
+					<item type="label" for="borrower" row="0" col="0"/>
+					<item type="value" for="borrower" row="0" col="1"/>
+					<item type="special" for="mailButton" row="0" col="2"/>
+					<item type="label" for="lendDate" row="1" col="0"/>
+					<item type="value" for="lendDate" row="1" col="1"/>
+					<item type="special" for="itemBackButton" row="1" col="2"/>
+					<item type="label" for="borrowings" row="2" col="0" colspan="1" align="top"/>
+					<item type="value" for="borrowings" row="2" col="1" colspan="2"/>
+				</item>
+				<item type="box">
+					<item type="value" for="webPage" place="end" width="200"/>
+				</item>
+			</item>
+		</panel>
+
+		<panel name="readonly" label="PanelReadOnly" editable="false">
+			<item type="table" rows="2" cols="3">
+				<item type="value" for="title" style="header" row="0" col="0" colspan="3" expand="true"/>
+				<item type="box" row="1" col="0" width="100" expand="false" style="page"/>
+				<item type="value" for="original" style="subheader" row="1" col="1" expand="true"/>
+				<item type="box" row="1" col="2" width="100" expand="false" style="box">
+					<item type="formatted" name="fullrating" value="%rating%/10" style="box" nomargin="true"/>
+					<item type="value" for="seen" style="box" nomargin="true" values="seen"/>
+				</item>
+			</item>
+			<item type="line">
+				<item type="box" width="150" style="page">
+					<item type="value" for="image"/>
+				</item>
+				<item type="box" expand="true">
+					<item type="table" rows="6" cols="2" expand="true">
+						<item type="label" for="date" row="0" col="0"/>
+						<item type="value" for="date" row="0" col="1" expand="true"/>
+						<item type="label" for="director" row="1" col="0"/>
+						<item type="value" for="director" row="1" col="1" expand="true"/>
+						<item type="label" for="time" row="2" col="0"/>
+						<item type="value" for="time" row="2" col="1" expand="true"/>
+						<item type="label" for="country" row="3" col="0"/>
+						<item type="value" for="country" row="3" col="1" expand="true"/>
+						<item type="label" for="age" row="4" col="0"/>
+						<item type="value" for="age" row="4" col="1" expand="true" values="ages"/>
+						<item type="label" for="genre" row="5" col="0"/>
+						<item type="value" for="genre" flat="true" row="5" col="1" expand="true"/>
+						<item type="label" for="ratingpress" row="6" col="0"/>
+						<item type="formatted" name="fullRatingpress" value="%ratingpress%/10" row="6" col="1"/>
+					</item>
+				</item>
+			</item>
+			<item type="box">
+				<item type="table" rows="4" cols="2" expand="true">
+					<item type="label" for="actors" row="1" col="0"/>
+					<item type="value" for="actors" row="1" col="1" expand="true" flat="true" height="100"/>
+					<item type="label" for="synopsis" row="2" col="0"/>
+					<item type="value" for="synopsis" row="2" col="1" height="100" expand="true"/>
+					<item type="label" for="comment" row="3" col="0"/>
+					<item type="value" for="comment" row="3" col="1" height="100" expand="true"/>
+				</item>
+				<item type="expander" title="Details">
+					<item type="table" rows="8" cols="2" expand="true">
+						<item type="label" for="format" row="0" col="0"/>
+						<item type="formatted" name="fullformat" value="%format% (%number%)" row="0" col="1" expand="true"/>
+						<item type="label" for="region" row="1" col="0"/>
+						<item type="value" for="region" row="1" col="1" expand="true"/>
+						<item type="label" for="place" row="2" col="0"/>
+						<item type="value" for="place" row="2" col="1" expand="true"/>
+						<item type="label" for="identifier" row="3" col="0"/>
+						<item type="value" for="identifier" row="3" col="1" expand="true"/>
+						<item type="label" for="serie" row="4" col="0"/>
+						<item type="value" for="serie" row="4" col="1" expand="true"/>
+						<item type="label" for="audio" row="5" col="0"/>
+						<item type="value" for="audio" flat="true" row="5" col="1" expand="true"/>
+						<item type="label" for="subt" row="6" col="0"/>
+						<item type="value" for="subt" flat="true" row="6" col="1" expand="true"/>
+						<item type="label" for="video" row="7" col="0"/>
+						<item type="value" for="video" row="7" col="1" expand="true"/>
+					</item>
+				</item>
+				<item type="expander" title="PanelLending">
+					<item type="table" rows="4" cols="2" expand="true">
+						<item type="label" for="borrower" row="0" col="0"/>
+						<item type="value" for="borrower" row="0" col="1" expand="true"/>
+						<item type="label" for="lendDate" row="1" col="0"/>
+						<item type="value" for="lendDate" row="1" col="1" expand="true"/>
+						<item type="line" row="2" col="0" colspan="2" height="12" expand="true"/>
+						<item type="line"  row="3" col="0" colspan="2" expand="true">
+							<item type="box" width="50" style="page"/>
+							<item type="value" for="borrowings" expand="true"/>
+							<item type="box" width="50" style="page"/>
+						</item>
+					</item>
+				</item>
+				<item type="expander" title="PanelTags">
+					<item expand="true" for="tags" type="value" />
+					<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+				</item>
+			</item>
+		</panel>
+	</panels>
+
+</collection>

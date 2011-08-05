@@ -1,0 +1,253 @@
+style "gcStocks"
+{
+  # Redefine used stock items. Each entry contains the stock item
+  # name and the file name (it should be in the same directory as
+  # this file.
+  stock["gtk-preferences"] = 
+  {
+  	{"preferences.png"}
+  }
+  stock["gtk-properties"] = 
+  {
+  	{"properties.png"}
+  }
+  stock["gtk-find"] = 
+  {
+  	{"find.png"}
+  }
+  stock["gtk-new"] = 
+  {
+  	{"new.png"}
+  }
+  stock["gtk-home"] = 
+  {
+  	{"home.png"}
+  }
+  stock["gtk-save"] = 
+  {
+  	{"save.png"}
+  }
+  stock["gtk-save-as"] = 
+  {
+  	{"saveas.png"}
+  }
+  stock["gtk-open"] = 
+  {
+  	{"open.png"}
+  }
+  stock["gtk-directory"] = 
+  {
+  	{"paths.png"}
+  }
+  stock["gtk-refresh"] = 
+  {
+  	{"refresh.png"}
+  }
+  stock["gtk-select-color"] = 
+  {
+  	{"display.png"}
+  }
+  stock["gtk-execute"] = 
+  {
+  	{"tonight.png"}
+  }
+  stock["gtk-quit"] = 
+  {
+  	{"quit.png"}
+  }
+  stock["gtk-help"] = 
+  {
+  	{"help.png"}
+  }  
+  stock["gtk-delete"] = 
+  {
+  	{"delete.png"}
+  }
+  stock["gtk-ok"] =
+  {
+  	{"ok.png"}
+  }
+  stock["gtk-yes"] =
+  {
+  	{"ok.png"}
+  }
+  stock["gtk-cancel"] =
+  {
+  	{"cancel.png"}
+  }
+  stock["gtk-no"] =
+  {
+  	{"cancel.png"}
+  }
+  stock["gtk-network"] =
+  {
+  	{"internet.png"}
+  }
+  stock["gtk-clear"] =
+  {
+  	{"clear.png"}
+  }
+  stock["gtk-convert"] =
+  {
+  	{"import.png"}
+  }
+  stock["gtk-paste"] =
+  {
+  	{"export.png"}
+  }
+  stock["gtk-cdrom"] =
+  {
+  	{"cdrom.png"}
+  }
+  stock["gtk-harddisk"] =
+  {
+  	{"harddisk.png"}
+  }
+  stock["gtk-add"] =
+  {
+  	{"add.png"}
+  }
+  stock["gtk-remove"] =
+  {
+  	{"remove.png"}
+  }
+  stock["gtk-sort-descending"] =
+  {
+  	{"sortdown.png"}
+  }
+  stock["gtk-sort-ascending"] =
+  {
+  	{"sortup.png"}
+  }
+  stock["gtk-go-up"] =
+  {
+    {"arrowup.png"}
+  }
+  stock["gtk-go-down"] =
+  {
+    {"arrowdown.png"}
+  }
+  stock["gtk-go-back"] =
+  {
+    {"arrowleft.png"}
+  }
+  stock["gtk-go-forward"] =
+  {
+    {"arrowright.png"}
+  }
+}
+
+style "galaxy-default"
+{
+    GtkButton::default_border         = {1, 2, 1, 2}
+    GtkButton::default_outside_border = {1, 2, 1, 2}
+    GtkWidget::interior_focus         = 1
+    GtkButton::default_spacing        = 6
+    GtkCheckButton::indicator_size    = 15
+    GtkPaned::handle_size             = 6
+    GtkRange::trough_border           = 0
+    GtkRange::slider_width            = 15
+    GtkRange::stepper_size            = 15
+    GtkRange::stepper_spacing         = 0
+    GtkScrollbar::min_slider_length   = 20
+    GtkTreeView::even_row_color       = "#FFFFFF"
+    GtkTreeView::odd_row_color        = "#EFEFEF"
+
+    fg[NORMAL]        = "#000000"
+    fg[ACTIVE]        = "#000000"
+    fg[INSENSITIVE]   = "#949694"
+    fg[PRELIGHT]      = "#000000"
+    fg[SELECTED]      = "#FFFFFF"
+
+    bg[ACTIVE]        = "#CECECE"
+    bg[NORMAL]        = "#E6E7E6"
+    bg[INSENSITIVE]   = "#CECECE"
+    bg[PRELIGHT]      = "#EFEFEF"
+    bg[SELECTED]      = "#21459C"
+
+    base[NORMAL]      = "#ffffff"
+    base[ACTIVE]      = "#7382BD"
+    base[INSENSITIVE] = "#E6E7E6"
+    base[PRELIGHT]    = "#EFEFEF"
+    base[SELECTED]    = "#2145AC"
+
+    text[NORMAL]      = "#000000"
+    text[ACTIVE]      = "#ffffff"
+    text[PRELIGHT]    = "#ffffff"
+    text[SELECTED]    = "#ffffff"
+    text[INSENSITIVE] = "#949694"
+
+    engine "galaxy"
+    {
+    }
+}
+
+
+style "galaxy-button" = "galaxy-default"
+{
+  xthickness = 4
+  ythickness = 4
+}
+
+style "galaxy-thin" = "galaxy-default"
+{
+  xthickness = 1
+  ythickness = 1
+}
+
+style "galaxy-verythin" = "galaxy-thin"
+{
+  xthickness = 0
+  ythickness = 0
+}
+
+
+style "galaxy-menu" = "galaxy-default"
+{
+  fg[PRELIGHT]  = "#ffffff"
+}
+
+style "galaxy-bar" = "galaxy-menu"
+{
+  xthickness = 1
+  ythickness = 1
+}
+
+
+style "galaxy-tasklist" = "galaxy-default"
+{
+  xthickness = 2
+  ythickness = 2
+  GtkWidget::focus-line-width = 0
+  GtkWidget::focus-padding = 0
+}
+
+style "galaxy-comboboxtext" = "galaxy-default"
+{
+  text[PRELIGHT] = "#000000"
+}
+
+style "galaxy-tooltips" = "galaxy-default"
+{
+  bg[NORMAL] = "#ffffdc"
+}
+
+class "GtkWidget" style "galaxy-default"
+class "ECanvas" style "galaxy-thin"
+class "GtkButton" style "galaxy-button"
+widget_class "*Notebook.GtkHBox.GtkButton" style "galaxy-verythin"
+class "EComboButton" style "galaxy-thin"
+widget_class "*GtkComboBox.GtkCellView" style "galaxy-comboboxtext"
+widget_class "*.EShortcutsView.GtkButton" style "galaxy-thin"
+widget_class "*.GtkHTMLEmbedded.*GtkButton" style "galaxy-thin"
+widget_class "*Tree*GtkButton" style "galaxy-verythin"
+widget_class "*List*GtkButton" style "galaxy-verythin"
+widget_class "*EphyBookmarksEditor*GtkButton" style "galaxy-verythin"
+class "GtkProgressBar" style "galaxy-bar"
+widget_class "*MenuItem*" style "galaxy-menu"
+widget_class "*.PanelApplet.*" style "galaxy-tasklist"
+widget "*.tasklist-button" style "galaxy-tasklist"
+class "GtkNotebook" style "galaxy-thin"
+widget "gtk-tooltips" style "galaxy-tooltips"
+widget_class "*GtkPathBar*" style "galaxy-thin"
+class "GtkImage" style "gcStocks"

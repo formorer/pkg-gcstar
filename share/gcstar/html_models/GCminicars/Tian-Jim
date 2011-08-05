@@ -1,0 +1,279 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<!--
+  Template made by Tian. It is based on design of Tian's website:
+  http://www.c-sait.net/
+-->
+<head>
+ <title>$$PAGETITLE$$</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+[JAVASCRIPT]
+ <script type="text/javascript">
+<!--
+expandTooltip="Afficher les informations de la Miniature";
+collapseTooltip="Masquer les informations de la Miniature";
+function prn(s)
+{
+ document.write(s)
+}
+function getE(id)
+{
+ return document.getElementById(id)
+}
+function expcolAll(dir,rowNum)
+{
+ for(x=0;x < rowNum;x++) {
+  try {
+   getE('minicar'+x).style.display=dir
+   if(dir=="none") getE('switch'+x).innerHTML="+"
+   else getE('switch'+x).innerHTML="&ndash;"
+  }
+  catch(err) { }
+ }
+}
+function toggleDisplay(id,swt)
+{
+ if((getE(id).style.display=="")||(getE(id).style.display=="none")) {
+  getE(id).style.display="block"
+  getE(swt).innerHTML="&ndash;"
+  getE(swt).name=collapseTooltip
+ } else {
+  getE(id).style.display="none"
+  getE(swt).innerHTML="+"
+  getE(swt).name=expandTooltip
+ }
+ return false
+}
+function writeExpandControl(elementId,collapse)
+{
+ prn("<a href=\"#\" class=\"minicar-expand\" id=\"switch"+elementId+"\" onclick=\"return toggleDisplay('minicar"+elementId+"','switch"+elementId+"');\" title=\""+((collapse) ? expandTooltip : collapseTooltip)+"\">"+((collapse) ? "+" : "&ndash;")+"</a>")
+}
+function searchMinicars(text)
+{
+ getE("collapseAll").click()
+ alldt=document.getElementsByTagName("dt")
+ alldd=document.getElementsByTagName("dd")
+ nb=alldt.length
+ re=new RegExp(text,"i")
+ for(i=0;i<nb;i++) {
+  s1=alldt[i].getElementsByTagName("a")[1].innerHTML
+  s2=alldd[i].innerHTML
+  res=0
+  if(getE("searchType").value=="all") res=(re.test(s1)||re.test(s2))
+  else res=re.test(s1)
+  if(res) st="block"
+  else st="none"
+  alldt[i].style.display=st
+  alldd[i].style.display=st
+ }
+}
+-->
+ </script>
+[/JAVASCRIPT]
+ <style type="text/css">
+   body {
+   background:#f7f8ff;
+  }
+  h1 {
+   font-weight:bold;
+   font-size:160%;
+   text-align:center;
+   margin-bottom:1em;
+  }
+  #top {
+   color:#624a66 ! important;
+   background:transparent ! important;
+  }
+  form {
+   text-align:center;
+   border:1px solid #c0c0c0;
+   background:#e2e2df;
+   margin:0 3em;
+   padding:0.5em;
+  }
+  input,select {
+   border:2px solid #aaaaaa;
+   background:purple;
+   color:white;
+   margin:0 0.5em;
+  }
+  input:focus, input.submit:hover {
+   background:#f3e3f9;
+   color:black;
+  }
+  input.submit {
+   cursor:pointer;
+  }
+  #links {
+   margin-top:0.5em;
+   text-align:center;
+   font-size:120%;
+   color:#aaaaaa;
+  }
+  .letter {
+   padding:0 0.5em;
+  }
+  img {
+   float:left;
+   margin:0 1em 1em 1em;
+   border:1px solid #aaaaaa;
+  }
+  dt {
+   color:#aaaaaa;
+   font-size:120%;
+   margin:0em 0.5em;
+   clear:both;
+  }
+  dd {
+   margin:0.5em 2em 1em;
+   border-left:1px solid #2e3766;
+   border-bottom:1px solid #2e3766;
+  }
+  table {
+   font-size:90%;
+   margin:0 1em;
+   border:1px solid black;
+   width:60%;
+  }
+  th {
+   font-weight:bold;
+   text-align:left;
+   width:25%;
+  }
+  .tr1 {
+   background:#d4cce0;
+  }
+  .tr2 {
+   background:#c0b9cc;
+  }
+  a {
+   color:#2e3766;
+   background:transparent;
+   text-decoration:none;
+  }
+  a:hover, a:focus {
+   background-color:#e8e8ef;
+  }
+  .topl {
+   color:#aaaaaa;
+   font-size:90%;
+  }
+  .minicar-expand {
+   width:1em;
+   text-align:center;
+   font-size:120%;
+   float:left;
+   margin:0.2em;
+  }
+  p, #note {
+   background:white;
+   border:2px solid purple;
+   clear:left;
+   margin:1em 2em;
+   padding:0.5em;
+  }
+  .borrowed0 {
+   font-size:80%;
+   color:#c0b9cc;
+   background:transparent;
+   text-decoration:none;
+   display:block;
+  }
+  .borrowed1 {
+   font-size:80%;
+   color:purple;
+   background:transparent;
+   text-decoration:none;
+   display:block;
+  }
+  #note {
+  	text-align:center;
+  }
+  #note a {
+    text-decoration:underline;
+  }
+ </style>
+</head>
+<body>
+ <h1><a id="top">$$PAGETITLE$$</a></h1>
+[JAVASCRIPT]
+ <form onsubmit="searchMinicars(getE('searchText').value); return false" action="">
+  <div>
+  <input type="text" id="searchText" title="$$FORM_INPUT$$" />
+  <select id="searchType">
+   <option value="name">$$FORM_SEARCH1$$</option>
+   <option value="all">$$FORM_SEARCH2$$</option>
+  </select>
+  <input type="button" class="submit" value="$$FORM_SEARCHBUTTON$$" title="$$FORM_SEARCHTITLE$$" onclick="searchMinicars(getE('searchText').value)" />
+  <input type="button" class="submit" value="$$FORM_ALLBUTTON$$" title="$$FORM_ALLTITLE$$" onclick="searchMinicars('')" />
+  <br />
+  <br />
+  <input  type="button" class="submit" value="$$FORM_EXPAND$$" onclick="expcolAll('block','$$TOTALNUMBER$$')" title="$$FORM_EXPANDTITLE$$" />
+  <input  type="button" id="collapseAll" class="submit" value="$$FORM_COLLAPSE$$" onclick="expcolAll('none','$$TOTALNUMBER$$')" title="$$FORM_COLLAPSETITLE$$" />
+  </div>
+ </form>
+[/JAVASCRIPT]
+ <div id="links">| _ | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z |</div>
+ <dl>
+[/HEADER]
+[ITEM]
+  <dt>
+[JAVASCRIPT]
+   <script type="text/javascript">writeExpandControl('$$IDX$$',1)</script>
+[/JAVASCRIPT]
+   <a id="minicarlink_$$IDX$$" href="$$URL$$">$$name$$</a> | <a class="topl" href="#top">($$TOP$$)</a>   
+   <span class="borrowed$$borrower_FLAG$$">$$borrower_YESNO$$$$borrower_OREMPTY$$</span>
+  </dt>
+  <dd>
+   <div id="minicar$$IDX$$" style="display:none;">
+    <img src="$$picture$$" alt="$$name$$" title="$$name$$" height="160" />		
+	<table>
+     <tr class="tr1"><th>$$scale_LABEL$$</th><td>$$scale$$</td></tr>
+     <tr class="tr2"><th>$$manufacturer_LABEL$$</th><td>$$manufacturer$$</td></tr>
+     <tr class="tr1"><th>$$type1_LABEL$$</th><td>$$type1$$</td></tr>
+     <tr class="tr2"><th>$$constructor_LABEL$$</th><td>$$constructor$$</td></tr>
+     <tr class="tr1"><th>$$modele_LABEL$$</th><td>$$modele$$</td></tr>
+     <tr class="tr2"><th>$$version_LABEL$$</th><td>$$version$$</td></tr>
+     <tr class="tr1"><th>$$color_LABEL$$</th><td>$$color$$</td></tr>
+	 <tr class="tr2"><th>$$pub_LABEL$$</th><td>$$pub$$</td></tr>
+     <tr class="tr1"><th>$$year_LABEL$$</th><td>$$year$$</td></tr>
+	 <tr class="tr2"><th>$$reference_LABEL$$</th><td>$$reference$$</td></tr>
+	 <tr class="tr1"><th>$$rating1_LABEL$$</th><td>$$rating1$$/10</td></tr>	 
+    </table>
+    <p><em>$$comments1$$</em></p>
+   </div>
+  </dd>
+[/ITEM]
+[FOOTER]
+ </dl>
+ <div id="note">$$GENERATOR_NOTE$$</div>
+</body>
+</html>
+[/FOOTER]
+[POST]
+
+  my %letters = ();
+  my $idx = 0;
+
+  foreach (@items)
+  {
+    my $name = $self->{options}->{originalList}->transformValue($_->{name}, 'name');
+    my $firstLetter = uc(substr($name, 0, 1));
+    $firstLetter =~ s/[^A-Z]/_/;
+    if (!$letters{$firstLetter})
+    {
+    	$body =~ s/<a id="minicarlink_$idx"/<a id="$firstLetter"/;
+        $letters{$firstLetter} = 1;
+    }
+    $idx++;
+  }
+
+  foreach (keys %letters)
+  {
+    $header =~ s/\| $_ \|/| <a class="letter" href="#$_">$_<\/a> |/;
+  }
+  $header =~ s/\| ([^<|]) /| <span class="letter">$1<\/span> /g;
+  #$header =~ s/\| ([^<]) \|/| <span class="letter">$1<\/span> |/g;
+[/POST]

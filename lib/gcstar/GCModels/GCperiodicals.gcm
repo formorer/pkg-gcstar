@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCperiodicals">
+
+	<lang>GCperiodicals</lang>
+  
+	<options>
+		<defaults>
+			<image>no.png</image>
+		</defaults>
+		<fields>
+			<cover>gcsfield6</cover>
+			<id>gcsautoid</id>
+			<play></play>
+			<title>gcsfield1</title>
+			<url></url>
+			<search>
+				<field>gcsfield1</field>
+			</search>
+			<results>
+				<field>gcsfield1</field>
+			</results>
+		</fields>
+
+		<overlay>
+                        <image>subtle.png</image>
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>11</paddingRight>
+			<paddingTop>12</paddingTop>
+			<paddingBottom>0</paddingBottom>
+		</overlay>
+	</options>
+
+  <fields lending="false" tags="false">
+    <field label="Title" group="main" init="NewItem"  type="short text" value="gcsfield1" />
+    <field label="Periodical" group="main" init="" type="history text" value="gcsfield2" />
+    <field label="Number" group="main" init="" type="short text" value="gcsfield3" />
+    <field label="Date" group="main" init="" type="date" value="gcsfield4" />
+    <field label="Subject" flat="true" group="main" history="true" init="" type="single list" value="gcsfield5" />
+    <field default="view" label="Cover" group="main" init="" type="image" value="gcsfield6" />
+    <field label="Articles" history="false" group="main" init="" label1="Article" label2="Page" label3="Résumé" type="triple list" value="gcsfield7" />
+    <field label="" group="" imported="false" init="" type="number" value="gcsautoid" />
+  </fields>
+  <filters>
+  </filters>
+  <groups>
+    <group id="main" label="General" />
+  </groups>
+  <panels>
+    <panel editable="true" label="PanelForm" name="form">
+      <item type="line">
+        <item expand="true" for="gcsfield1" type="value" />
+      </item>
+      <item expand="true" type="box">
+        <item type="line">
+          <item for="gcsfield6" height="150" type="value" width="150" />
+          <item cols="2" type="frame">
+            <item col="0" for="gcsfield2" row="0" type="label" />
+            <item col="1" colspan="1" expand="true" for="gcsfield2" row="0" type="value" />
+            <item col="0" for="gcsfield3" row="1" type="label" />
+            <item col="1" colspan="1" expand="true" for="gcsfield3" row="1" type="value" />
+            <item col="0" for="gcsfield4" row="2" type="label" />
+            <item col="1" colspan="1" expand="true" for="gcsfield4" row="2" type="value" />
+            <item col="0" for="gcsfield7" row="3" type="label" />
+            <item col="1" colspan="1" expand="true" for="gcsfield7" row="3" type="value" />
+          </item>
+        </item>
+        <item col="0" collapsed="%gcsfield5%" colspan="3" row="0" title="Subject" type="expander">
+            <item for="gcsfield5" type="value" />
+        </item>
+      </item>
+      <item type="line">
+        <item expand="true" for="deleteButton" type="special" />
+      </item>
+    </panel>
+    <panel editable="false" label="PanelReadOnly" name="readonly">
+      <item type="line">
+        <item col="0" colspan="3" expand="true" for="gcsfield1" row="0" style="header" type="value" />
+      </item>
+      <item type="line">
+        <item style="page" type="box" width="150">
+          <item for="gcsfield6" type="value" width="140" />
+        </item>
+        <item expand="true" type="box">
+          <item cols="2" expand="true" type="table">
+            <item col="0" for="gcsfield2" row="0" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield2" row="0" type="value" />
+            <item col="0" for="gcsfield3" row="1" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield3" row="1" type="value" />
+            <item col="0" for="gcsfield4" row="2" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield4" row="2" type="value" />
+            <item col="0" for="gcsfield7" row="3" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield7" row="3" type="value" />
+          </item>
+        </item>
+      </item>
+      <item cols="2" expand="true" rows="1" type="table">
+        <item col="0" for="gcsfield5" row="0" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield5" row="0" type="value" />
+      </item>
+    </panel>
+  </panels>
+  <random></random>
+</collection>

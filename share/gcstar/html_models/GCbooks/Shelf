@@ -1,0 +1,12 @@
+<metamodel>
+	<model>Shelf</model>
+	<fields>
+		<field>authors</field>
+		<field>publisher</field>
+		<field>publication</field>
+		<field>description</field>
+		<field>format</field>
+		<field>rating</field>
+		<field>acquisition</field>
+	</fields>
+</metamodel>

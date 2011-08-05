@@ -1,0 +1,151 @@
+[HEADER]
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DVD Profiler Version 2.3.1 Collection Export -->
+<Collection>
+[/HEADER]
+[ITEM]
+<DVD>
+  <ID>${id}</ID>
+  <UPC></UPC>
+  <ProfileTimestamp></ProfileTimestamp>
+  <Title>${title}</Title>
+  <SortTitle>${title}</SortTitle>
+  <Description></Description>
+  <Regions></Regions>
+  <CollectionType></CollectionType>
+  <CollectionNumber></CollectionNumber>
+  <Locks>
+    <Entire>False</Entire>
+    <Covers>False</Covers>
+    <Title>False</Title>
+    <Credits>False</Credits>
+    <DiscInformation>False</DiscInformation>
+    <Overview>False</Overview>
+    <Regions>False</Regions>
+    <AudioSubtitles>False</AudioSubtitles>
+    <Genres>False</Genres>
+    <SRP>False</SRP>
+    <Studios>False</Studios>
+  </Locks>
+  <Rating>U</Rating>
+  <ProductionYear>${year}</ProductionYear>
+  <Released>${date}</Released>
+  <RunningTime>${length}</RunningTime>
+  <CaseType></CaseType>
+  <Genres>
+  [LOOP genre]
+    <Genre>$$</Genre>
+  [/LOOP]
+  </Genres>
+  <Format>
+    <FormatAspectRatio></FormatAspectRatio>
+    <FormatVideoStandard></FormatVideoStandard>
+    <FormatLetterBox></FormatLetterBox>
+    <FormatPanAndScan></FormatPanAndScan>
+    <FormatFullFrame></FormatFullFrame>
+    <Format16X9></Format16X9>
+    <FormatDualSided></FormatDualSided>
+    <FormatDualLayered></FormatDualLayered>
+    <FormatFlipper></FormatFlipper>
+  </Format>
+  <Features>
+    <FeatureSceneAccess>True</FeatureSceneAccess>
+    <FeatureCommentary>True</FeatureCommentary>
+    <FeatureTrailer>False</FeatureTrailer>
+    <FeaturePhotoGallery>False</FeaturePhotoGallery>
+    <FeatureDeletedScenes>False</FeatureDeletedScenes>
+    <FeatureMakingOf>True</FeatureMakingOf>
+    <FeatureProductionNotes>True</FeatureProductionNotes>
+    <FeatureGame>False</FeatureGame>
+    <FeatureDVDROMContent>True</FeatureDVDROMContent>
+    <FeatureMultiAngle>False</FeatureMultiAngle>
+    <FeatureMusicVideos>False</FeatureMusicVideos>
+    <FeatureClosedCaptioned>False</FeatureClosedCaptioned>
+    <FeatureTHXCertified>False</FeatureTHXCertified>
+  </Features>
+  <Studios>
+    <Studio></Studio>
+  </Studios>
+  <Audio>
+  [LOOP audio]
+    <AudioFormat>
+      <AudioLanguage>$$</AudioLanguage>
+      <AudioCompression></AudioCompression>
+      <AudioChannels></AudioChannels>
+    </AudioFormat>
+  [/LOOP]
+  </Audio>
+  <Subtitles>
+  [LOOP subt]
+    <Subtitle>$$</Subtitle>
+  [/LOOP]
+  </Subtitles>
+  <Actors>
+  [LOOP actors]
+    [SPLIT value=$$ sep= ]
+    <Actor>
+      <FirstName>$0</FirstName>
+      <LastName>$1$2</LastName>
+      <Role></Role>
+    </Actor>
+    [/SPLIT]
+  [/LOOP]
+  </Actors>
+  <Credits>
+    <Credit>
+    [SPLIT value=director sep= ]
+      <FirstName>$0</FirstName>
+      <LastName>$1$2</LastName>
+      <CreditType>Direction</CreditType>
+      <CreditSubtype>Director</CreditSubtype>
+    [/SPLIT]
+    </Credit>
+  </Credits>
+  <Review>
+    <ReviewFilm>${rating}</ReviewFilm>
+    <ReviewVideo></ReviewVideo>
+    <ReviewAudio></ReviewAudio>
+    <ReviewExtras></ReviewExtras>
+  </Review>
+  <SRPInfo>
+    <SRP></SRP>
+    <SRPCurrencyID></SRPCurrencyID>
+    <SRPCurrencyName></SRPCurrencyName>
+  </SRPInfo>
+  <PurchaseInfo>
+    <PurchasePriceInfo>
+      <PurchasePriceCurrencyID></PurchasePriceCurrencyID>
+      <PurchasePriceCurrencyName></PurchasePriceCurrencyName>
+    </PurchasePriceInfo>
+    <PurchaseDate></PurchaseDate>
+  </PurchaseInfo>
+  <Events>
+  [LOOP history]
+    <Event>
+    [SPLIT value=$$ sep=:]
+      <User>
+        <FirstName>$0</FirstName>
+        <LastName></LastName>
+        <PhoneNumber></PhoneNumber>
+        <EmailAddress></EmailAddress>
+      </User>
+      <EventType>Borrowing</EventType>
+      <Timestamp>$2</Timestamp>
+    [/SPLIT]
+    </Event>
+  [/LOOP]
+  </Events>
+  <LoanInfo>
+    <LoanedTo>${borrower}</LoanedTo>
+    <LoanedDue>${lendDate}</LoanedDue>
+  </LoanInfo>
+  <Tags>
+  </Tags>
+  <Overview>${synopsis}</Overview>
+  <EasterEggs></EasterEggs>
+  <LastEdited></LastEdited>
+</DVD>
+[/ITEM]
+[FOOTER]
+</Collection>
+[/FOOTER]

@@ -1,0 +1,118 @@
+[HEADER]
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<!-- ------------------------------------------------------------------------------------------------
+	rootII 2005
+	Template for HTML export of a GCfilms collection
+	------------------------------------------------------------------------------------------------ -->
+<head>
+	<meta content="text/html; charset=UTF-8"  http-equiv="content-type">
+	<title>$$PAGETITLE$$</title>
+[JAVASCRIPT]
+	<script type="text/javascript" language="javascript1.2"><!--
+		var	alreadyOpennedLayer="";
+		function hidelayer(id){
+			if  (document.getElementById(id).style.visibility=="visible") 
+				document.getElementById(id).style.visibility='hidden';
+		}
+		function showlayer(id){
+			if  (document.getElementById(id) && document.getElementById(id).style.visibility!='visible') 
+			{
+				if (alreadyOpennedLayer!="") hidelayer(alreadyOpennedLayer);
+				alreadyOpennedLayer=id;				
+				document.getElementById(id).style.visibility='visible';
+			}
+		}
+//--></script>
+[/JAVASCRIPT]
+<style type="text/css" media="screen">
+	body {
+		font-family:helvetica, verdana, arial;
+		color:rgb(253, 253, 253); 
+		background-color:rgb(204, 204, 204); 
+		font-family:helvetica, verdana, arial; 
+		font-size:100%;
+	}
+	.synopsis { 
+		background-color:rgb(174,174,174 ); 
+		border:1px none #000000;
+		text-align:justify;
+		font-family:helvetica, verdana, arial; 
+		font-size:90%;
+		visibility:hidden; 
+		position:absolute;
+		width:80%; 
+	}
+	strong {
+		color:#FFFFFF;  
+		font-size:120%;
+	}
+	td {
+		color : #666666;
+	}
+	a {
+		text-decoration : none;
+	}
+	#design {
+		text-align:right;
+		color:rgb(174, 174, 174);	
+	}
+	#gcstar {
+		text-align:right;
+		color:rgb(174, 174, 174);
+	}
+</style>
+<style type="text/css"  media="print" >	
+	body {
+		font-family:helvetica, verdana, arial;
+		font-size:100%;
+	}
+	.synopsis {
+		display: none;
+	}
+	#design {
+		display: none;
+	}
+	#gcstar {
+		text-align:right;
+		color:rgb(174, 174,174);
+	}
+</style>
+</head>
+<body link="#666666" alink="#666666" vlink="#999999">
+	<div id="header-title">
+		<h1>$$PAGETITLE$$</h1>
+	</div>
+	<table border="0" align="center" cellspacing="0" cellpadding="0"  width="80%">
+	<tr>
+		<td>
+[/HEADER]
+[ITEM]
+			<table border="0" align="center" cellspacing="0" cellpadding="0"  width="100%">
+				<tr><td colspan=3><strong>$$title$$</strong></td></tr>
+				<tr><td width="80" rowspan=7><img align="top" src="$$image$$" height="$$HEIGHT_PIC$$" border="0"
+												name="image$$IDX$$" alt="$$title$$" title="$$title$$"
+												[JAVASCRIPT]onMouseOver='showlayer("synop$$IDX$$")'[/JAVASCRIPT]></td>
+						<td width="100"><small>$$original_LABEL$$$$SEPARATOR$$</small></td><td><small>$$original$$</small></td></tr>
+				<tr><td><small>$$director_LABEL$$$$SEPARATOR$$</small></td><td><small>$$director$$</small></td></tr>
+				<tr><td><small>$$date_LABEL$$$$SEPARATOR$$</small></td><td><small>$$date$$</small></td></tr>
+				<tr><td><small>$$time_LABEL$$$$SEPARATOR$$</small></td><td><small>$$time$$</small></td></tr>
+				<tr><td><small>$$country_LABEL$$$$SEPARATOR$$</small></td><td><small>$$country$$</small></td></tr>
+				<tr><td><small>$$genre_LABEL$$$$SEPARATOR$$</small></td><td><small>$$genre$$</small></td></tr>
+				<tr><td><small>$$actors_LABEL$$$$SEPARATOR$$</small></td><td><small>$$actors$$</small></td></tr>
+				<tr><td colspan=3><div class="synopsis" id="synop$$IDX$$" [JAVASCRIPT]onMouseOut='hidelayer("synop$$IDX$$")'[/JAVASCRIPT]>$$synopsis$$</div></td></tr>
+				<tr><td colspan=3><hr></td></tr>
+			</table>
+[/ITEM]
+[FOOTER]
+</td></tr>
+<tr><td>$$TOTALNUMBER$$ films</td></tr>
+	</table>
+	<div id="design"><br><br><br><br><small>design by 
+		<em>rootII design department</em></small></div>
+	<div id="export">$$GENERATOR_NOTE$$</div>	
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

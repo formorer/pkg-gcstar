@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## test.dpatch by  <nyall@crackfox>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad gcstarzombiepig-1.6~/install gcstarzombiepig-1.6/install
+--- gcstarzombiepig-1.6~/install	2009-09-20 17:32:03.000000000 -0300
++++ gcstarzombiepig-1.6/install	2009-09-20 17:33:56.000000000 -0300
+@@ -107,7 +107,7 @@
+     }
+     
+     unlink $baseDir.'/bin/'.$binName;
+-    unlink $baseDir.'/man/man1/'.$binName.'.1.gz';
++    unlink $baseDir.'/share/man/man1/'.$binName.'.1.gz';
+ 
+     # remove menu and mime items
+ 

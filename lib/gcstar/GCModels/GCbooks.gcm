@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCbooks">
+	<lang>GCbooks</lang>
+
+	<options>
+		<defaults>
+			<image>book_no.png</image>
+		</defaults>
+		<fields>
+			<id>id</id>
+			<title>title</title>
+			<cover>cover</cover>
+			<url>web</url>
+			<play>digitalfile</play>
+			<search>
+				<field>isbn</field>
+				<field>title</field>
+			</search>
+			<results>
+				<field>title</field>
+				<field>authors</field>
+				<field>publication</field>
+				<field>format</field>
+				<field>edition</field>
+				<field>serie</field>
+			</results>
+		</fields>
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+		<values id="read">
+			<value displayed="ReadNo">0</value>
+			<value displayed="ReadYes">1</value>
+		</values>
+		<overlay>
+            <image>subtle.png</image>
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>11</paddingRight>
+			<paddingTop>12</paddingTop>
+			<paddingBottom>0</paddingBottom>
+		</overlay>
+	</options>
+
+	<groups>
+		<group id="Main" label="General" />
+		<group id="Details" label="Details" />
+	</groups>
+
+	<random>
+	 <filter field="read" comparison="eq" numeric="true" value="0" after="1"/>
+	</random>
+
+	<fields lending="true" tags="true">
+		<field value="id" group="Main" init="" label="" type="number" imported="false"/>
+		<field value="isbn" group="Main" init="" label="Isbn" format="0-9X\-" type="checked text" imported="true"/>
+		<field value="title" group="Main" init="NewItem" label="Title" type="short text" imported="true" />
+		<field value="cover" group="Main" init="" label="Cover" type="image" default="view" imported="true" />
+		<field value="backpic" type="image" label="ContextImgBack" init="" group="Main" linkedto="cover" imported="true"/>
+		<field value="authors" group="Main" history="true" init="" label="Authors" type="single list" imported="true" />
+		<field value="publisher" group="Main" init="" label="Publisher" type="history text" imported="true" />
+		<field value="publication" group="Main" init="" label="Publication" type="date" imported="true" />
+		<field value="language" group="Main" init="" label="Language" type="history text" imported="true" />
+		<field value="serie" group="Main" init="" label="Serie" type="history text" imported="true" />
+		<field value="rank" group="Main" init="1" label="Rank" type="number" min="0" max="999" imported="true" />
+		<field value="edition" group="Details" init="" label="Edition" type="short text" imported="true" />
+		<field value="format" group="Details" init="" label="Format" type="history text" imported="true" />
+		<field value="genre" group="Main" history="true" init="" label="Genre" type="single list" imported="true" />
+		<field value="description" group="Main" init="" label="Bookdescription" type="long text" imported="true" />
+		<field value="pages" group="Main" init="" label="Pages" type="number" imported="true" />
+		<field value="web" group="Main" init="" label="Url" type="button" format="url" imported="true" />
+		<field value="read" group="Details" init="0" label="Read" type="yesno" />
+		<field value="added" group="Details" init="current" label="PanelAdded" type="date" />
+		<field value="rating" group="Details" init="0" label="PanelRating" min="0" max="10" type="number" displayas="graphical" />
+		<field value="acquisition" group="Details" init="" label="Acquisition" type="date" />
+		<field value="location" group="Details" init="" label="PanelLocation" type="history text" />
+		<field value="comments" group="Details" init="" label="Comments" type="long text" />
+		<field value="translator" group="Details" init="" label="Translator" type="short text" imported="true" />
+		<field value="artist" group="Details" init="" label="Artist" type="short text" />
+		<field value="digitalfile" group="Details" init="" label="DigitalFile" type="file" format="ebook" />
+	</fields>
+
+	<filters>
+		<group label="Main">
+			<filter comparison="contain" field="isbn" numeric="false" quick="false" />
+			<filter comparison="contain" field="title" numeric="false" quick="false" />
+			<filter comparison="contain" field="authors" numeric="false" quick="true" />
+			<filter comparison="contain" field="publisher" numeric="false" quick="true" />
+			<filter comparison="contain" field="language" numeric="false" quick="true" />
+			<filter comparison="contain" field="genre" numeric="false" quick="true" />
+			<filter comparison="ge" field="rating" labelselect="&gt;=" numeric="true" quick="false" />
+		</group>
+		<group label="Details">
+			<filter comparison="eq" field="read" numeric="false" quick="true" />
+			<filter comparison="ge" field="acquisition" labelselect="&gt;=" numeric="false" quick="false" />
+		</group>
+	</filters>
+
+	<panels>
+		<panel editable="true" label="PanelForm" name="form">
+			<item type="line">
+				<item for="isbn" type="value" width="13" nomargin="true" />
+				<item expand="true" for="title" type="value" nomargin="true" />
+				<item type="special" for="searchButton" nomargin="true" />
+				<item type="special" for="refreshButton" nomargin="true" />
+			</item>
+			<item expand="true" type="notebook">
+				<item expand="true" title="General" type="tab" value="main">
+					<item type="line">
+						<item for="cover" height="170" width="130" type="value"/>
+						<item cols="4" rows="5" type="table" expand="true">
+							<item col="0" for="publication" row="0" type="label" />
+							<item col="1" colspan="3" expand="true" for="publication" row="0" type="value" />
+							<item col="0" for="publisher" row="1" type="label" />
+							<item col="1" colspan="3" expand="true" for="publisher" row="1" type="value" />
+							<item col="0" for="serie" row="2" type="label" />
+							<item col="1" colspan="1" expand="true" for="serie" row="2" type="value" width="5" />
+							<item col="2" for="rank" row="2" type="label" />
+							<item col="3" colspan="1" expand="true" for="rank" row="2" type="value" />
+							<item col="0" for="language" row="3" type="label" />
+							<item col="1" colspan="3" expand="true" for="language" row="3" type="value" />
+							<item col="0" for="pages" row="4" type="label" />
+							<item col="1" colspan="3" expand="true" for="pages" row="4" type="value" />
+						 </item>
+						<item type="line" width="0"/>
+					</item>
+					<item type="expander" title="Authors" collapsed="%authors%" row="0" col="0" colspan="4">
+						<item type="value" for="authors"/>
+					</item>
+					<item type="expander" title="Genre" collapsed="%genre%" row="1" col="0" colspan="4">
+						<item type="value" for="genre"/>
+					</item>
+					<item cols="4" rows="3" type="table" expand="true">
+						<item col="0" for="description" row="0" type="label" />
+						<item col="1" colspan="3" expand="true" for="description" row="0" type="value" />
+					</item>
+				</item>
+				<item expand="true" title="Details" type="tab" value="bla">
+					<item cols="6" expand="true" rows="8" type="table">
+						<item col="0" row="0" colspan="4" for="read" type="value" />
+						<item col="0" row="1" for="added" type="label" />
+						<item col="1" row="1" colspan="3" for="added" type="value" />
+						<item col="0" row="2" for="translator" type="label" />
+						<item col="1" row="2" for="translator" type="value" />
+						<item col="2" row="2" for="artist" type="label" />
+						<item col="3" row="2" for="artist" type="value" />
+						<item col="0" row="3" for="rating" type="label" />
+						<item col="1" row="3" for="rating" type="value" />
+						<item col="2" row="3" for="location" type="label" />
+						<item col="3" row="3" for="location" width="13" type="value" />
+						<item col="0" row="4" for="edition" type="label" />
+						<item col="1" row="4" for="edition" type="value" />
+						<item col="2" row="4" for="format" type="label" />
+						<item col="3" row="4" for="format" width="13" type="value" />
+						<item col="0" row="5" for="acquisition" type="label" />
+						<item col="1" row="5" for="acquisition" type="value" />
+						<item col="0" row="6" type="label" for="digitalfile" nomargin="true"/>
+					    <item col="1" row="6" type="line" colspan="3">
+						    <item type="value" for="digitalfile" expand="true" nomargin="true"/>
+						    <item type="launcher" for="digitalfile" nomargin="true"/>
+					    </item>
+						<item col="0" row="7" for="comments" type="label" />
+						<item col="1" row="7" colspan="3" expand="true" for="comments" type="value" />
+					</item>
+				</item>
+				<item type="tab" value="lending" title="PanelLending">
+					<item type="table" rows="3" cols="3">
+						<item type="label" for="borrower" row="0" col="0"/>
+						<item type="value" for="borrower" row="0" col="1"/>
+						<item type="special" for="mailButton" row="0" col="2"/>
+						<item type="label" for="lendDate" row="1" col="0"/>
+						<item type="value" for="lendDate" row="1" col="1"/>
+						<item type="special" for="itemBackButton" row="1" col="2"/>
+					</item>
+					<item type="label" for="borrowings" align="left"/>
+					<item type="line" expand="true">
+						<item type="box" width="64"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="64"/>
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line" homogeneous="true">
+				<item expand="true" for="web" type="value" />
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+		<panel name="readonly" label="PanelReadOnly" editable="false">
+			<item type="table" rows="2" cols="3">
+				<item type="value" for="title" style="header" row="0" col="0" colspan="3" expand="true"/>
+				<item type="box" row="1" col="0" width="100" expand="false" style="page"/>
+				<item type="value" for="authors" flat="true" style="subheader" row="1" col="1" expand="true"/>
+				<item type="box" row="1" col="2" width="100" expand="false" style="box">
+					<item type="value" for="isbn" style="box" nomargin="true"/>
+					<item type="value" for="read" style="box" nomargin="true" values="read"/>
+					<item type="formatted" name="fullrating" value="%rating%/10" style="box" nomargin="true"/>
+				</item>
+			</item>
+			<item type="line">
+				<item type="box" width="150" style="page">
+					<item type="value" for="cover" width="140"/>
+				</item>
+				<item type="box" expand="true">
+					<item type="table" rows="6" cols="2" expand="true">
+						<item type="label" for="publication" row="0" col="0"/>
+						<item type="value" for="publication" row="0" col="1" expand="true"/>
+						<item type="label" for="publisher" row="1" col="0"/>
+						<item type="value" for="publisher" row="1" col="1" expand="true"/>
+						<item type="label" for="serie" row="2" col="0"/>
+						<item type="value" for="serie" row="2" col="1" expand="true"/>
+						<item type="label" for="language" row="3" col="0"/>
+						<item type="value" for="language" row="3" col="1" expand="true"/>
+						<item type="label" for="pages" row="4" col="0"/>
+						<item type="value" for="pages" row="4" col="1" expand="true"/>
+						<item type="label" for="genre" row="5" col="0"/>
+						<item type="value" for="genre" flat="true" row="5" col="1" expand="true"/>
+					</item>
+				</item>
+			</item>
+			<item type="value" for="description" height="5em"/>
+			<item type="expander" title="Details">
+				<item cols="2" expand="true" rows="7" type="table">
+					<item col="0" for="edition" row="0" type="label" />
+					<item col="1" for="edition" row="0" type="value" />
+					<item col="0" for="format" row="1" type="label" />
+					<item col="1" for="format" row="1" type="value" />
+					<item col="0" for="location" row="2" type="label" />
+					<item col="1" for="location" row="2" type="value" />
+					<item col="0" for="acquisition" row="3" type="label" />
+					<item col="1" for="acquisition" row="3" type="value" />
+					<item col="0" for="translator" row="4" type="label" />
+					<item col="1" for="translator" row="4" type="value" />
+					<item col="0" for="artist" row="5" type="label" />
+					<item col="1" for="artist" row="5" type="value" />
+					<item col="0" for="comments" row="6" type="label" />
+					<item col="1" expand="true" height="5em" for="comments" row="6" type="value" />
+				</item>
+			</item>
+			<item type="expander" title="PanelLending">
+				<item type="table" rows="4" cols="2" expand="true">
+					<item type="label" for="borrower" row="0" col="0"/>
+					<item type="value" for="borrower" row="0" col="1" expand="true"/>
+					<item type="label" for="lendDate" row="1" col="0"/>
+					<item type="value" for="lendDate" row="1" col="1" expand="true"/>
+					<item type="line" row="2" col="0" colspan="2" height="12" expand="true"/>
+					<item type="line"  row="3" col="0" colspan="2" expand="true">
+						<item type="box" width="50" style="page"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="50" style="page"/>
+					</item>
+				</item>
+			</item>
+			<item type="expander" title="PanelTags">
+				<item expand="true" for="tags" type="value" />
+				<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+			</item>
+		</panel>
+
+</panels>
+</collection>

@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd" name="GCstamps">
+
+	<lang>GCstamps</lang>
+	
+	<options>
+    <defaults>
+    	<image>no_stamp.png</image>
+    	<groupby>year</groupby>
+    </defaults>
+    <fields cover="gcsfield38" id="gcsautoid" play="" title="gcsfield1">
+      <results></results>
+    </fields>
+    <overlay>
+			<image>canevas-timbre.png</image>
+			<paddingLeft>56</paddingLeft>
+			<paddingRight>77</paddingRight>
+			<paddingTop>55</paddingTop>
+			<paddingBottom>76</paddingBottom>
+    </overlay>
+    <values id="gcsfield12" />
+    <values id="types">
+		<value displayed="">0</value>
+		<value displayed="AirMail">1</value>
+		<value displayed="MilitaryStamp">2</value>
+		<value displayed="Official">3</value>
+		<value displayed="PostageDue">4</value>
+		<value displayed="Regular">5</value>
+		<value displayed="Revenue">6</value>
+		<value displayed="SpecialDelivery">7</value>
+		<value displayed="StrikeStamp">8</value>
+		<value displayed="TelegraphStamp">9</value>
+		<value displayed="WarStamp">10</value>
+		<value displayed="WarTaxStamp">11</value>
+	</values>
+	<values id="formats">
+		<value displayed="">0</value>
+		<value displayed="Booklet">1</value>
+		<value displayed="BookletPane">2</value>
+		<value displayed="Card">3</value>
+		<value displayed="Coil">4</value>
+		<value displayed="Envelop">5</value>
+		<value displayed="FirstDayCover">6</value>
+		<value displayed="Sheet">7</value>
+		<value displayed="Single">8</value>
+	</values>
+	<values id="printingvariety">
+		<value displayed="">0</value>
+		<value displayed="Heliogravure">1</value>
+		<value displayed="Lithography">2</value>
+		<value displayed="Offset">3</value>
+		<value displayed="Photogravure">4</value>
+		<value displayed="RecessPrinting">5</value>
+		<value displayed="Typography">6</value>
+	</values>
+	<values id="gums">
+		<value displayed="">0</value>
+		<value displayed="OriginalGum">1</value>
+		<value displayed="Ungummed">2</value>
+		<value displayed="Regummed">3</value>
+	</values>
+	<values id="papers">
+		<value displayed="">0</value>
+		<value displayed="Chalky">1</value>
+		<value displayed="ChinaPaper">2</value>		
+		<value displayed="Coarsed">3</value>
+		<value displayed="Glossy">4</value>
+		<value displayed="Granite">5</value>
+		<value displayed="Laid">6</value>
+		<value displayed="Manila">7</value>
+		<value displayed="Native">8</value>
+		<value displayed="Pelure">9</value>
+		<value displayed="Quadrille">10</value>
+		<value displayed="Ribbed">11</value>
+		<value displayed="Rice">12</value>
+		<value displayed="Silk">13</value>
+		<value displayed="Smoothed">14</value>
+		<value displayed="Thick">15</value>
+		<value displayed="Thin">16</value>
+		<value displayed="Wove">17</value>
+	</values>
+	<values id="perforations">
+		<value displayed="">0</value>
+		<value displayed="CoarsedPerforation">1</value>
+		<value displayed="CombPerforation">2</value>
+		<value displayed="CompoundPerforation">3</value>
+		<value displayed="DamagedPerforation">4</value>
+		<value displayed="DoublePerforation">5</value>
+		<value displayed="HarrowPerforation">6</value>
+		<value displayed="LinePerforation">7</value>
+		<value displayed="NoPerforation">8</value>
+	</values>
+	<values id="cancellations">
+		<value displayed="">0</value>
+		<value displayed="CancellationToOrder">1</value>
+		<value displayed="FancyCancellation">2</value>
+		<value displayed="FirstDayCancellation">3</value>
+		<value displayed="NumeralCancellation">4</value>
+		<value displayed="PenMarked">5</value>
+		<value displayed="RailroadCancellation">6</value>
+		<value displayed="SpecialCancellation">7</value>
+	</values>
+		<values id="grades">
+		<value displayed="">0</value>
+		<value displayed="Superb">1</value>
+		<value displayed="ExtraFine">2</value>
+		<value displayed="VeryFine">3</value>
+		<value displayed="FineVeryFine">4</value>
+		<value displayed="Fine">5</value>
+		<value displayed="Average">6</value>
+		<value displayed="Poor">7</value>
+	</values>
+		<values id="status">
+		<value displayed="">0</value>
+		<value displayed="Owned">1</value>
+		<value displayed="Ordered">2</value>
+		<value displayed="Sold">3</value>
+		<value displayed="ToSell">4</value>
+		<value displayed="Wanted">5</value>
+	</values>
+	<values id="cancellation_condition">
+		<value displayed="">0</value>
+		<value displayed="LightCancellation">1</value>
+		<value displayed="HeavyCancellation">2</value>
+		<value displayed="ModerateCancellation">3</value>
+	</values>
+	<values id="perforation_condition">
+		<value displayed="">0</value>
+		<value displayed="Perfect">1</value>
+		<value displayed="VeryNice">2</value>
+		<value displayed="Nice">3</value>
+		<value displayed="Average">4</value>
+		<value displayed="Incomplete">5</value>		
+	</values>
+	<values id="gum_condition">
+		<value displayed="">0</value>
+		<value displayed="MintNeverHinged">1</value>
+		<value displayed="MintLightHinged">2</value>
+		<value displayed="HingedRemnant">3</value>
+		<value displayed="HeavilyHinged">4</value>
+		<value displayed="LargePartOriginalGum">5</value>
+		<value displayed="SmallPartOriginalGum">6</value>
+		<value displayed="NoGum">7</value>
+	</values>
+  </options>  
+  
+  
+  <fields lending="false" tags="false">
+    <field displayed="Name" 
+    		group="General" 
+    		init="NewItem" 
+    		label="Name" 
+    		type="short text" 
+    		value="gcsfield1" />
+    <field displayed="Country" 
+    		group="General" 
+    		init="" 
+    		label="Country" 
+    		type="history text" 
+    		value="gcsfield2" />
+    <field displayas="text" 
+    		displayed="Year" 
+    		group="General" 
+    		init="" 
+    		label="Year" 
+    		max="" 
+    		min="" 
+    		step="" 
+    		type="number" 
+    		value="gcsfield42" />
+    <field displayed="Catalog" 
+    		group="General" 
+    		init="" 
+    		label="Catalog" 
+    		type="options" 
+    		value="gcsfield4" 
+    		values="Anfils, Austria Netto Katalog, Brusden-White, Catalogue of USSR postage stamps, CEI, Cérès, Compréhensive Colour Catalogue of Australian Stamps, Dallay, Domfil, Facit catalog, Fischer catalog, ISC catalog, Isfalia, Lipsia, Ma, Michel catalog, Minkus, Norgeskatalogen, Philex, Pofis catalogue, Pulko, Sakura, Sassone, Scott catalogue, Stanley Gibbons, Unificato, Yang, Yvert et Tellier, Zumstein" />
+    <field displayed="Number" 
+    		group="General" 
+    		init="" 
+    		label="Number" 
+    		type="short text" 
+    		value="gcsfield5" />
+    <field displayed="Topic" 
+    		group="General" 
+    		init="" 
+    		label="Topic" 
+    		type="short text" 
+    		value="gcsfield15" />
+    <field displayed="Serie" 
+    		group="General" 
+    		init="" 
+    		label="Serie" 
+    		type="short text" 
+    		value="gcsfield17" />
+    <field displayed="Designer" 
+    		group="General" init="" 
+    		label="Designer" 
+    		type="short text" 
+    		value="gcsfield20" />
+    <field displayed="Engraver" 
+    		group="General" 
+    		init="" 
+    		label="Engraver" 
+    		type="short text" 
+    		value="gcsfield21" />
+    <field displayed="Type" 
+    		group="General" init="" 
+    		label="Type" 
+    		type="options" 
+    		value="gcsfield6" 
+    		values="types" />
+    <field displayed="Format" 
+    		group="General" 
+    		init="" 
+    		label="Format" 
+    		type="options" 
+    		value="gcsfield7" 
+    		values="formats" />
+
+    <field displayed="Description" 
+    		group="General" 
+    		init="" 
+    		label="Description" 
+    		type="long text" 
+    		value="gcsfield8" />
+    <field displayed="Color" 
+    		group="Detail" 
+    		init="" 
+    		label="Color" 
+    		type="short text" 
+    		value="gcsfield11" />
+    <field displayed="Gum" 
+    		group="Detail" 
+    		init="" 
+    		label="Gum" 
+    		type="options" 
+    		value="gcsfield10" 
+    		values="gums" />
+    <field displayed="Paper" 
+    		group="Detail" 
+    		init="" 
+    		label="Paper" 
+    		type="options" 
+    		value="gcsfield12" 
+    		values="papers" />
+    <field displayed="Perforation" 
+    		group="Detail" 
+    		init="" 
+    		label="Perforation" 
+    		type="options" 
+    		value="gcsfield28" 
+    		values="perforations" />
+    <field displayed="PerforationSize" 
+    		group="Detail" 
+    		init="" 
+    		label="PerforationSize" 
+    		type="history text" 
+    		value="gcsfield29" />
+    <field displayed="CancellationType" 
+    		group="Detail" 
+    		init="" 
+    		label="CancellationType" 
+    		type="options" 
+    		value="gcsfield43" 
+    		values="cancellations" />
+    <field displayed="Issue"
+    		group="Detail" 
+    		init="" 
+    		label="Issue" 
+    		type="short text" 
+    		value="gcsfield80" />
+    
+    <field displayed="IssueDate"
+    		group="Detail" 
+    		init="" 
+    		label="IssueDate" 
+    		type="date" 
+    		value="gcsfield81" />
+    
+    <field displayed="PrintingVariety"
+    		group="Detail" 
+    		init="" 
+    		label="PrintingVariety" 
+    		type="options" 
+    		value="gcsfield83"
+    		values="printingvariety" />
+    <field displayed="EndOfIssue"
+    		group="Detail" 
+    		init="" 
+    		label="EndOfIssue" 
+    		type="date" 
+    		value="gcsfield82" />
+    <field displayed="Comments" 
+    		group="Detail" 
+    		init="" 
+    		label="Comments" 
+    		type="long text" 
+    		value="gcsfield41" />
+    <field displayed="Grade" 
+    		group="Condition" 
+    		init="" 
+    		label="Grade" 
+    		type="options" 
+    		value="gcsfield23" 
+    		values="grades" />
+    <field displayed="Status" 
+    		group="Value" 
+    		init="" 
+    		label="Status" 
+    		type="options" 
+    		value="gcsfield16" 
+    		values="status" />
+    <field displayed="Adjusted" 
+    		group="Condition" 
+    		init="" 
+    		label="Adjusted" 
+    		type="yesno" 
+    		value="gcsfield22" />
+    <field displayed="Cancellation" 
+    		group="Condition" 
+    		init="" 
+    		label="Cancellation" 
+    		type="yesno" 
+    		value="gcsfield13" />
+    <field displayed="CancellationCondition" 
+    		group="Condition" 
+    		init="" 
+    		label="CancellationCondition" 
+    		type="options" 
+    		value="gcsfield27" 
+    		values="cancellation_condition" />
+    <field displayed="GumCondition" 
+    		group="Condition" 
+    		init="" 
+    		label="GumCondition" 
+    		type="options" 
+    		value="gcsfield25" 
+    		values="gum_condition" />
+    <field displayed="PerforationCondition" 
+    		group="Condition" 
+    		init="" 
+    		label="PerforationCondition" 
+    		type="options" 
+    		value="gcsfield14" 
+    		values="perforation_condition" />
+    <field displayed="ConditionNotes" 
+    		group="Condition" 
+    		init="" 
+    		label="ConditionNotes" 
+    		type="long text" 
+    		value="gcsfield49" />
+    <field displayed="Error" 
+    		group="Condition" 
+    		init="" 
+    		label="Error" 
+    		type="yesno" 
+    		value="gcsfield44" />
+    <field displayed="Error notes" 
+    		group="Condition" 
+    		init="" 
+    		label="ErrorNotes" 
+    		type="long text" 
+    		value="gcsfield45" />
+    <field displayed="FaceValue" 
+    		group="Value" 
+    		init="0 euros" 
+    		label="FaceValue" 
+    		type="short text" 
+    		value="gcsfield35" />
+    <field displayed="MintValue" 
+    		group="Value" 
+    		init="0 euros" 
+    		label="MintValue"
+    		type="short text" 
+    		value="gcsfield36" />
+    <field displayed="UsedValue" 
+    		group="Value" 
+    		init="0 euros" 
+    		label="UsedValue" 
+    		type="short text" 
+    		value="gcsfield46" />
+    <field displayed="PurchasedDate" 
+    		group="Value" 
+    		init="" 
+    		label="PurchasedDate" 
+    		type="date" 
+    		value="gcsfield33" />
+    <field displayas="text" 
+    		displayed="Quantity" 
+    		group="Value" 
+    		init="" 
+    		label="Quantity" 
+    		max="" 
+    		min="" 
+    		step="" 
+    		type="number" 
+    		value="gcsfield34" />
+    <field displayed="History" 
+    		group="Notes" 
+    		init="" 
+    		label="History" 
+    		type="long text" 
+    		value="gcsfield31" />
+    <field displayed="Comments" 
+    		group="Notes" 
+    		init="" 
+    		label="Comments" 
+    		type="long text" 
+    		value="gcsfield32" />
+    <field default="view" 
+    		displayed="Picture1" 
+    		group="Views" 
+    		init="" 
+    		label="Picture1" 
+    		type="image" 
+    		value="gcsfield38" />
+    <field default="view" 
+    		displayed="Picture2" 
+    		group="Views" 
+    		init="" 
+    		label="Picture2" 
+    		type="image" 
+    		value="gcsfield39" />
+    <field default="view" 
+    		displayed="Picture3" 
+    		group="Views" 
+    		init="" 
+    		label="Picture3" 
+    		type="image" 
+    		value="gcsfield47" />
+    <field default="view" 
+    		displayed="" 
+    		group="General" 
+    		init="" 
+    		label="" 
+    		type="image" 
+    		value="gcsfield48" />
+    <field displayed="" 
+    		group="" 
+    		imported="false" 
+    		init="" 
+    		label="" 
+    		type="number" 
+    		value="gcsautoid" />
+  </fields>
+  <filters>
+    <group label="General">
+      <filter comparison="contain" field="gcsfield1" numeric="false" quick="false" />
+      <filter comparison="contain" field="gcsfield2" numeric="false" quick="false" />
+      <filter comparison="eq" field="gcsfield42" labelselect="=" numeric="true" quick="false" />
+      <filter comparison="contain" field="gcsfield15" numeric="false" quick="false" />
+      <filter comparison="contain" field="gcsfield20" numeric="false" quick="false" />
+      <filter comparison="contain" field="gcsfield21" numeric="false" quick="false" />
+      <filter comparison="contain" field="gcsfield6" numeric="false" quick="false" />
+      <filter comparison="contain" field="gcsfield7" numeric="false" quick="false" />
+      <filter comparison="contain" field="gcsfiled83" numeric="false" quick="false" />
+    </group>
+    <group label="Condition">
+      <filter comparison="contain" field="gcsfield13" numeric="false" quick="false" />
+    </group>
+  </filters>
+  <groups>
+    <group id="General" label="General" />
+    <group id="Detail" label="Detail" />
+    <group id="Condition" label="Condition" />
+    <group id="Value" label="Value" />
+    <group id="Notes" label="Notes" />
+    <group id="Views" label="Views" />
+  </groups>
+  
+  <panels>
+    <panel editable="true" label="PanelForm" name="form">
+      <item type="line">
+        <item expand="true" for="gcsfield1" type="value" />
+      </item>
+      <item expand="true" type="notebook">
+        <item expand="true" title="General" type="tab" value="bla">
+          <item type="line">
+            <item for="gcsfield38" height="150" type="value" width="150" />
+            <item cols="2" type="frame">
+              <item col="0" for="gcsfield2" row="0" type="label" />
+              <item col="1" colspan="1" expand="true" for="gcsfield2" row="0" type="value" />
+              <item col="0" for="gcsfield42" row="1" type="label" />
+              <item col="1" colspan="1" expand="true" for="gcsfield42" row="1" type="value" />
+              <item col="0" for="gcsfield4" row="2" type="label" />
+              <item col="1" colspan="1" expand="true" for="gcsfield4" row="2" type="value" />
+              <item col="0" for="gcsfield5" row="3" type="label" />
+              <item col="1" colspan="1" expand="true" for="gcsfield5" row="3" type="value" />
+            </item>
+          </item>
+          <item cols="2" rows="6" type="table">
+            <item col="0" for="gcsfield15" row="0" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield15" row="0" type="value" />
+            <item col="2" for="gcsfield17" row="0" type="label" />
+            <item col="3" colspan="1" expand="default" for="gcsfield17" row="0" type="value" />
+            <item col="0" for="gcsfield20" row="1" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield20" row="1" type="value" />
+            <item col="0" for="gcsfield21" row="2" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield21" row="2" type="value" />
+            <item col="0" for="gcsfield6" row="3" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield6" row="3" type="value" />
+            <item col="0" for="gcsfield7" row="4" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield7" row="4" type="value" />
+            <item col="0" for="gcsfield8" row="5" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield8" row="5" type="value" />
+          </item>
+        </item>
+        <item expand="true" title="Detail" type="tab" value="bla">
+          <item cols="4" expand="true" rows="7" type="table">
+            <item col="0" for="gcsfield11" row="0" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield11" row="0" type="value" />
+            <item col="2" for="gcsfield83" row="0" type="label" />
+            <item col="3" colspan="1" expand="default" for="gcsfield83" row="0" type="value" />
+            <item col="0" for="gcsfield10" row="1" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield10" row="1" type="value" />
+            <item col="2" for="gcsfield81" row="1" type="label" />
+            <item col="3" colspan="1" expand="default" for="gcsfield81" row="1" type="value" />
+            <item col="0" for="gcsfield12" row="2" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield12" row="2" type="value" />
+            <item col="2" for="gcsfield82" row="2" type="label" />
+            <item col="3" colspan="1" expand="default" for="gcsfield82" row="2" type="value" />
+            <item col="0" for="gcsfield28" row="3" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield28" row="3" type="value" />
+            <item col="2" for="gcsfield80" row="3" type="label" />
+            <item col="3" colspan="1" expand="default" for="gcsfield80" row="3" type="value" />
+            <item col="0" for="gcsfield29" row="4" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield29" row="4" type="value" />
+            <item col="0" for="gcsfield43" row="5" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield43" row="5" type="value" />
+            <item col="0" for="gcsfield41" row="6" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield41" row="6" type="value" />
+          </item>
+        </item>
+        <item expand="true" title="Condition" type="tab" value="bla">
+          <item cols="4" expand="true" rows="9" type="table">
+            <item col="0" for="gcsfield23" row="0" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield23" row="0" type="value" />
+            <item col="0" colspan="2" expand="default" for="gcsfield22" row="1" type="value" />
+            <item col="0" colspan="2" expand="default" for="gcsfield13" row="2" type="value" />
+            <item col="0" for="gcsfield27" row="3" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield27" row="3" type="value" />
+            <item col="0" for="gcsfield25" row="4" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield25" row="4" type="value" />
+            <item col="0" for="gcsfield14" row="5" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield14" row="5" type="value" />
+            <item col="0" for="gcsfield49" row="6" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield49" row="6" type="value" />
+            <item col="0" colspan="2" expand="default" for="gcsfield44" row="7" type="value" />
+            <item col="0" for="gcsfield45" row="8" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield45" row="8" type="value" />
+          </item>
+        </item>
+        <item expand="true" title="Value" type="tab" value="bla">
+          <item cols="4" expand="true" rows="6" type="table">
+            <item col="0" for="gcsfield16" row="0" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield16" row="0" type="value" />
+            <item col="0" for="gcsfield35" row="1" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield35" row="1" type="value" />
+            <item col="0" for="gcsfield36" row="2" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield36" row="2" type="value" />
+            <item col="0" for="gcsfield46" row="3" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield46" row="3" type="value" />
+            <item col="0" for="gcsfield33" row="4" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield33" row="4" type="value" />
+            <item col="0" for="gcsfield34" row="5" type="label" />
+            <item col="1" colspan="1" expand="default" for="gcsfield34" row="5" type="value" />
+          </item>
+        </item>
+        <item expand="true" title="Notes" type="tab" value="bla">
+          <item cols="4" expand="true" rows="2" type="table">
+            <item col="0" for="gcsfield31" row="0" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield31" row="0" type="value" />
+            <item col="0" for="gcsfield32" row="1" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield32" row="1" type="value" />
+          </item>
+        </item>
+        <item expand="true" title="Views" type="tab" value="bla">
+          <item cols="4" expand="true" rows="2" type="table">
+            <item col="0" for="gcsfield39" row="0" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield39" row="0" type="value" />
+            <item col="0" for="gcsfield47" row="1" type="label" />
+            <item col="1" colspan="3" expand="true" for="gcsfield47" row="1" type="value" />
+          </item>
+        </item>
+      </item>
+      <item type="line">
+        <item expand="true" for="deleteButton" type="special" />
+      </item>
+    </panel>
+    <panel editable="false" label="PanelReadOnly" name="readonly">
+      <item type="line">
+        <item col="0" colspan="3" expand="true" for="gcsfield1" row="0" style="header" type="value" />
+      </item>
+      <item type="line">
+        <item style="page" type="box" width="150">
+          <item for="gcsfield38" type="value" width="140" />
+        </item>
+        <item expand="true" type="box">
+          <item cols="2" expand="true" type="table">
+            <item col="0" for="gcsfield2" row="0" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield2" row="0" type="value" />
+            <item col="0" for="gcsfield42" row="1" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield42" row="1" type="value" />
+            <item col="0" for="gcsfield4" row="2" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield4" row="2" type="value" />
+            <item col="0" for="gcsfield5" row="3" type="label" />
+            <item col="1" colspan="1" expand="true" flat="false" for="gcsfield5" row="3" type="value" />
+          </item>
+        </item>
+      </item>
+      <item cols="2" expand="true" rows="6" type="table">
+        <item col="0" for="gcsfield15" row="0" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield15" row="0" type="value" />
+        <item col="0" for="gcsfield20" row="1" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield20" row="1" type="value" />
+        <item col="0" for="gcsfield21" row="2" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield21" row="2" type="value" />
+        <item col="0" for="gcsfield6" row="3" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield6" row="3" type="value" />
+        <item col="0" for="gcsfield7" row="4" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield7" row="4" type="value" />
+        <item col="0" for="gcsfield8" row="5" type="label" />
+        <item col="1" colspan="1" expand="true" flat="false" for="gcsfield8" row="5" type="value" />
+      </item>
+      <item title="Detail" type="expander">
+        <item cols="2" expand="true" rows="7" type="table">
+          <item col="0" for="gcsfield11" row="0" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield11" row="0" type="value" />
+          <item col="0" for="gcsfield10" row="1" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield10" row="1" type="value" />
+          <item col="0" for="gcsfield12" row="2" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield12" row="2" type="value" />
+          <item col="0" for="gcsfield28" row="3" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield28" row="3" type="value" />
+          <item col="0" for="gcsfield29" row="4" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield29" row="4" type="value" />
+          <item col="0" for="gcsfield43" row="5" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield43" row="5" type="value" />
+          <item col="0" for="gcsfield41" row="6" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield41" row="6" type="value" />
+        </item>
+      </item>
+      <item title="Condition" type="expander">
+        <item cols="2" expand="true" rows="9" type="table">
+          <item col="0" for="gcsfield23" row="0" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield23" row="0" type="value" />
+          <item col="0" for="gcsfield22" row="1" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield22" row="1" type="value" />
+          <item col="0" for="gcsfield13" row="2" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield13" row="2" type="value" />
+          <item col="0" for="gcsfield27" row="3" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield27" row="3" type="value" />
+          <item col="0" for="gcsfield25" row="4" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield25" row="4" type="value" />
+          <item col="0" for="gcsfield14" row="5" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield14" row="5" type="value" />
+          <item col="0" for="gcsfield49" row="6" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield49" row="6" type="value" />
+          <item col="0" for="gcsfield44" row="7" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield44" row="7" type="value" />
+          <item col="0" for="gcsfield45" row="8" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield45" row="8" type="value" />
+        </item>
+      </item>
+      <item title="Value" type="expander">
+        <item cols="2" expand="true" rows="6" type="table">
+          <item col="0" for="gcsfield16" row="0" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield16" row="0" type="value" />
+          <item col="0" for="gcsfield35" row="1" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield35" row="1" type="value" />
+          <item col="0" for="gcsfield36" row="2" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield36" row="2" type="value" />
+          <item col="0" for="gcsfield46" row="3" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield46" row="3" type="value" />
+          <item col="0" for="gcsfield33" row="4" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield33" row="4" type="value" />
+          <item col="0" for="gcsfield34" row="5" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield34" row="5" type="value" />
+        </item>
+      </item>
+      <item title="Notes" type="expander">
+        <item cols="2" expand="true" rows="2" type="table">
+          <item col="0" for="gcsfield31" row="0" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield31" row="0" type="value" />
+          <item col="0" for="gcsfield32" row="1" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield32" row="1" type="value" />
+        </item>
+      </item>
+      <item title="Views" type="expander">
+        <item cols="2" expand="true" rows="2" type="table">
+          <item col="0" for="gcsfield39" row="0" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield39" row="0" type="value" />
+          <item col="0" for="gcsfield47" row="1" type="label" />
+          <item col="1" colspan="1" expand="true" flat="false" for="gcsfield47" row="1" type="value" />
+        </item>
+      </item>
+    </panel>
+  </panels>
+  <random></random>
+</collection>

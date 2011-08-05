@@ -1,0 +1,10 @@
+<metamodel>
+	<model>Simple</model>
+	<fields>
+		<field>title</field>
+		<field>artist</field>
+		<field>running</field>
+		<field>label</field>
+		<field>genre</field>
+	</fields>
+</metamodel>

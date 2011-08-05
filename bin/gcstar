@@ -1,0 +1,358 @@
+#!/usr/bin/perl
+
+###################################################
+#
+#  Copyright 2005-2010 Christian Jodar
+#
+#  This file is part of GCstar.
+#
+#  GCstar is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  GCstar is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with GCstar; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+###################################################
+
+use strict;
+use utf8;
+
+my $initTime;
+$ENV{GCS_PROFILING} = 0 if ! exists $ENV{GCS_PROFILING};
+if ($ENV{GCS_PROFILING} > 0)
+{
+    eval 'use Time::HiRes';
+    eval '$initTime = [Time::HiRes::gettimeofday()]';
+}
+
+my $VERSION = '1.6.1';
+
+my $MULTI_PROCESS = ((!exists $ENV{GCS_PROFILING}) || ($ENV{GCS_PROFILING} == 0));
+
+use Getopt::Long;
+use File::Path;
+use File::Spec;
+use FindBin qw($RealBin);
+use POSIX qw(locale_h);
+
+$ENV{GCS_BIN_DIR} = $RealBin;
+($ENV{GCS_LIB_DIR} = $ENV{GCS_BIN_DIR}) =~ s/bin\/?$/lib\/gcstar/;
+($ENV{GCS_SHARE_DIR} = $ENV{GCS_BIN_DIR}) =~ s/bin\/?$/share\/gcstar/;
+use lib File::Spec->canonpath("$RealBin/../lib/gcstar");
+if (exists $ENV{PAR_TEMP})
+{
+    unshift @INC, "$RealBin/../lib/gcstar";
+}
+
+# For win32, redirect all the output to files
+if ($^O =~ /win32/i)
+{
+    my $logdir = $ENV{'APPDATA'};
+	$logdir =~ s/\\/\//g;
+    mkpath $logdir;
+    close(STDOUT);
+    close(STDERR);
+    open(STDOUT, ">$logdir/gcstar.log");
+    open STDERR, ">&STDOUT";
+    select STDERR; $| = 1;
+}
+
+#XDG stuff
+my $home = $ENV{'HOME'};
+$home = $ENV{'APPDATA'} if ($^O =~ /win32/i);
+$home =~ s/\\/\//g if ($^O =~ /win32/i);
+
+$ENV{XDG_CONFIG_HOME} = $home.'/gcstar/config' if ($^O =~ /win32/i);
+$ENV{XDG_CONFIG_HOME} = $home.'/.config' if ! exists $ENV{XDG_CONFIG_HOME};
+
+$ENV{XDG_DATA_HOME} = $home.'/gcstar' if ($^O =~ /win32/i);
+$ENV{XDG_DATA_HOME} = $home.'/.local/share' if ! exists $ENV{XDG_DATA_HOME};
+
+$ENV{GCS_CONFIG_HOME} = $ENV{XDG_CONFIG_HOME}.'/gcstar';
+$ENV{GCS_CONFIG_HOME} = $ENV{XDG_CONFIG_HOME} if ($^O =~ /win32/i);
+
+# Migrate settings from old windows data path if required
+if (($^O =~ /win32/i) && !(-d $ENV{XDG_DATA_HOME}))
+{
+    if (-d $RealBin.'/../config')
+    {	
+        print ("Need to migrate settings from old gcstar data store\n");
+		mkpath $ENV{XDG_CONFIG_HOME};
+        mkpath $ENV{XDG_DATA_HOME};
+		my $winRealBin = $RealBin;
+		$winRealBin =~ s/\//\\/g;
+		my $winXDGConfig = $ENV{XDG_CONFIG_HOME};
+		$winXDGConfig =~ s/\//\\/g;
+		my $winXDGData = $ENV{XDG_CONFIG_HOME};
+		$winXDGData =~ s/\//\\/g;
+		system "xcopy /Y \"".$winRealBin."\\..\\config\" \"".$winXDGConfig."\"";
+		system "xcopy /Y \"".$winRealBin."\\..\\data\" \"".$winXDGData."\"";
+    } 
+}
+
+mkpath $ENV{XDG_CONFIG_HOME};
+mkpath $ENV{XDG_DATA_HOME};
+
+mkdir $ENV{GCS_CONFIG_HOME};
+mkdir $ENV{GCS_CONFIG_HOME}.'/GCModels/';
+$ENV{GCS_CONFIG_FILE} = $ENV{GCS_CONFIG_HOME}.'/GCstar.conf';
+$ENV{GCS_DATA_HOME} = $ENV{XDG_DATA_HOME}.'/gcstar';
+$ENV{GCS_DATA_HOME} = $ENV{XDG_DATA_HOME} if ($^O =~ /win32/i);
+mkdir $ENV{GCS_DATA_HOME};
+
+use GCOptions;
+my $options = new GCOptionLoader($ENV{GCS_CONFIG_FILE}, 1);
+
+my $lang = $options->getFullLang;
+$ENV{LANG} = $lang;
+$ENV{LANGUAGE} = $lang;
+$ENV{LC_ALL} = $lang;
+$ENV{LC_CTYPE} = $lang;
+setlocale(LC_ALL, $lang);
+
+sub usage
+{
+    print "Usage: $0 [-u UPDATE-OPTIONS] [-x EXECUTE-OPTIONS] [FILENAME]
+
+Launch GCstar, a personal collection manager. Without any option, it will open
+FILENAME if specified or the previously opened file.
+
+Update options:
+
+  -u, --update                 Tell GCstar to look for available updates
+  -a, --all                    Update all components
+  -c, --collection             Update collection models
+  -w, --website                Update plugins to download information
+  -i, --import                 Update plugins to import data
+  -e, --export                 Update plugins to export data
+  -l, --lang                   Update translations
+  -n, --noproxy                Don't ask for a proxy
+
+Execute options:
+
+  -x, --execute                Enter non-interactive mode
+  -c, --collection MODEL       Specify the collection type
+  -w, --website PLUGIN         Specify the plugin to use to download information
+  -i, --import PLUGIN          Specify the plugin to use to import a collection
+  -e, --export PLUGIN          Specify the plugin to use to export the collection
+  -f, --fields FILENAME        File containing fields list to use for import/export
+  -o, --output FILENAME        Write output in FILENAME instead of standard output
+  --download TITLE             Search for the item with TITLE as name
+  --importprefs PREFERENCES    Preferences for the import plugin
+  --exportprefs PREFERENCES    Preferences for the export plugin
+  --list-plugins               List all the plugins available to download information
+
+  Preferences for import/export plugins are specified using this schema:
+    \"Key1=>Value1,Key2=>Value2\"
+
+Environment variables:
+
+  \$HOME                        Used to define following variables if needed
+  \$XDG_CONFIG_HOME             Where configuration files should be stored
+                                  If not defined: \$HOME/.config
+  \$XDG_DATA_HOME               Where some data will be stored
+                                  If not defined: \$HOME/.local/share
+
+Bugs reporting:
+
+  To report bugs, please use this forum:
+    http://forums.gcstar.org/viewforum.php?id=4
+  
+";
+}
+
+sub version
+{
+    print "GCstar $VERSION\n";
+}
+
+Getopt::Long::Configure ('bundling');
+my ($help, $version, $update, $toBeUpdated, $noProxy, $listPlugins) = (0, 0, 0, {}, 0);
+my ($collection, $website, $import, $export) = (undef, undef, undef, undef);
+my ($execute, $title, $output, $inPrefs, $outPrefs, $fields) = (0, '', '', '', '', '');
+(usage, exit 1) if !GetOptions("h|help" => \$help,
+                               "v|version" => \$version,
+                               "u|update" => \$update,
+                               "x|execute" => \$execute,
+                               "a|all" => \$toBeUpdated->{all},
+                               "c|collection:s" => \$collection,
+                               "w|website:s" => \$website,
+                               "i|import:s" => \$import,
+                               "e|export:s" => \$export,
+                               "l|lang" => \$toBeUpdated->{lang},
+                               "n|noproxy" => \$noProxy,
+                               "download=s" => \$title,
+                               "o|output=s" => \$output,
+                               "importprefs=s" => \$inPrefs,
+                               "exportprefs=s" => \$outPrefs,
+                               "f|fields=s" => \$fields,
+                               "list-plugins" => \$listPlugins,
+                               );
+
+my $atLeastOne = 0;
+foreach (keys %$toBeUpdated)
+{
+    $atLeastOne = 1 if $toBeUpdated->{$_};
+}
+(usage, exit 1) if $help || ($atLeastOne && !$update);
+(version, exit 0) if $version;
+
+if ($update)
+{
+    eval '
+        use GCUpdater;
+        use GCLang;
+        ';
+    my $langContainer = $GCLang::langs{$options->lang};
+    $toBeUpdated->{all} = 1 if !$atLeastOne;
+    $toBeUpdated->{models} = defined($collection);
+    $toBeUpdated->{plugins} = defined($website);
+    $toBeUpdated->{import} = defined($import);
+    $toBeUpdated->{export} = defined($export);
+    my $updater = new GCTextUpdater($langContainer,
+                                    $ENV{GCS_LIB_DIR},
+                                    $toBeUpdated,
+                                    $noProxy,
+                                    $VERSION);
+    $updater->update;
+    exit 0;
+}
+elsif ($execute)
+{
+    use GCCommandLine;
+    
+    my $execution = new GCCommandExecution($options,
+                                           $collection,
+                                           $website,
+                                           $import,
+                                           $export,
+                                           $output);
+    if ($listPlugins)
+    {
+        if ($collection)
+        {
+            $execution->listPlugins;
+            exit 0;
+        }
+        else
+        {
+            print "A kind of collection should be specified (with -c) when using --list-plugins\n";
+            exit 1;
+        }
+    }
+
+    if ($ARGV[0])
+    {
+        if ($import)
+        {
+            $execution->import($ARGV[0], $inPrefs);
+        }
+        else
+        {
+            $execution->open($ARGV[0]);
+        }
+    }
+    $execution->setFields($fields) if $fields;
+    $execution->load($title) if $title;
+    if ($export)
+    {
+        $execution->export($outPrefs);
+    }
+    else
+    {
+        $execution->save;
+    }
+    exit 0;
+}
+if ($ARGV[0])
+{
+    # We have to make it absolute if needed
+    my $file = $ARGV[0];
+    $file = File::Spec->rel2abs($file)
+        if (!File::Spec->file_name_is_absolute($file));
+    $options->file($file);
+}
+
+my $pid;
+if ($MULTI_PROCESS)
+{
+    pipe(RCOMMAND, WCOMMAND);
+    pipe(RDATA, WDATA);
+    if ($^O !~ /win32/i)
+    {
+        if (!($pid = fork))
+        {
+            use GCPlugins;
+            close WCOMMAND;
+            close RDATA;
+            my $searchJob = new GCPluginJob(\*RCOMMAND, \*WDATA);
+        
+            $searchJob->run;
+        }
+    }
+}
+
+use Gtk2;
+use GCMainWindow;
+
+my %searchJob = ();
+
+if ($MULTI_PROCESS)
+{
+    close RCOMMAND;
+    close WDATA;
+    %searchJob = (
+        pid => $pid,
+        command => \*WCOMMAND,
+        data => \*RDATA
+    );
+    
+    if ($^O =~ /win32/i)
+    {
+        close WCOMMAND;
+        close RDATA;
+    }
+}
+Gtk2->init;
+my $window = new GCFrame($options, $VERSION, \%searchJob);
+
+#Gtk2->set_locale;
+Gtk2->main;
+
+if ($^O =~ /win32/i)
+{
+    # We store the language in .bat file if possible
+
+    my $batch = 'gcstar.bat';
+    if (-w $batch)
+    {
+        local $/ = undef;
+        open BATCH, "<$batch";
+        my $lang = $options->lang;
+        my $bat = <BATCH>;
+        $bat =~ s/LANG=.*$/LANG=$lang/m;
+        close BATCH;
+        open BATCH, ">$batch" or die "Cannot open .bat to save language\n";
+        print BATCH $bat;
+        close BATCH;
+    }
+    close(STDOUT);
+    close(STDERR);
+}
+
+if ($ENV{GCS_PROFILING} > 0)
+{
+    my $elapsed;
+    eval '$elapsed = Time::HiRes::tv_interval($initTime)';
+    print "Elapsed : $elapsed\n";
+}
+
+0;

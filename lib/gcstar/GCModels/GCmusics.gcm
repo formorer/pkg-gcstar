@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCmusics">
+	<lang>GCmusics</lang>
+
+	<options>
+		<defaults>
+			<image>cd_no.png</image>
+			<listImageWidth>125</listImageWidth>
+			<listImageHeight>120</listImageHeight>
+		</defaults>
+		<fields>
+			<cover>cover</cover>
+			<id>gcsautoid</id>
+			<play>playlist</play>
+			<title>title</title>
+			<url>web</url>
+			<search>
+				<field>unique</field>
+				<field>title</field>
+				<field>artist</field>
+				<field>label</field>
+			</search>
+			<results>
+				<field>title</field>
+				<field>artist</field>
+				<field>release</field>
+			</results>
+		</fields>
+
+
+		<overlay>
+                        <image>cd.png</image>
+			<paddingLeft>44</paddingLeft>
+			<paddingRight>13</paddingRight>
+			<paddingTop>15</paddingTop>
+			<paddingBottom>4</paddingBottom>
+		</overlay>
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+	</options>
+
+	<groups>
+		<group id="main" label="General" />
+		<group id="details" label="Details" />
+	</groups>
+
+	
+
+	<random></random>
+
+	<fields lending="true" tags="true">
+		<field value="gcsautoid" group="" imported="false" init="" label="" type="number" />
+		<field value="unique" group="main" init="" label="Unique" type="short text" />
+		<field value="title" group="main" init="NewItem" label="Title" type="short text" imported="true"/>
+		<field value="cover" default="view" group="main" init="" label="Cover" type="image" imported="true"/>
+		<field value="backpic" type="image" label="ContextImgBack" init="" group="main" linkedto="cover" imported="true"/>
+		<field value="artist" group="main" init="" label="Artist" type="short text" imported="true" />
+        <field value="running" group="main" init="0" label="Running" type="short text" imported="true" />
+		<field value="release" group="main" init="" label="Release" type="date" imported="true" />
+		<field value="label" group="main" init="" label="Label" type="history text" imported="true"/>
+		<field value="genre" group="main" history="true" init="" label="Genre" type="single list" imported="true" />
+		<field value="tracks" group="main" history="false" init="" label="Tracks" type="triple list" imported="true" label1="Number" label2="Track" label3="Time"/>
+		<field value="rating" group="details" init="0" label="PanelRating" max="10" type="number" displayas="graphical" />
+		<field value="ratingpress" group="details" init="0" label="PanelPressRating" max="10" type="number" displayas="graphical" imported="true" />
+		<field value="added" group="details" init="current" label="PanelAdded" type="date" />
+		<field value="location" group="details" init="" label="PanelLocation" type="history text" imported="false"/>
+        <field value="origin" group="details" init="" label="Origin" type="history text" imported="true" />
+		<field value="composer" group="details" init="" label="Composer" type="short text" imported="true" />
+		<field value="producer" group="details" init="" label="Producer" type="short text" imported="true" />
+		<field value="format" group="details" init="" label="Format" type="history text" imported="true" />
+		<field value="playlist" format="audio" group="details" init="" label="Playlist" type="file" />
+		<field value="comments" group="details" init="" label="Comments" type="long text" />
+		<field value="web" group="main" init="" label="Url" type="button" format="url" imported="true" />
+	</fields>
+
+	<filters>
+		<group label="Main">
+			<filter comparison="contain" field="unique" numeric="false" quick="false" />
+			<filter comparison="contain" field="title" numeric="false" quick="false" />
+			<filter comparison="contain" field="artist" numeric="false" quick="false" />
+			<filter comparison="contain" field="genre" numeric="false" quick="true" />
+		</group>
+		<group label="Details">
+			<filter comparison="contain" field="label" numeric="false" quick="false" />
+		</group>
+	</filters>
+
+	<panels>
+		<panel editable="true" label="PanelForm" name="form">
+			<item type="line">
+				<item for="unique" type="value" width="13" nomargin="true" />
+				<item expand="true" for="title" type="value" nomargin="true" />
+				<item type="special" for="searchButton" nomargin="true" />
+				<item type="special" for="refreshButton" nomargin="true" />
+			</item>
+			<item expand="true" type="notebook">
+				<item expand="true" title="Main" type="tab" value="bla">
+					<item type="line">
+						<item for="cover" height="150" type="value" width="150" />
+						<item cols="2" rows="4" type="table">
+							<item col="0" row="0" for="artist" type="label" />
+							<item col="1" row="0" for="artist" type="value" />
+							<item col="0" row="1" for="running" type="label" />
+							<item col="1" row="1" for="running" type="value" />
+							<item col="0" row="2" for="release" type="label" />
+							<item col="1" row="2" for="release" type="value" />
+							<item col="0" row="3" for="label" type="label" />
+							<item col="1" row="3" for="label" type="value" />
+						</item>
+					</item>
+					<item collapsed="%genre%" title="Genre" type="expander">
+						<item for="genre" type="value" />
+					</item>
+					<item type="box" expand="true">
+						<item expand="true" for="tracks" type="value" />
+					</item>
+				</item>
+				<item expand="true" title="Details" type="tab" value="bla">
+					<item cols="4" rows="6" expand="true" type="table">
+						<item col="0" row="0" type="label" for="rating"/>
+						<item col="1" row="0" type="value" for="rating"/>
+						<item col="2" row="0" type="label" for="ratingpress"/>
+						<item col="3" row="0" type="value" for="ratingpress"/>
+						<item col="0" row="1" type="label" for="location"/>
+						<item col="1" row="1" type="value" for="location"/>
+						<item col="2" row="1" type="label" for="added"/>
+						<item col="3" row="1" type="value" for="added"/>
+                        <item col="0" row="2" for="origin" type="label" />
+                        <item col="1" row="2" for="origin" type="value" />
+						<item col="2" row="2" for="format" type="label" />
+						<item col="3" row="2" for="format" type="value" />
+						<item col="0" row="3" type="label" for="composer"/>
+						<item col="1" row="3" type="value" for="composer"/>
+						<item col="2" row="3" type="label" for="producer"/>
+						<item col="3" row="3" type="value" for="producer"/>
+						<item col="0" row="4" for="playlist" type="label" />
+						<item type="line" col="1" row="4" colspan="3">
+						    <item type="value" for="playlist" expand="true" nomargin="true"/>
+						    <item type="launcher" for="playlist" nomargin="true"/>
+						    <item type="extractor" for="playlist" nomargin="true"/>
+					    </item>
+						<item col="0" row="5" type="label" for="comments"/>
+						<item col="1" row="5" colspan="3" type="value" for="comments" expand="true"/>
+					</item>
+				</item>
+				<item title="PanelLending" type="tab" value="lending">
+					<item rows="3" type="table">
+						<item col="0" for="borrower" row="0" type="label" />
+						<item col="1" for="borrower" row="0" type="value" />
+						<item col="2" for="mailButton" row="0" type="special" />
+						<item col="0" for="lendDate" row="1" type="label" />
+						<item col="1" for="lendDate" row="1" type="value" />
+						<item col="2" for="itemBackButton" row="1" type="special" />
+					</item>
+					<item align="left" for="borrowings" type="label" />
+					<item expand="true" type="line">
+						<item type="box" width="64" />
+						<item expand="true" for="borrowings" type="value" />
+						<item type="box" width="64" />
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line" homogeneous="true">
+				<item expand="true" for="web" type="value" />
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+		<panel editable="false" label="PanelReadOnly" name="readonly">
+			<item type="table" rows="2" cols="3">
+				<item type="value" for="title" style="header" row="0" col="0" colspan="3" expand="true"/>
+				<item type="box" row="1" col="0" width="100" expand="false" style="page"/>
+				<item type="value" for="artist" flat="true" style="subheader" row="1" col="1" expand="true"/>
+				<item type="box" row="1" col="2" width="100" expand="false" style="box">
+					<item type="value" for="format" style="box" nomargin="true"/>
+					<item type="formatted" name="fullrating" value="%rating%/10" style="box" nomargin="true"/>
+				</item>
+			</item>
+			<item type="line">
+				<item style="page" type="box">
+					<item for="cover" type="value" width="200" height="200" />
+				</item>
+				<item expand="true" type="box">
+					<item cols="2" rows="5" expand="true" type="table">
+						<item col="0" row="0" for="running" type="label" />
+						<item col="1" row="0" colspan="1" expand="true" for="running" type="value" />
+						<item col="0" row="1" for="release" type="label" />
+						<item col="1" row="1" colspan="1" expand="true" for="release" type="value" />
+						<item col="0" row="2" for="label" type="label" />
+						<item col="1" row="2" colspan="1" expand="true" for="label" type="value" flat="true"/>
+						<item col="0" row="3" for="location" type="label" />
+						<item col="1" row="3" colspan="1" expand="true" for="location" type="value" flat="true"/>
+						<item col="0" row="4" for="origin" type="label" />
+						<item col="1" row="4" colspan="1" expand="true" for="origin" type="value"/>
+					</item>
+				</item>
+			</item>
+			<item type="table" rows="1" cols="2">
+				<item col="0" row="0" type="label" for="genre"/>
+				<item col="1" row="0" type="value" for="genre" flat="true" expand="true"/>
+				<item col="0" row="1" for="composer" type="label" />
+				<item col="1" row="1" colspan="1" expand="true" for="composer" type="value"/>
+			</item>
+			<item type="value" for="comments" height="5em"/>
+			<item type="expander" title="Tracks">
+				<item type="line" expand="true">
+					<item type="box" width="20" style="page"/>
+					<item type="value" for="tracks" expand="true" header="false"/>
+					<item type="box" width="20" style="page"/>
+				</item>
+			</item>
+			<item title="PanelLending" type="expander">
+				<item cols="2" rows="4" type="table">
+					<item col="0" for="borrower" row="0" type="label" />
+					<item col="1" expand="true" for="borrower" row="0" type="value" />
+					<item col="0" for="lendDate" row="1" type="label" />
+					<item col="1" expand="true" for="lendDate" row="1" type="value" />
+					<item col="0" colspan="2" expand="true" height="12" row="2" type="line" />
+					<item col="0" colspan="2" expand="true" row="2" type="line">
+						<item style="page" type="box" width="50" />
+						<item expand="true" for="borrowings" type="value" />
+						<item style="page" type="box" width="50" />
+					</item>
+				</item>
+			</item>
+			<item type="expander" title="PanelTags">
+				<item expand="true" for="tags" type="value" />
+				<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+			</item>
+		</panel>
+	</panels>
+</collection>

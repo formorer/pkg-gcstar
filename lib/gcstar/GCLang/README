@@ -1,0 +1,42 @@
+About Translations
+------------------
+
+GCstar translations are stored in seperate folders off the lib/gcstar/GCLang folder. Inside each language folder should be a file named GCstar.pm, and three subfolders: GCExport, GCImport and GCModels. The file GCstar.pm stores most of the common translations for the program. GCExport and GCImport are used for translations for the export and import plugins respectively, and GCModels stores translations for each individual model type (together with a file GCgeneric.pm, which is used for user-created collections types). 
+
+Since version 1.5.0, a system for model-dependant strings was introduced. Some of the language strings are modified run-time to include the model-specific item type. Inside these strings, any strings contained in {}'s will be replaced by the corresponding string from the Item collection in the model language file. A good example is in the english translations, where each file in the GCModels folder contains an item collection similar to: 
+        Items => {0 => 'Movie',
+                  1 => 'Movie',
+                  X => 'Movies',
+                  lowercase1 => 'movie',
+                  lowercaseX => 'movies'
+                  },
+                  
+Within model-dependant strings, gcstar will replace any instances of strings like {lowercase1} with the corresponding string from the model file. For example, 
+'MenuLend' => 'Display _Borrowed {X}', will be converted to 'Display _Borrowed Movies' when a GCfilms model is loaded.
+'NewItemTooltip' => 'Add a new {lowercase1}', will be converted to 'Add a new movie'.
+
+A more complex example is the spanish language translation, where the items collection follows the pattern:
+        Items => {0 => 'Libro',
+                  1 => 'Libro',
+                  lowercase1 => 'libro',
+                  X => 'Libros',
+                  lowercaseX => 'libros',
+                  P1 => 'El Libro',
+                  lowercaseP1 => 'el libro',
+                  U1 => 'Un Libro',
+                  lowercaseU1 => 'un libro',
+                  AP1 => 'Al Libro',
+                  lowercaseAP1 => 'al libro',
+                  DP1 => 'Del Libro',
+                  lowercaseDP1 => 'del libro',
+                  PX => 'Los Libros',
+                  lowercasePX => 'los libros',
+                  E1 => 'Este Libro',
+                  lowercaseE1 => 'este libro',
+                  EX => 'Estos Libros',
+                  lowercaseEX => 'estos libros'             
+                  },      
+                  
+In this case, the string 'RemoveConfirm' => '¿Realmente quiere eliminar {lowercaseE1}?' will be converted to '¿Realmente quiere eliminar este libro?'. 
+
+You can use these model-specific codes in any string marked by a "Accepts model codes" comment.

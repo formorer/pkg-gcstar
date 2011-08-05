@@ -1,0 +1,66 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template mady by Nellistos.
+  nellistos@hotmail.com
+-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>$$PAGETITLE$$</title>
+	<style type="text/css">
+    body{font-family:sans;font-size:0.7em; background-color: #fff; color: #000;}
+	h1{text-align:center;}
+	label{font-weight:bold;}
+
+	.books{margin:50px;}
+	ul.bookslist{list-style:none;margin:0px;padding:0;}
+	ul.bookslist li {margin:35px 0px 0px 0px;padding:5px 5px 5px 5px;border-top:1px solid #cdcdcd;border-bottom:1px solid #cdcdcd; background-color: #fff;}
+	ul.fieldslist{margin:0;padding:0;}
+	ul.fieldslist li {margin:0;padding:0;border:none;}
+	
+	.details{margin-top:5px;padding: 5px 5px 5px 5px;}
+	.image{float:left;padding:0; margin:0px 25px 0px 0px;}
+	.clear{clear:both;}
+	</style>
+</head>
+<body>
+	<h1>$$PAGETITLE$$</h1>
+	<div class="books">
+		<ul class="bookslist">
+[/HEADER]
+[ITEM]
+			<li>
+				<div class="item">
+					<div class="caption"><a href="$$gcsfield1$$">$$title$$</a></div>
+					<div class="details">
+						<div class="image"><img src="$$cover$$" height="$$HEIGHT_PIC$$" alt="Book cover" title="$$title$$"/></div>
+						<div class="fields">
+							<ul class="fieldslist">
+								<li><label>$$authors_LABEL$$$$SEPARATOR$$</label>$$authors$$</li>
+								<li><label>$$publisher_LABEL$$$$SEPARATOR$$</label>$$publisher$$</li>
+								<li><label>$$publication_LABEL$$$$SEPARATOR$$</label>$$publication$$</li>
+								<li><label>$$format_LABEL$$$$SEPARATOR$$</label>$$format$$</li>
+								<li><label>$$tag_LABEL$$$$SEPARATOR$$</label>$$tags$$</li>
+							</ul>
+						</div>
+					</div>
+					<div class="description"><small>$$description$$</small>	</div>
+				</div>
+				<div class="clear"/>
+			</li>
+[/ITEM]
+[FOOTER]
+		</ul>
+	</div>
+	<div align="center">Design <a href="mailto:nellistos@hotmail.com">Nellistos</a> 
+	<br/>
+	<small><i>based on microFormats Spec</i></small></div>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]
+
+
+

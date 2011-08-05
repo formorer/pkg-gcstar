@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCcoins">
+
+	<lang>GCcoins</lang>
+
+	<options>
+		<defaults>
+			<image>no.png</image>
+		</defaults>
+		<fields>
+			<cover>picture</cover>
+			<id>gcsautoid</id>
+			<play/>
+			<title>name</title>
+		</fields>
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+		<values id="types">
+			<value displayed="Coin">coin</value>
+			<value displayed="Banknote">banknote</value>
+		</values>
+		<values id="grades">
+			<value displayed="Grade1">1</value>
+			<value displayed="Grade2">2</value>
+			<value displayed="Grade3">3</value>
+			<value displayed="Grade4">4</value>
+			<value displayed="Grade6">6</value>
+			<value displayed="Grade8">8</value>
+			<value displayed="Grade10">10</value>
+			<value displayed="Grade12">12</value>
+			<value displayed="Grade15">15</value>
+			<value displayed="Grade20">20</value>
+			<value displayed="Grade25">25</value>
+			<value displayed="Grade30">30</value>
+			<value displayed="Grade35">35</value>
+			<value displayed="Grade40">40</value>
+			<value displayed="Grade45">45</value>
+			<value displayed="Grade50">50</value>
+			<value displayed="Grade53">53</value>
+			<value displayed="Grade55">55</value>
+			<value displayed="Grade58">58</value>
+			<value displayed="Grade60">60</value>
+			<value displayed="Grade61">61</value>
+			<value displayed="Grade62">62</value>
+			<value displayed="Grade63">63</value>
+			<value displayed="Grade64">64</value>
+			<value displayed="Grade65">65</value>
+			<value displayed="Grade66">66</value>
+			<value displayed="Grade67">67</value>
+			<value displayed="Grade68">68</value>
+			<value displayed="Grade69">69</value>
+			<value displayed="Grade70">70</value>
+		</values>
+	</options>
+
+	<groups>
+		<group id="Main" label="Main" />
+		<group id="Description" label="Description" />
+		<group id="Other" label="Other" />
+		<group id="Pictures" label="Pictures" />
+	</groups>
+
+	<filters>
+		<group label="Main">
+			<filter comparison="range" field="year" labelselect="Intervalle" numeric="true" quick="true" />
+			<filter comparison="contain" field="picture" numeric="true" quick="false" />
+		</group>
+		<group label="Description">
+			<filter comparison="contain" field="diameter" labelselect="Contient" numeric="true" quick="false" />
+		</group>
+	</filters>
+
+	<random></random>
+
+	<fields lending="false" tags="true">
+		<field value="gcsautoid" displayed="" group="" imported="false" init="" label="" type="number" />
+		<field value="name" group="Main" init="%currency% %value% (%year%)" label="Name" type="formatted" />
+		<field value="picture" default="view" group="Main" init="" label="Picture" type="image" />
+		<field value="currency" flat="true" group="Main" history="true" init="" label="Currency" type="history text" />
+		<field value="country" group="Main" label="Country" type="history text" init="" />
+		<field value="value" group="Main" init="" label="Value" type="number" />
+		<field value="year" group="Main" init="" label="Year" type="number" />
+		<field value="added" group="Main" init="current" label="PanelAdded" type="date" />
+		<field values="grades" group="Main" init="" label="Condition" type="options" value="condition" />
+		<field value="comments" group="Main" init="" label="Comments" type="long text" />
+		<field value="diameter" group="Description" init="" label="Diameter" type="number" />
+		<field value="metal" flat="true" group="Description" history="true" init="" label="Metal" type="single list" />
+		<field value="edge" group="Description" init="" label="Edge" type="long text" />
+		<field value="head" group="Description" init="" label="Head" type="long text" />
+		<field value="tail" group="Description" init="" label="Tail" type="long text" />
+		<field value="location" group="Description" init="current" label="Location" type="history text" />
+		<field value="history" group="Other" init="" label="History" type="long text" />
+		<field value="website" group="Other" init="" label="Website" type="url" />
+		<field value="estimate" group="Other" init="" label="Estimate" type="number" />
+		<field value="references" group="Other" init="" label="References" type="long text" />
+		<field value="front" default="view" group="Pictures" init="" label="Head" type="image" />
+		<field value="back" default="view" group="Pictures" init="" label="Tail" type="image" />
+		<field value="edge1" default="view" group="Pictures" init="" label="Edge1" type="image" />
+		<field value="edge2" default="view" group="Pictures" init="" label="Edge2" type="image" />
+		<field value="edge3" default="view" group="Pictures" init="" label="Edge3" type="image" />
+		<field value="edge4" default="view" group="Pictures" init="" label="Edge4" type="image" />
+		<field value="type" group="Main" init="" label="Type" type="options" values="types" />
+	</fields>
+
+	<panels>
+		<panel editable="true" label="PanelForm" name="form">
+			<item type="line">
+				<item expand="true" for="name" type="value" />
+			</item>
+			<item expand="true" type="notebook">
+				<item expand="true" title="Main" type="tab" value="bla">
+					<item type="line">
+						<item for="picture" height="150" type="value" width="150" />
+						<item cols="2" rows="5" type="table">
+							<item row="0" col="0" for="currency" type="label" />
+							<item row="0" col="1" for="currency" expand="true" type="value" />
+							<item row="1" col="0" for="value" type="label" />
+							<item row="1" col="1" for="value" expand="true" type="value" />
+							<item row="2" col="0" for="year" type="label" />
+							<item row="2" col="1" for="year" expand="true" type="value" />
+							<item row="3" col="0" for="country" type="label" />
+							<item row="3" col="1" for="country" expand="true" type="value" />
+							<item row="4" col="0" for="type" type="label" />
+							<item row="4" col="1" for="type" expand="true" type="value" />
+						</item>
+					</item>
+					<item type="box" expand="true">
+						<item type="table" rows="2" cols="2">
+							<item row="0" col="0" for="added" type="label" />
+							<item row="0" col="1" expand="default" for="added" type="value" />
+							<item row="1" col="0" for="condition" type="label" />
+							<item row="1" col="1" for="condition" type="value" />
+						</item>
+						<item for="comments" type="label" />
+						<item for="comments" expand="true" type="value" />
+					</item>
+				</item>
+				<item expand="true" title="Description" type="tab" value="bla">
+					<item cols="4" expand="true" rows="5" type="table">
+						<item row="0" col="0" for="diameter" type="label" />
+						<item row="0" col="1" expand="default" for="diameter" type="value" />
+						<item row="1" col="0" collapsed="%metal%" colspan="3" title="Metal" type="expander">
+							<item for="metal" type="value" />
+						</item>
+						<item row="2" col="0" for="edge" type="label" />
+						<item row="2" col="1" colspan="3" expand="true" for="edge" type="value" />
+						<item row="3" col="0" for="head" type="label" />
+						<item row="3" col="1" colspan="3" expand="true" for="head" type="value" />
+						<item row="4" col="0" for="tail" type="label" />
+						<item row="4" col="1" colspan="3" expand="true" for="tail" type="value" />
+					</item>
+				</item>
+				<item expand="true" title="Other" type="tab" value="bla">
+					<item cols="4" expand="true" rows="5" type="table">
+						<item col="0" row="0" for="location" type="label" />
+						<item col="1" row="0" for="location" type="value" />
+						<item col="0" row="1" for="estimate" type="label" />
+						<item col="1" row="1" expand="default" for="estimate" type="value" />
+						<item col="0" row="2" for="website" type="label" />
+						<item col="1" row="2" expand="default" for="website" type="value" />
+						<item col="0" row="3" for="history" type="label" />
+						<item col="1" row="3" colspan="3" expand="true" for="history" type="value" />
+						<item col="0" row="4" for="references" type="label" />
+						<item col="1" row="4" colspan="3" expand="true" for="references" type="value" />
+					</item>
+				</item>
+				<item expand="true" title="Pictures" type="tab" value="bla">
+					<item type="box" expand="true">
+						<item cols="2" rows="5" expand="true" type="table">
+							<item row="0" col="0" expand="true" type="label" label="Front" align="center" />
+							<item row="0" col="1" expand="true" type="label" label="Back" align="center" />
+							<item row="1" col="0" expand="true" for="front" type="value" height="150" />
+							<item row="1" col="1" expand="true" for="back" type="value" height="150" />
+							<item row="2" col="0" expand="true" colspan="2" type="label" label="Edge" align="center" />
+							<item row="3" col="0" expand="true" for="edge1" type="value" height="150" />
+							<item row="3" col="1" expand="true" for="edge2" type="value" height="150" />
+							<item row="4" col="0" expand="true" for="edge3" type="value" height="150" />
+							<item row="4" col="1" expand="true" for="edge4" type="value" height="150" />
+						</item>
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line">
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+		<panel editable="false" label="PanelReadOnly" name="readonly">
+			<item type="line">
+				<item style="page" type="box" width="150">
+					<item for="picture" type="value" width="140" />
+				</item>
+				<item expand="true" type="box">
+					<item type="table" cols="2" rows="4" expand="true">
+						<item col="0" row="0" for="currency" type="label" />
+						<item col="1" row="0" for="currency" type="value" expand="true" />
+						<item col="0" row="1" for="value" type="label" />
+						<item col="1" row="1" for="value" type="value" expand="true" />
+						<item col="0" row="2" for="year" type="label" />
+						<item col="1" row="2" for="year" type="value" expand="true" />
+						<item col="0" row="3" for="country" type="label" />
+						<item col="1" row="3" for="country" type="value" expand="true" />
+					</item>
+				</item>
+			</item>
+			<item type="box">
+				<item type="table" cols="2" rows="4" expand="true">
+					<item col="0" row="0" for="added" type="label" />
+					<item col="1" row="0" for="added" type="value" />
+					<item col="0" row="1" for="condition" type="label" />
+					<item col="1" row="1" for="condition" type="value" />
+					<item col="0" row="2" for="type" type="label" />
+					<item col="1" row="2" for="type" type="value" />
+					<item col="0" row="3" for="comments" type="label" />
+					<item col="1" row="3" for="comments" type="value" expand="horizontal" height="5em" />
+				</item>
+				<item type="expander" title="Description">
+					<item type="table" cols="2" rows="5" expand="true">
+						<item col="0" row="0" for="diameter" type="label" />
+						<item col="1" row="0" for="diameter" type="value" />
+						<item col="0" row="1" for="metal" type="label" />
+						<item col="1" row="1" for="metal" type="value" flat="true" />
+						<item col="0" row="2" for="edge" type="label" />
+						<item col="1" row="2" for="edge" type="value" expand="true" />
+						<item col="0" row="3" for="head" type="label" />
+						<item col="1" row="3" for="head" type="value" expand="true" />
+						<item col="0" row="4" for="tail" type="label" />
+						<item col="1" row="4" for="tail" type="value" expand="true" />
+					</item>
+				</item>
+				<item type="expander" title="Other">
+					<item type="table" cols="2" rows="5" expand="true">
+						<item col="0" row="0" for="location" type="label" />
+						<item col="1" row="0" for="location" type="value" expand="true" />
+						<item col="0" row="1" for="estimate" type="label" />
+						<item col="1" row="1" for="estimate" type="value" expand="true" />
+						<item col="0" row="2" for="website" type="label" />
+						<item col="1" row="2" for="website" type="value" expand="true" />
+						<item col="0" row="3" for="history" type="label" />
+						<item col="1" row="3" for="history" type="value" expand="true" />
+						<item col="0" row="4" for="references" type="label" />
+						<item col="1" row="4" for="references" type="value" expand="true" />
+					</item>
+				</item>
+				<item type="expander" title="Pictures">
+					<item type="table" cols="2" rows="5" expand="true">
+					        <item row="0" col="0" type="label" label="Front" align="center" expand="true" />
+						<item row="0" col="1" type="label" label="Back" align="center" expand="true" />
+						<item row="1" col="0" for="front" type="value" expand="true" />
+						<item row="1" col="1" for="back" type="value" expand="true" />
+					        <item row="2" col="0" colspan="2" type="label" label="Edge" align="center" expand="true" />
+						<item row="3" col="0" for="edge1" type="value" expand="true" />
+						<item row="3" col="1" for="edge2" type="value" expand="true" />
+						<item row="4" col="0" for="edge3" type="value" expand="true" />
+						<item row="4" col="1" for="edge4" type="value" expand="true" />
+					</item>
+				</item>
+			</item>
+			<item type="expander" title="PanelTags">
+				<item expand="true" for="tags" type="value" />
+				<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+			</item>
+		</panel>
+	</panels>
+</collection>

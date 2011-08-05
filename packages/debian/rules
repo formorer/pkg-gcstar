@@ -1,0 +1,112 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+export LANG=C
+export LC_ALL=C
+
+build: patch build-stamp
+
+build-stamp: 
+	dh_testdir
+
+	touch build-stamp
+
+clean: clean1 unpatch
+
+clean1:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	./install --text --prefix=$(CURDIR)/debian/gcstar/usr
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_16x16.png \
+		debian/gcstar/usr/share/icons/hicolor/16x16/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_22x22.png \
+		debian/gcstar/usr/share/icons/hicolor/22x22/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_24x24.png \
+		debian/gcstar/usr/share/icons/hicolor/24x24/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_32x32.png \
+		debian/gcstar/usr/share/icons/hicolor/32x32/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_36x36.png \
+		debian/gcstar/usr/share/icons/hicolor/36x36/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_48x48.png \
+		debian/gcstar/usr/share/icons/hicolor/48x48/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_64x64.png \
+		debian/gcstar/usr/share/icons/hicolor/64x64/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_72x72.png \
+		debian/gcstar/usr/share/icons/hicolor/72x72/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_96x96.png \
+		debian/gcstar/usr/share/icons/hicolor/96x96/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_128x128.png \
+		debian/gcstar/usr/share/icons/hicolor/128x128/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_192x192.png \
+		debian/gcstar/usr/share/icons/hicolor/192x192/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_256x256.png \
+		debian/gcstar/usr/share/icons/hicolor/256x256/apps/gcstar.png
+	install -D -m 0644 debian/gcstar/usr/share/gcstar/icons/gcstar_scalable.svg \
+		debian/gcstar/usr/share/icons/hicolor/scalable/apps/gcstar.svg
+	install -D -m 0644 share/applications/gcstar.xml \
+		debian/gcstar/usr/share/mime/packages/gcstar.xml
+
+	#this is also in the copyright file
+	-rm debian/gcstar/usr/share/gcstar/LICENSE
+
+	# Installing lintian overrides
+	for LINTIAN in debian/lintian/*; \
+	do \
+		install -D -m 644 $$LINTIAN debian/`basename $$LINTIAN`/usr/share/lintian/overrides/`basename $$LINTIAN` || exit 1; \
+	done
+
+
+# Build architecture-independent files here.
+binary-arch: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-indep: build install patch
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs CHANGELOG
+	dh_installdocs 
+	dh_installexamples
+	dh_install
+	dh_installmenu
+	dh_installman 
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_perl
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb 
+
+patch: patch-stamp
+patch-stamp:
+	dpatch apply-all
+	#dpatch call-all -a=pkg-info >patch-stamp #I don't understand this one.
+	echo patched > patch-stamp
+
+unpatch:
+	dpatch deapply-all
+	rm -rf patch-stamp debian/patched
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install 

@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision3.xsd"
+name="GCTVseries">
+
+	<lang>GCTVseries</lang>
+
+	<options>
+
+		<defaults>
+			<image>no.png</image>
+			<sortby>name</sortby>
+		</defaults>
+
+		<fields>
+			<id>id</id>
+			<title>name</title>
+			<cover>image</cover>
+			<url>webPage</url>
+			<play>videofile</play>
+			<search>
+				<field>series</field>
+			</search>
+			<results>
+				<field>series</field>
+				<field>title</field>
+				<field>season</field>
+				<field>firstaired</field>
+			</results>
+		</fields>
+
+		<overlay>
+            <image>dvd.png</image>
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>16</paddingRight>
+			<paddingTop>16</paddingTop>
+			<paddingBottom>2</paddingBottom>
+		</overlay>
+
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+		<values id="ages">
+			<value displayed="">0</value>
+			<value displayed="AgeUnrated">1</value>
+			<value displayed="AgeAll">2</value>
+			<value displayed="AgeParent">5</value>
+			<value displayed="10">10</value>
+			<value displayed="11">11</value>
+			<value displayed="12">12</value>
+			<value displayed="13">13</value>
+			<value displayed="14">14</value>
+			<value displayed="15">15</value>
+			<value displayed="16">16</value>
+			<value displayed="17">17</value>
+			<value displayed="18">18</value>
+			<value displayed="19">19</value>
+			<value displayed="20">20</value>
+			<value displayed="21">21</value>
+		</values>
+		<values id="seen">
+			<value displayed="SeenNo">0</value>
+			<value displayed="SeenYes">1</value>
+		</values>
+	</options>
+	
+	<groups>
+		<group id="main" label="Main"/>
+		<group id="info" label="General"/>
+		<group id="details" label="Details"/>
+		<group id="episodelist" label="Episodes"/>
+	</groups>
+
+	<random>
+		<filter field="seen" comparison="eq" numeric="true" value="0" after="1"/>
+	</random>
+	
+	<fields lending="true" tags="true">
+		<field value="id"
+				type="number"
+				label="Id"
+				init=""
+				group="main"
+				imported="false"/>
+		<field value="name"
+				group="main"
+				init="%series% - Season %season%"
+				label="Name"
+				type="formatted" />
+		<field value="series"
+				type="short text"
+				label="Series"
+				init="NewItem"
+				group="main"
+				imported="true"/>
+		<field value="season"
+				type="number"
+				label="Season"
+				init="1"
+				min="0"
+				max="99999"
+				group="main"
+				imported="true"/>
+		<field value="part"
+				type="number"
+				label="Part"
+				init="1"
+				min="0"
+				max="99999"
+				group="main"
+				imported="true"/>
+		<field value="title"
+				type="short text"
+				label="Title"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="specialep"
+				type="yesno"
+				label="Special"
+				init="0"
+				notnull="true"
+				group="main"
+				imported="true"/>
+		<field value="seen"
+				type="yesno"
+				label="Seen"
+				init="0"
+				notnull="true"
+				group="details"
+				imported="main"/>
+		<field value="firstaired"
+				type="short text"
+				label="FirstAired"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="time"
+				type="short text"
+				label="Time"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="country"
+				type="history text"
+				label="Country"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="director"
+				type="short text"
+				label="Director"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="producer"
+				type="short text"
+				label="Producer"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="music"
+				type="short text"
+				label="Music"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="rating"
+				type="number"
+				displayas="graphical"
+				label="PanelRating"
+				init="0"
+				max="10"
+				group="details"
+				imported="true"/>
+		<field value="ratingpress"
+				type="number"
+				displayas="graphical"
+				label="PanelPressRating"
+				init="0"
+				max="10"
+				group="details"
+				imported="true"/>
+		<field value="age"
+				type="options"
+				label="MinimumAge"
+				init=""
+				values="ages"
+				separator="4"
+				group="info"
+				imported="true"/>
+		<field value="image"
+				type="image"
+				label="Image"
+				init=""
+				group="main"
+				imported="true"/>
+		<field value="genre"
+				type="single list"
+				label="Genre"
+				init=",,,"
+				group="info"
+				imported="true"/>
+		<field value="actors"
+				type="double list"
+				label="Actors"
+				label1="Actor"
+				label2="Role"				
+				init=""
+				group="info"
+				history="false"
+				imported="true"/>
+		<field value="synopsis"
+				type="long text"
+				label="Synopsis"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="episodes"
+				type="double list"
+				label="Episodes"
+				label1="Episode"
+				label2="Name"				
+				init=""
+				group="episodelist"
+				history="false"
+				imported="true"/>
+		<field value="audio"
+				type="double list"
+				label="Audio"
+				label1="Audio"
+				label2="Encoding"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="subt"
+				type="single list"
+				label="Subtitles"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="videofile"
+				type="file"
+				format="video"
+				label="Trailer"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="format"
+				type="history text"
+				label="Format"
+				init="DVD"
+				group="details"
+				imported="false"/>
+		<field value="location"
+				type="history text"
+				label="PanelLocation"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="added"
+				type="date"
+				label="PanelAdded"
+				init="current"
+				group="details"
+				imported="false"/>
+		<field value="comment"
+				type="long text"
+				label="Comment"
+				init=""
+				group="details"
+				imported="true"/>
+		<field value="webPage"
+				type="button"
+				format="url"
+				label="Url"
+				init=""
+				group="main"
+				imported="true"/>
+	</fields>
+	
+	<filters>
+		<group label="General">
+			<filter field="title" comparison="contain"/>
+			<filter field="original" comparison="contain"/>
+			<filter field="director" comparison="contain"/>
+			<filter field="actors" comparison="contain"/>
+			<filter field="series" comparison="contain" quick="true"/>
+			<filter field="genre" comparison="contain" quick="true"/>
+			<filter field="country" comparison="contain" quick="true"/>
+			<filter field="age" label="FilterAudienceAge" comparison="le" numeric="true" quick="true"/>
+			<filter field="firstaired" comparison="range" numeric="true" preprocess="extractYear"/>
+		</group>
+		<group label="Details">
+			<filter field="seen" comparison="eq" values="both" labeloff="FilterSeenNo" labelon="FilterSeenYes" quick="true"/>
+			<filter field="rating" comparison="ge" numeric="true" labelselect="FilterRatingSelect" quick="true"/>
+		</group>
+		<group label="PanelLending">
+			<filter field="borrower" comparison="eq" quick="true"/>
+		</group>
+	</filters>
+
+	<panels>
+		<panel name="form" label="PanelForm" editable="true">
+			<item type="line">
+				<item type="value" for="id" width="5" nomargin="true"/>
+				<item type="value" for="name" expand="true" nomargin="true"/>
+			</item>
+			<item type="line">
+				<item type="value" for="series" expand="true" nomargin="true"/>
+				<item type="label" for="season" width="5" nomargin="true"/>
+				<item type="value" for="season" nomargin="true"/>
+				<item type="label" for="part" width="5" nomargin="true"/>
+				<item type="value" for="part" nomargin="true"/>
+				<item type="special" for="searchButton" nomargin="true"/>
+				<item type="special" for="refreshButton" nomargin="true" />
+			</item>
+			<item type="notebook" expand="true">
+				<item type="tab" value="info" title="General">
+					<item type="line">
+						<item type="value" for="image" width="130" height="170"/>
+						<item type="table" rows="5" cols="4">
+							<item type="label" for="title" row="0" col="0"/>
+							<item type="line" row="0" col="1" colspan="3" expand="horizontal">
+						        <item type="value" for="title" expand="true" nomargin="true"/>
+						        <item type="value" for="specialep" nomargin="true"/>
+					        </item>
+							<item type="label" for="firstaired" row="1" col="0"/>
+							<item type="value" for="firstaired" row="1" col="1"/>
+							<item type="label" for="time" row="1" col="2"/>
+							<item type="value" for="time" row="1" col="3"/>
+							<item type="label" for="director" row="2" col="0"/>
+							<item type="value" for="director" row="2" col="1"/>
+							<item type="label" for="producer" row="2" col="2"/>
+							<item type="value" for="producer" row="2" col="3"/>
+							<item type="label" for="country" row="3" col="0"/>
+							<item type="value" for="country" row="3" col="1"/>
+							<item type="label" for="music" row="3" col="2"/>
+							<item type="value" for="music" row="3" col="3"/>
+							<item type="label" for="age" row="4" col="0"/>
+							<item type="value" for="age" row="4" col="1"/>
+						</item>
+					</item>
+					<item type="expander" title="Genre" collapsed="%genre%">
+						<item type="value" for="genre"/>
+					</item>
+					<item type="expander" title="Actors" collapsed="%actors%">
+						<item type="value" for="actors"/>
+					</item>
+					<item type="table" rows="1" cols="2" expand="true">
+						<item type="value" for="synopsis" row="0" col="0" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="details" title="Details">
+					<item type="table" rows="4" cols="4">
+						<item type="value" for="seen" row="0" col="0" colspan="2"/>
+						<item type="label" for="rating" row="0" col="2"/>
+						<item type="value" for="rating" row="0" col="3"/>
+						<item type="label" for="format" row="1" col="0"/>
+						<item type="value" for="format" row="1" col="1"/>
+						<item type="label" for="ratingpress" row="1" col="2"/>
+						<item type="value" for="ratingpress" row="1" col="3"/>
+						<item type="label" for="location" row="2" col="0"/>
+						<item type="value" for="location" row="2" col="1"/>
+						<item type="label" for="added" row="2" col="2"/>
+						<item type="value" for="added" row="2" col="3"/>
+						<item type="label" for="videofile" row="3" col="0"/>
+						<item type="line" row="3" col="1" colspan="3" expand="horizontal">
+						    <item type="value" for="videofile" expand="true" nomargin="true"/>
+						    <item type="launcher" for="videofile" nomargin="true"/>
+						    <item type="extractor" for="videofile" nomargin="true"/>
+					    </item>
+					</item>
+					<item type="expander" title="Languages" collapsed="[@Audio@@Separator@%audio%] - [@Subtitles@@Separator@%subt%]">
+						<item type="line" expand="true">
+							<item type="value" for="audio" expand="true"/>
+							<item type="value" for="subt" expand="true"/>
+						</item>
+					</item>
+					<item type="line" expand="true">
+						<item type="label" for="comment"/>
+						<item type="value" for="comment" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="episodestab" title="Episodes">
+					<item type="box" expand="true">
+						<item type="value" for="episodes" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="lending" title="PanelLending">
+					<item type="table" rows="3" cols="3">
+						<item type="label" for="borrower" row="0" col="0"/>
+						<item type="value" for="borrower" row="0" col="1"/>
+						<item type="special" for="mailButton" row="0" col="2"/>
+						<item type="label" for="lendDate" row="1" col="0"/>
+						<item type="value" for="lendDate" row="1" col="1"/>
+						<item type="special" for="itemBackButton" row="1" col="2"/>
+					</item>
+					<item type="label" for="borrowings" align="left"/>
+					<item type="line" expand="true">
+						<item type="box" width="64"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="64"/>
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line" homogeneous="true">
+				<item type="value" for="webPage" expand="true"/>
+				<item type="special" for="deleteButton" expand="true"/>
+			</item>
+		</panel>
+	</panels>
+</collection>

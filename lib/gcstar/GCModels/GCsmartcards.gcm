@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCsmartcards">
+
+	<lang>GCsmartcards</lang>
+
+	<options>
+
+		<defaults>
+			<image>no_smartcards.png</image>
+			<groupby>country</groupby>
+		</defaults>
+
+		<fields>
+			<cover>cover</cover>
+			<id>gcsautoid</id>
+			<title>name</title>
+		</fields>
+
+		<overlay>
+			<!--<image>smartcards.png</image>-->
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>12</paddingRight>
+			<paddingTop>0</paddingTop>
+			<paddingBottom>12</paddingBottom>
+		</overlay>
+
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+
+	</options>
+
+	<groups>
+		<group id="Main" label="Main" />
+		<group id="PanelLending" label="PanelLending" />
+
+	</groups>
+
+	<filters>
+
+		<group label="Main">
+			<filter comparison="range" field="year1" labelselect="Intervalle" numeric="true" quick="true" />
+			<filter comparison="eq" field="exchange" numeric="false" quick="true" />
+		</group>
+
+	</filters>
+
+	<random></random>
+
+	<fields lending="true" tags="true">
+
+
+# Definition des Champs Communs
+
+		<field value="playlist" format="audio" group="" init="..\lib\gcstar\GCHelp\GCHelpSmartcards.pdf" label="Help" type="file" />
+		<field value="name" group="" init="%type1% (%year1%)" label="Name" type="formatted" />
+
+# Definition des Champs "Main"
+
+		<field value="gcsautoid" displayed="" group="" imported="false" init="" label="" type="number" />
+		<field value="rating1" group="Main" label="Rating1" max="10" init="0" type="number" displayas="graphical"/>
+		
+		<field value="cover" default="view" group="Main" init="" label="Cover" type="image" imported="true"/>
+		<field value="backpic" type="image" label="ContextImgBack" init="" group="Main" linkedto="cover" imported="true"/>
+		<field value="chip" default="view" group="Main" init="" label="Chip" type="image" />
+		<field value="boxed" default="view" group="Main" init="" label="Box" type="image" />
+		<field value="chip1" flat="true" group="Main" history="true" init="" label="Chip1" type="history text" />
+
+		<field value="type1" flat="true" group="Main" history="true" init="" label="Type1" type="history text" />
+		<field value="type2" flat="true" group="Main" history="true" init="" label="Type2" type="history text" />
+		<field value="dimension" flat="true" group="Main" history="true" init="" label="Dimension" type="history text" />
+		<field value="location" flat="true" group="Main" history="true" init="" label="Location" type="history text" />
+		<field value="pressed" flat="true" group="Main" history="true" init="" label="Pressed" type="history text" />
+		<field value="title1" flat="true" group="Main" history="true" init="" label="Title1" type="short text" />
+		<field value="edition" flat="true" group="Main" history="true" init="" label="Edition" type="history text" />
+		<field value="serial" flat="true" group="Main" history="true" init="" label="Serial" type="short text" />
+		<field value="theme" flat="true" group="Main" history="true" init="" label="Theme" type="history text" />
+		<field value="serie" flat="true" group="Main" history="true" init="" label="Serie" type="history text" />
+
+		<field value="year1" group="Main" init="" label="Year1" type="date" />
+		<field value="year2" group="Main" init="" label="Year2" type="date" />
+
+		<field value="comments1" group="Main" init="" label="Comments1" type="long text" />
+		<field value="exchange" group="Main" init="0" label="Exchange" type="yesno" />
+		<field value="wanted" group="Main" init="0" label="Wanted" type="yesno" />
+		<field value="condition" group="Main" init="0" label="Condition" type="yesno" />
+
+		<field value="variety" group="Main" init="0" label="Variety" type="yesno" />
+		<field value="charge" group="Main" init="0" label="Charge" type="yesno" />
+
+		<field value="color" flat="true" group="Main" history="true" init="" label="Color" type="short text" />
+
+		<field value="weight" group="Main" init="" label="Weight" type="history text" />
+
+		<field value="country" group="Main" init="" label="Country" type="history text" />
+
+		<field value="unit" group="Main" label="Unit" history="true" type="history text" init="" />
+
+		<field value="added" group="Main" init="current" label="PanelAdded" type="date" />
+		<field value="acquisition" group="Main" init="" label="Acquisition" type="date" />
+
+		<field value="catalog3" group="Main" init="" label="Catalog3" type="short text" />
+		
+		<field value="reference1" group="Main" init="" label="Reference1" type="short text" />
+		<field value="reference2" group="Main" init="" label="Reference2" type="short text" />
+		<field value="reference3" group="Main" init="" label="Reference3" type="short text" />
+
+		<field value="quotationnew10" group="Main" init="" label="Quotationnew10" type="short text" />
+		<field value="quotationnew20" group="Main" init="" label="Quotationnew20" type="short text" />
+		<field value="quotationnew30" group="Main" init="" label="Quotationnew30" type="short text" />
+		
+		<field value="quotationold10" group="Main" init="" label="Quotationold10" type="short text" />
+		<field value="quotationold20" group="Main" init="" label="Quotationold20" type="short text" />
+		<field value="quotationold30" group="Main" init="" label="Quotationold30" type="short text" />
+
+
+	</fields>
+	
+# Lecture / Ecriture
+
+	<panels>
+		<panel editable="true" label="PanelForm" name="form">
+			<item type="line">
+					<item cols="5" rows="1" type="table" expand="true" >
+						<item col="0" row="1" expand="true" for="name" type="value" />
+						<item col="1" row="1" for="added" type="label" />
+						<item col="2" row="1" for="added" type="value" />
+
+					</item>
+			</item>
+			<item expand="true" type="notebook">
+
+# Onglet "Main"
+
+				<item expand="true" title="Main" type="tab" value="bla">
+					<item type="line" align="center" >
+						<item cols="3" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="exchange" type="value" />
+							<item row="0" col="1" expand="true" for="wanted" type="value" />
+							<item row="0" col="2" expand="true" for="condition" type="value" />
+						</item>
+					</item>
+					<item type="line">
+						<item cols="1" rows="11" type="table" expand="true">
+							<item col="0" for="rating1" row="2" type="label" align="center" />
+							<item col="0" for="rating1" expand="false" row="3" type="value" />
+							<item row="9" col="0" expand="true" type="label" label="TheSmartCard" align="center" />					
+							<item row="8" col="0" expand="false" for="cover" height="160" type="value" width="240" />
+						</item>
+						<item cols="2" rows="11" type="table" expand="true">
+							<item row="1" col="0" for="country" type="label" />
+							<item row="1" col="1" for="country" expand="true" type="value" />
+							<item row="2" col="0" for="type1" type="label" />
+							<item row="2" col="1" for="type1" expand="true" type="value" />
+							<item row="3" col="0" for="unit" type="label" />
+							<item row="3" col="1" for="unit" expand="true" type="value" />
+							<item row="4" col="0" for="title1" type="label" />
+							<item row="4" col="1" for="title1" expand="true" type="value" />
+							<item row="5" col="0" for="serie" type="label" />
+							<item row="5" col="1" for="serie" expand="true" type="value" />
+							<item row="6" col="0" for="theme" type="label" />
+							<item row="6" col="1" for="theme" expand="true" type="value" />
+							<item row="7" col="0" for="edition" type="label" />
+							<item row="7" col="1" for="edition" expand="true" type="value" />
+							<item row="8" col="0" for="serial" type="label" />
+							<item row="8" col="1" for="serial" expand="true" type="value" />
+							<item row="9" col="0" for="year1" type="label" />
+							<item row="9" col="1" for="year1" expand="true" type="value" />
+							<item row="10" col="0" for="year2" type="label" />
+							<item row="10" col="1" for="year2" expand="true" type="value" />
+						</item>
+						<item cols="1" rows="11" type="table" expand="true">
+							<item row="0" for="chip" expand="false" height="100" type="value" width="120" />
+							<item row="1" expand="true" type="label" label="Chip" align="center" />
+							<item row="2" for="boxed" expand="false" height="100" type="value" width="120" />					
+							<item row="3" expand="true" type="label" label="Box" align="center" />
+						</item>
+					</item>
+					<item type="line">
+						<item cols="4" rows="4" type="table" expand="true">
+							<item row="0" col="0" for="pressed" type="label" />
+							<item row="0" col="1" for="pressed" expand="true" type="value" />
+							<item row="1" col="0" for="location" type="label" />
+							<item row="1" col="1" for="location" expand="true" type="value" />
+							<item row="0" col="2" for="dimension" type="label" />
+							<item row="0" col="3" for="dimension" expand="true" type="value" />
+							<item row="1" col="2" for="weight" type="label" />
+							<item row="1" col="3" for="weight" expand="true" type="value" />
+							<item row="2" col="0" for="type2" type="label" />
+							<item row="2" col="1" for="type2" expand="true" type="value" />
+							<item row="2" col="2" for="color" type="label" />
+							<item row="2" col="3" for="color" expand="true" type="value" />
+							<item row="3" col="0" for="acquisition" type="label" />
+							<item row="3" col="1" for="acquisition" expand="true" type="value" />
+						</item>
+					</item>				
+
+					<item type="box" expand="false">
+						<item cols="2" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="charge" type="value" />
+							<item row="0" col="1" expand="true" for="variety" type="value" />
+						</item>
+						<item for="comments1" type="label" />
+						<item for="comments1" expand="true" type="value" />
+					</item>
+
+					<item type="line">
+						<item cols="6" rows="4" type="table" expand="true">
+
+							<item row="0" col="0" align="center" label="Catalog0" type="label" />
+							<item row="0" col="1" align="center" label="Reference0" type="label" />
+							<item row="0" col="2" align="center" label="Quotationnew00" type="label" />
+							<item row="0" col="3" align="center" label="Quotationold00" type="label" />
+
+							<item row="1" col="0" align="center" label="Catalog1" type="label" />
+							<item row="1" col="1" for="reference1" type="value" />
+							<item row="1" col="2" for="quotationnew10" type="value" />
+							<item row="1" col="3" for="quotationold10" type="value" />
+
+							<item row="2" col="0" align="center" label="Catalog2" type="label" />
+							<item row="2" col="1" for="reference2" type="value" />
+							<item row="2" col="2" for="quotationnew20" type="value" />
+							<item row="2" col="3" for="quotationold20" type="value" />
+
+							<item row="3" col="0" align="center" for="catalog3" type="value" />
+							<item row="3" col="1" for="reference3" type="value" />
+							<item row="3" col="2" for="quotationnew30" type="value" />
+							<item row="3" col="3" for="quotationold30" type="value" />
+						</item>
+					</item>
+
+				</item>
+
+# Onglet "PanelTags"
+
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line">
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+
+######################################################## "Lecture Seule" ###################################################################
+
+
+		<panel editable="false" label="PanelReadOnly" name="readonly">
+
+			<item type="line">
+				<item expand="true" for="name" type="value" />
+			</item>
+			<item expand="true" type="notebook">
+
+# Onglet "Main"
+
+<item expand="true" title="Main" type="tab" value="bla">
+					<item type="line" align="center" >
+						<item cols="3" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="exchange" type="value" />
+							<item row="0" col="1" expand="true" for="wanted" type="value" />
+							<item row="0" col="2" expand="true" for="condition" type="value" />
+						</item>
+					</item>
+					<item type="line">
+						<item cols="1" rows="11" type="table" expand="true">
+							<item col="0" for="rating1" row="2" type="label" align="center" />
+							<item col="0" for="rating1" expand="false" row="3" type="value" />
+							<item row="9" col="0" expand="true" type="label" label="TheSmartCard" align="center" />					
+							<item row="8" col="0" expand="false" for="cover" height="160" type="value" width="240" />
+						</item>
+						<item cols="2" rows="11" type="table" expand="true">
+							<item row="1" col="0" for="country" type="label" />
+							<item row="1" col="1" for="country" expand="true" type="value" />
+							<item row="2" col="0" for="type1" type="label" />
+							<item row="2" col="1" for="type1" expand="true" type="value" />
+							<item row="3" col="0" for="unit" type="label" />
+							<item row="3" col="1" for="unit" expand="true" type="value" />
+							<item row="4" col="0" for="title1" type="label" />
+							<item row="4" col="1" for="title1" expand="true" type="value" />
+							<item row="5" col="0" for="serie" type="label" />
+							<item row="5" col="1" for="serie" expand="true" type="value" />
+							<item row="6" col="0" for="theme" type="label" />
+							<item row="6" col="1" for="theme" expand="true" type="value" />
+							<item row="7" col="0" for="edition" type="label" />
+							<item row="7" col="1" for="edition" expand="true" type="value" />
+							<item row="8" col="0" for="serial" type="label" />
+							<item row="8" col="1" for="serial" expand="true" type="value" />
+							<item row="9" col="0" for="year1" type="label" />
+							<item row="9" col="1" for="year1" expand="true" type="value" />
+							<item row="10" col="0" for="year2" type="label" />
+							<item row="10" col="1" for="year2" expand="true" type="value" />
+						</item>
+						<item cols="1" rows="11" type="table" expand="true">
+							<item row="0" for="chip" expand="false" height="100" type="value" width="120" />
+							<item row="1" expand="true" type="label" label="Chip" align="center" />
+							<item row="2" for="boxed" expand="false" height="100" type="value" width="120" />					
+							<item row="3" expand="true" type="label" label="Box" align="center" />
+						</item>
+					</item>
+					<item type="line">
+						<item cols="4" rows="4" type="table" expand="true">
+							<item row="0" col="0" for="pressed" type="label" />
+							<item row="0" col="1" for="pressed" expand="true" type="value" />
+							<item row="1" col="0" for="location" type="label" />
+							<item row="1" col="1" for="location" expand="true" type="value" />
+							<item row="0" col="2" for="dimension" type="label" />
+							<item row="0" col="3" for="dimension" expand="true" type="value" />
+							<item row="1" col="2" for="weight" type="label" />
+							<item row="1" col="3" for="weight" expand="true" type="value" />
+							<item row="2" col="0" for="type2" type="label" />
+							<item row="2" col="1" for="type2" expand="true" type="value" />
+							<item row="2" col="2" for="color" type="label" />
+							<item row="2" col="3" for="color" expand="true" type="value" />
+							<item row="3" col="0" for="acquisition" type="label" />
+							<item row="3" col="1" for="acquisition" expand="true" type="value" />
+						</item>
+					</item>				
+
+					<item type="box" expand="false">
+						<item cols="2" rows="1" type="table" expand="true" align="center" >
+							<item row="0" col="0" expand="true" for="charge" type="value" />
+							<item row="0" col="1" expand="true" for="variety" type="value" />
+						</item>
+						<item for="comments1" type="label" />
+						<item for="comments1" expand="true" type="value" />
+					</item>
+
+					<item type="line">
+						<item cols="6" rows="4" type="table" expand="true">
+
+							<item row="0" col="0" align="center" label="Catalog0" type="label" />
+							<item row="0" col="1" align="center" label="Reference0" type="label" />
+							<item row="0" col="2" align="center" label="Quotationnew00" type="label" />
+							<item row="0" col="3" align="center" label="Quotationold00" type="label" />
+
+							<item row="1" col="0" align="center" label="Catalog1" type="label" />
+							<item row="1" col="1" for="reference1" type="value" />
+							<item row="1" col="2" for="quotationnew10" type="value" />
+							<item row="1" col="3" for="quotationold10" type="value" />
+
+							<item row="2" col="0" align="center" label="Catalog2" type="label" />
+							<item row="2" col="1" for="reference2" type="value" />
+							<item row="2" col="2" for="quotationnew20" type="value" />
+							<item row="2" col="3" for="quotationold20" type="value" />
+
+							<item row="3" col="0" align="center" for="catalog3" type="value" />
+							<item row="3" col="1" for="reference3" type="value" />
+							<item row="3" col="2" for="quotationnew30" type="value" />
+							<item row="3" col="3" for="quotationold30" type="value" />
+						</item>
+					</item>
+
+				</item>			
+
+# Onglet "PanelTags"
+
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" collapse="true"/>
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line">
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+
+	</panels>
+</collection>

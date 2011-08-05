@@ -1,0 +1,10 @@
+<metamodel>
+	<model>Simple</model>
+	<fields>
+		<field>name</field>
+		<field>editor</field>
+		<field>platform</field>
+		<field>genre</field>
+		<field>players</field>
+	</fields>
+</metamodel>

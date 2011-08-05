@@ -1,0 +1,31 @@
+[HEADER]
+<?xml version="1.0" encoding="UTF-8"?>
+<AntMovieCatalog Format="33" Version="3.4.3 (2004-22-12)" Date="23/03/2005 14:12:54">
+ <Catalog>
+  <Properties/>
+  <Contents>
+[/HEADER]
+[ITEM]
+<Movie
+ Number="${id}"
+ Date="${data}"
+ Rating="${rating}"
+ OriginalTitle="${original}"
+ TranslatedTitle="${title}"
+ Director="${director}"
+ Country="${country}"
+ Category="${type}"
+ Year="${year}"
+ Length="${length}"
+ Actors="${actors}"
+ URL="${url}"
+ Description="${synopsis}"
+ Comments="${comment}"
+ Picture="${image}"
+ Checked="True"/>
+[/ITEM]
+[FOOTER]
+  </Contents>
+ </Catalog>
+</AntMovieCatalog>
+[/FOOTER]

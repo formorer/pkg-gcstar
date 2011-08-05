@@ -1,0 +1,1224 @@
+1.6.1
+
+	* New features
+		- CSV plugin now allows you to select which field to use to search for
+		  internet results
+		- Graphs generated from statistics are smoothed, to eliminate sharp lines
+	* Default collections changes
+		- New default collections:
+			TV shows (series) collection model. Useful for tracking dvd
+			collections of tv shows.
+			Computer Software collection, written by Qoolman
+		- Video games collection:
+			New fields: Region, Serial Number.			
+	* New plugins to fetch information from websites
+		- TV shows (series):
+			Thetvdb
+			Themoviedb
+	* Bugs fixed
+		- Unable to remove more than 9 items from a collection at a time
+		- Crash when trying to create a cached image from a missing picture, or when
+		  image does not exist
+		- Some characters were incorrectly encoded in read only views
+		- Add option in collection read only views for fields to "collapse" and hide
+		  when they have no content
+		- Fixed problem at startup when some items were hidden in the toolbar.
+		- The "View modules" menu was not working anymore.
+		- Add play toolbar button for tv episodes collections.
+		- Item window was not properly re-constructed after changing collections.
+		- Dependency on Sort::Naturally removed.
+		- Date::Calc module was not shown as an optional dependency while it is
+		  needed for statistics.
+
+-------------------------------------------------------------------
+
+1.6.0
+	* New features
+		- Generation of statistics:
+			New item in 'File' menu to create pictures based on number of items
+			having the same value for a given field (e.g. you can see how many
+			video games you have for each genre).
+			Options to select the type of graphic (bars, area, pie).
+			Histories can be created showing the evolution of the collection.
+	    - Images thumbnails are now cached. This results in a dramatic speed up
+		  of loading collections when hi-resolution pictures are used.
+		- Dragging and dropping a file to a collection will add it to the
+		  collection if the file is:
+			A video file on a movie collection.
+			An ebook file on a book collection.
+	* New translations
+		- Chinese (Traditional) translation added thanks to 林雪凡.
+	* User interface changes
+		- Language strings are now collection dependant. This results in a
+		  nicer user experience, replacing strings like "New item" with
+		  "New movie", "New game", etc.
+		- New right click context menu on file chooser control, with the option
+		  of choosing a folder instead of a file. Useful for dvd rips stored in
+		  folders, where the folder path needs to be passed to an external
+		  program.
+	    - Added Update button to items, which refreshes the current item's
+          details from the web page it was originally fetched from.
+        - Fields with a history have an auto-completion feature when user
+          starts to enter text.
+		- Right click context menu works as expected when multiple items are
+		  selected.
+		- The collection may be saved if something was changed without clicking
+		  on an item in the list.
+		- When closing an collection without a filename, you now have the
+		  option to save, cancel or discard the changes.
+		- File open dialog is no longer case sensitive when filtering
+		  extensions.
+		- Video and Ebooks file chooser filters files to valid file types
+		- Lots of new skins and skin remakes thanks to Qoolman
+		- Items are now sorted using a 'natural sort' routine, for more
+		  predictable sorting of mixed numeric/text titles
+	* Default collections changes
+		- New default collections:
+			Smart cards (by jimjim92).
+        - Books collections can now link to a local or online 'digital version'
+		  of the book.
+		- Video games collection:
+			New fields: Exclusive, Press rating, Size and Display resolutions.
+	    - Music collection
+	        New fields: Press rating
+	* Export/Import/Fetch/Extract changes
+		- New plugin to export to an external disk. It just copies the
+		  collection to a directory with all the pictures in a sub-directory.
+		  Everything can also be compressed in one single file. Useful to copy
+		  a collection for GCstar Viewer on Android.
+			http://wiki.gcstar.org/en/gcstar_viewer
+		- New plugin to export in Palm PDB format.
+		- Some plugins are now preferred by gcstar, these are for sites with
+		  high quality data and with fully operational plugins. These sites are
+		  now shown first in the plugins list, and are marked by a star.
+		- Default plugin choice now matches with the user's language settings.
+		- CSV Import plugin now has the option to pull information from
+		  websites during import.
+		- DVDFr plugin (Movies - FR) now supports searching by EAN. That means
+		  it can directly be used with a barcode scanner.
+		- Importing from Tellico handles ISBN and rank for book collections and
+		  developers for game collections (patch from DanielS).
+		- HTML export handles pictures and link with generic models (e.g.
+		  Shelf).
+		- Folder import is not shown when an incompatible collection is open.
+	* New plugins to fetch information from websites
+		- Movies:
+			Amazon UK (EN) and DVDEmpire (EN) provided by dingsi.
+			CartelesPeliculas (ES) provided by DoVerMan.
+	* Bugs fixed
+		- Bug fixed preventing opening of collections with custom fields in
+		  some circumstances.
+		- When fields are hidden, they don't appear anymore in the expanders
+		  (e.g. subtitles in movies collections).
+		- Tonight window works as expected after changing collections.
+		- Menus were not updated on Windows systems.
+		- Some urls where misinterpreted as collections when drag and dropped 
+		  onto main window
+		- Bug fixed in some website plugins:
+		    - Massive amount of plugin fixes provided by Tenbaht, including:
+		        DVDFr
+		        OFDb
+		        Imdb
+		        Alpacine
+		        BeyazPerde
+		        Csfd
+		        Moviemeter
+		        Onet
+			Mediadis
+	* Removed plugins:
+		- dvdspot.com was shut down Oct. 2008, removed the GCfilm 
+		  plugin GCDVDSpot.pm
+		- movieclub.be shut down, removed GCfilm plugins
+		  GCMovieClubFR.pm and GCMovieClubNL.pm
+
+-------------------------------------------------------------------
+	  
+1.5.0
+
+	* User interface changes
+		- When too many fields are shown in the dialog box to select which of
+		  them should be displayed, scrollbars are used.
+	* Collection changes
+		- Added an optional attribute to collection fields, sorttype, which
+		  overrides the sorting method for that field. Can be either 'number'
+		  or 'date'.
+	* Bugs fixed
+		- Preview when fetching information was broken.
+		- Button to open the web page associated to an item was disabled when
+		  locking a collection.
+		- It was not possible to modify the title to search for on websites.
+		- Some collections may not be opened if custom fields were added.
+		- The groups of fields were shown more than once in some places when
+		  adding custom fields.
+		- Many bugs fixed for image mode.
+		- Cast was not fetched for every title when using imdb with an import
+		  plugin
+		- Sorting by movie release date was not working with non 'yyyy-mm-dd'
+		  formats
+		- On Windows systems, GCstar now stores its configuration files in the
+		  users Application Data folder, rather than in the GCstar program
+		  folder. This should stop GCstar needing admin rights to run. On first
+		  run of the new version, GCstar should copy the configuration from the
+		  old path.
+		- Exporting only visible items now works properly with "items matching
+		  any of the criteria" type filters.
+		- Searching OFDB with German characters works properly
+		- No more storable warnings when searching from plugins
+		- Fix star rating widget display with small screen sizes
+		- Better sizing of image display window
+		- GCstar now correctly installs icons in the hicolor theme, and now includes
+		  a scalable svg icon
+
+-------------------------------------------------------------------
+
+1.5.0 beta1
+
+	* User interface changes
+		- Items can be grouped in picture mode as in detailed mode.
+		- Pictures are resized if needed when displayed in a window.
+		- User filters can be added to toolbar.
+		- A right-click on the "Fetch information" button displays a menu
+		  where the mode to use can be selected.
+		- Column used for quick searches is the one used for ordering in
+		  detailed mode.
+		- File associated to an item can be a URL (http or ftp) instead of a
+		  local file.
+		- Search box displays a message when no field have been selected in
+		  personal model.
+
+	* Export/Import/Fetch/Extract changes
+		- User can choose for each field from which sites information should be
+		  fetched and in which order (if missing from 1st, choose 2nd, etc...).
+		- FolderImport changes (by BubbleGum)
+			Can add only recent items from a folder.
+			Can update path from moved files.
+			Parse filename to retrieve infos and test for subtitle file.
+			Remove custom regular expression from filename.
+			More options when no or many results.
+		
+	* Default collections changes
+		- New default collections:
+			Stamps (by Bigoud)
+			Periodicals (by yggdrasiil)
+			Mini vehicles (by jimjim92)
+		- Rank in series added to books collections
+		- Press rating added to movies collections
+
+	* New plugins to fetch information from websites:
+		- Video games:
+			Amazon (CA - EN) and NextGame (IT) provided by TPF.
+		- Movies:
+			Internet Bookshop (IT) provided by t-storm.
+			Alpacine and CartelesMetropoliGlobal (ES) provided by DoVerMan.
+			Kinopoisk (RU) provided by Nazarov Pavel.
+		- Books:
+			Saraiva (PT) provided by nirev.
+		- Comics:
+			Manga-Sanctuary (FR) provided by Biggriffon.
+
+	* Bugs fixed
+		- Collections with invalid characters are auto-repaired instead of
+		  generating error message and being unusable.
+		- Prevent data corruption if a crash occurs while saving collection.
+		- Histories were lost when editing the collection model.
+		- Issues fixed with grouping when there are some spaces in lists.
+		- Default size for history of opened files is 5 instead of 1.
+		- Item window was shown after closing a picture window.
+		- Fixed problems when saving searches with numeric comparisons.
+		- Fixed issues with suffixes in plugin to import from a folder.
+		- Disable items in popup menu for pictures when collection is locked.
+		- Correctly export value in options fields when using personal models.
+		- Bug fixed when performing a search while the current item has been
+		  modified.
+		- Bug fixed in some website plugins:
+			All Amazon plugins
+			All Tvdb plugins (TV shows episodes)
+			Adlibris (Books - FI, SV)
+			Alapage (Books - FR)
+			Alapage (Video Games - FR)
+			Allocine (Movies - FR)
+			Bedetheque (Comics - FR)
+			Bol (Books - IT)
+			Buscape (Books - PT)
+			Cinemotions (Movies - FR)
+			DicoDuNet (Video Games - FR)
+			Discogs (Music - EN)
+			FilmWeb (Movies - PL)
+			Fnac (Books - FR)
+			GameSpot (Video Games - EN)
+			IMDb (Movies - EN)
+			ISBNdb (Books - EN)
+			JeuxVideo.com (Video games - FR)
+			MobyGames (Video games - EN)
+			nooSFere (Books - FR)
+			OFDb (Movies - DE)
+
+-------------------------------------------------------------------
+
+1.4.3
+
+	* New translations
+		- Dutch translation added thanks to kim.
+
+	* Export/Import/Fetch/Extract changes
+		- Improved performances for plugins fetching data from websites.
+		- Discogs plugin (Music - EN) supports searches using artist or label.
+
+	* Bugs fixed
+		- Fixed display problem in image mode when removing or renaming items.
+		- Shortcuts can also be defined on saved searches.
+		- Use system ACL when ckecking file permissions.
+		- The default options were not used on first startup.
+		- Problems fixed with find-as-you-type in image mode.
+		- Web searches were broken with new versions of Storable.
+		- Bug fixed in some website plugins:
+			Amazon (Books - FR)
+			Amazon (Movies - FR)
+			Discogs (Music - EN)
+			FilmAffinity (Movies - EN and ES)
+			GameSpot (Video Games - EN) 
+
+-------------------------------------------------------------------
+
+1.4.2
+
+	* Export/Import/Fetch/Extract changes
+		- Fetch can be done using writer for comics collections. Supported by
+		  Bedetheque plugin.
+		- More plugins use big pictures if option is checked (Thanks to adiGuba).
+			Allocine (Movies - FR)
+			Cinemotions (Movies - FR)
+		- Import identifier and media labels from movies collections created with
+		  Ant Movie Catalog.
+
+	* New plugins to fetch information from websites:
+		- nooSFere (Books - FR) provided by TPF
+		- TheLegacy (Video games - DE) provided by TPF
+
+	* Bugs fixed
+		- Title when opening items in windows was not updated.
+		- Rating was lost when displayed with stars and fetched from a website.
+		- Title in the list was incorrect for some collections when modifying
+		  many items together.
+		- When changing a picture, the previous one was not always selected in
+		  the file manager window.
+		- Duplicating an item also duplicates the pictures that are managed by
+		  GCstar.
+		- An extra dot was added on the end of borrowers email when sending a
+		  message.
+		- The option to use big pictures from websites were ignored when
+		  importing from a list of name or from a directory.
+		- .tar.gz import was failing for default collections with added fields.
+		- Exporting from command line didn't copy the pictures.
+		- Bug fixed in some website plugins:
+			All Tvdb plugins (TV shows episodes)
+			Allocine (Movies - FR)
+			Bedetheque (Comics - FR). Thanks to Ogddit
+			Cinemotions (Movies - FR)
+			Fnac (Books - FR)
+			JeuxVideo.com (Video games - FR)
+
+-------------------------------------------------------------------
+
+1.4.1
+
+	* New plugin to import collections from MyMovies done by Rob Maas.
+
+	* Missing translations added for Greek and Polish.
+
+	* Bugs fixed
+		- Music collections were corrupted.
+		- Export plugins had problems with pictures without suffixes.
+		- Option to fetch big pictures from websites was hidden on Windows
+		  systems.
+		- A few texts were left untranslated.
+		- Bug fixed in image mode when updating an item and filtering.
+		- Bug fixed in some website plugins:
+			- Amazon (Video games - FR)
+			- Fnac (Books - FR)
+
+-------------------------------------------------------------------
+
+1.4.0
+
+	* Default models can be modified through the graphical user interface
+	  to add some user-defined fields. These fields will be in separate tabs
+	  (one for each group) or in expanders depending on the kind of panel used.
+	  These additional fields are stored in the collection itself to let users
+	  share it between different machines/systems.
+
+	* New default models to manage comic books and episodes of TV shows.
+
+	* New translations
+		- Ukrainian translation added thanks to Ailandar.
+		- Hungarian translation added thanks to Takács László Krisztián.
+		- Greek translation added thanks to Dimitri Glentadakis.
+
+	* Toolbar improvements
+		- User can choose what controls are shown and their order.
+		- Useful items from menus can also be used as buttons in toolbar.
+		- A quick search can be added to the toolbar.
+		- New controls can be added to change the list view or the information
+		  layout.
+
+	* Options/preferences changes
+		- Number of columns in image mode can be automatically calculated by
+		  GCstar.
+		- A language can be specified in the properties for a collection. It will
+		  be used for spell checking.
+		- Tear-off menus can be disabled.
+		- Different sizes may be specified for pictures in image and detailed
+		  modes.
+		- Behaviour of user specified programs has changed, now GCstar will use
+		  the system default applications for any categories with an empty command.
+		  This allows the user to override the application for individual formats,
+		  while leaving the other applications at the default.
+		- Added the option for a user-specified image editor.
+
+	* Search improvements
+		- Users can save an advanced search or the current one to create a
+		  filter.
+		- New kinds of comparison in advanced search: 'Does not contain' and
+		  'Regular expression'.
+		- An option has been added in advanced search to select if it should be
+		  case-sensitive or not.
+		- Another option in advanced search is available to ignore accents and
+		  other diacritics.
+		- When comparison is 'Range', there are 2 fields to enter values in
+		  criteria of advanced search.
+		- An option has been added in find and replace to select if it should
+		  be case-sensitive or not.
+		- Performance enhancements.
+
+	* User interface changes
+		- New default images when none is specified.
+		- User can change default picture in the collection properties.
+		- Main picture for some default collections can be flipped to see back.
+		  Flipping is done by clicking on the button that appears when hovering
+		  picture or by pressing F or BackSpace when it is active.
+		- Ratings are now shown graphically, with a new star-rating control.
+		- Fields selections are done through a hierarchical view.
+		- Standard confirmation is used when trying to overwrite a file.
+		- Window title conforms to GNOME HIG with collection name first.
+		- Right clicking on an image field gives the option to open with an image
+		  editor. If Gnome2::VFS is present, this list will be populated with
+		  all installed applications associated with images on the system.
+		- The button linking to the web page displays the plugin used to fetch
+		  the information.
+
+	* Export/Import/Fetch/Extract changes
+		- Information could be extracted from audio CDs using FreeDB thanks to
+		  DomiX.
+		- It's possible to add items or to create a new collection of movies or
+		  music from files in a directory (Menu File > Import > Folder).
+		- A new option is available to fetch big pictures when available. For
+		  the moment, it only has some effect with:
+			JeuxVideo.com (Video games - FR)
+			MobyGames (Video games - EN)
+		- The order for sorting can be specified when exporting.
+		- The HTML export resizes the pictures using specified height.
+		- New template for HTML export for board games collections created by
+		  Piwi.
+		- Default templates for HTML export are available even if specific ones
+		  are defined.
+		- A charset can be speficied for CSV export.
+
+	* Default collections changes
+		- A back cover added to these collections: Video Games.
+		- New field 'Region' for movies collections.
+		- New field 'Origin' for music collections.
+
+	* New plugins to fetch information from websites:
+		- Books:
+		 	Chapitre.com and Le-Livre (FR) provided by TPF
+		- Comics:
+			Bedetheque (FR) provided by Chessnico
+		- Movies:
+			Onet and Stopklatka (PL) provided by Marek Cendrowicz
+		- Video games:
+			Amazon (JP) provided by TPF
+
+	* Other improvements
+		- It's possible to set an item as returned from the window displaying
+		  the list of borrowed items. It also displays the lending history.
+		- When opening a collection that was created with a more recent
+		  version, a warning is displayed to let the user know some data could
+		  be lost if it is saved.
+		- Install script registers mime-types and .desktop files, to properly
+		  associate .gcs files with the system.
+		- When trying to play the file associated to an item, an error is
+		  displayed if it can't be found.
+
+	* Bugs fixed
+		- Borrowers filter was empty when using read-only layout.
+		- Problem fixed when there was special characters in the mail template
+		  for borrowers.
+		- Date format was not used in the read-only panel, the advanced search
+		  and the history of borrowings.
+		- There was a problem when filtering a collection with grouped items.
+		- Find and Replace was broken for complex fields.
+		- After importing, the item count was not updated in detailed list.
+		- Next button when using 'Many sites' for information fetching was broken.
+		- Prevented a problem with user-defined collections if a field has been
+		  removed.
+		- .tar.gz export didn't add the model when it was a personal one with a
+		  name.
+		- Problem fixed when grouping field contains a number between
+		  parentheses.
+		- Sorting by a number or a date was incorrect when exporting.
+		- Bug fixed with import/export plugins that have a translated name when
+		  using them from command line.
+		- Bug fixed with plugin importing from a list of name when using it
+		  from command line.
+		- When extracting information from a video file, nothing happened if
+		  some values were not selected.
+		- With Tian and Tian-Mario templates for HTML exports, the internal
+		  links were wrong.
+		- Bug fixed in some website plugins:
+			All Amazon plugins
+			CulturaliaNet (Movies - ES)
+			FilmWeb (Movies - PL)
+			IMDb (Movies - EN)
+			JeuxVideo.com (Video games - FR)
+			JeuxVideo.fr (Video games - FR)
+			OFDb (Movies - DE)
+
+-------------------------------------------------------------------
+
+1.3.2
+	
+	* Galician translation added thanks to Daniel Espineira.
+
+	* New plugin to fetch information from websites:
+		- Music: Discogs (EN) provided by TPF
+
+	* New template for HTML export: Float (Movies)
+
+	* Changes for fetching
+		- Rating is fetched from IMDb website (Movies - EN).
+		- Empty fields are not fetched.
+
+	* Bugs fixed
+		- There was a problem when grouping and with articles on the end.
+		- Bug occured when removing the last item of a group.
+		- Some invalid characters were added to collections.
+		- The date format was not used when exporting.
+		- Number of items in status bar was sometimes not updated.
+		- Decimal numbers were truncated in detailed list.
+		- Fields used to sort when exporting was not restored when exporting
+		  again.
+		- 'Serie' was left untranslated in books collections.
+		- Correct order for Favourite and Keywords in Tags panel when
+		  choosing items to display.
+		- Bug fixed in some website plugins:
+			All Amazon plugins
+			BDGest (Books - FR)
+			DVDFr (Movies - FR)
+			FilmUP (Movies - IT)
+			JeuxVideo.com (Video games - FR)
+			JeuxVideo.fr (Video games - FR)
+			MusicBrainz (Music - EN)
+
+-------------------------------------------------------------------
+
+1.3.1
+
+	* New plugin to fetch information from websites:
+		- Video games:
+			Ludus (IT) provided by TPF
+		- Books:
+			ISBNdb (EN), Buscape (PT) and LiberOnWeb (IT) provided by TPF.
+			
+	* Bugs fixed
+		- When modifying the cover picture from a window, it was not updated
+		  in the main panel.
+		- For new books, Read field is initialized to 'not read'.
+		- Removing many items in picture mode sometimes failed.
+		- XML export plugin didn't list the default models and had problems
+		  opening a specified one.
+		- Spelling checked is deactivated if required dictionary is not
+		  installed instead of generating an error.
+		- Bug fixed in some website plugins:
+			All Amazon plugins
+			Alapage (Video games - FR)
+			BDGest (Books - FR)
+			Gamespot (Video Games - EN)
+			JeuxVideo.com (Video games - FR)
+			JeuxVideo.fr (Video games - FR)
+			TricTrac (Boardgames - FR)
+
+--------------------------------------------------------------------
+
+1.3.0
+
+	* Multiple selections
+		- Many items may be selected in the list using Control and Shift keys.
+		  They can be modified or deleted together.
+		- It is possible to select many items after searching on websites. All
+		  of them will be added to current collection. Information for the
+		  first one will be fetched in current item.
+
+	* Collections of board games added thanks to Zombiepig.
+
+	* Improvements for image mode
+		- It is possible to add an overlay picture in image mode to make them
+		  look better.
+		- New skin has been added to image mode when using a background
+		  picture: Glass and DarkGlass. They add some reflection under the
+		  pictures.
+		- Improved look for borrowed items.
+		- A color could be used for selection, even with a background picture.
+
+	* New or changed fields
+		- For movies collections, the list of actors is now a real list. A
+		  role can be attached to each actor.
+		- Some tags could be assigned to items. It is also possible to mark
+		  some of them as favorites.
+
+	* Options/preferences changes
+		- A spelling checker is available for long text fields. It could be
+		  activated or deactivated in the Features tab of preferences.
+		- User may change the accelerators associated to items in menus. The
+		  menu should be highlighted, and then the keys to use should be
+		  pressed.
+		- Users may choose the format to display dates. This format follows
+		  the same rules as the one for strftime(3).
+		- A new option let users select what should be done when text in
+		  expanders is too long.
+		- It's possible to define a cookie jar that will be used by the
+		  fetch plugins who need it.
+		- A new skin has been added to read-only panels: Dark.
+		- In detailed mode, another field could be used to sort items grouped
+		  in a parent item.
+		- Small reorganization in preferences window
+		  
+	* Advanced search improvements
+		- The fields for entering values are changed according to the expected
+		  data. As an example, fields will have their histories when one
+		  exists.
+		- Users could select to search in all of the fields for given text.
+
+	* New plugin to fetch information from websites:
+		- Board games:
+			Board Game Geek (EN) provided by Zombiepig
+			Reservoir Jeux and Tric Trac (FR) provided by Florent
+		- Movies:
+			NasheKino and Animator (RU) provided by zserghei
+
+	* CSV import
+		- Some fields could be ignored.
+		- A charset could be specified.
+
+	* Command line
+		- A new command line option --list-plugins is available to list all
+		  the plugins of a given collection type.
+		- When using a wrong name for a plugin in command line, an explicit
+		  error is displayed.
+		- Better management of pictures.
+
+	* Bugs fixed
+		- Default shortcut to add a new item has been changed from Ctrl-A to
+		  Ctrl-T. Then Ctrl-A is available again for selecting all text.
+		- The tooltip in results for web searches is hidden when clicking on
+		  it.
+		- When canceling creation of a new collection, current one was closed.
+		- Drag and drop of a picture works also when the path contains some
+		  spaces.
+		- Picture selection is done by opening the previously used directory
+		  if there is no picture.
+		- Some plugins for website did not set a suffix for fetched pictures.
+		- Bugs fixed with sort when exporting.
+		- After import, the number of items in status bar was not changed when
+		  needed.
+		- Bug fixed when importing from a list of items if a plugin returned
+		  no picture.
+		- Bug fixed in some website plugins:
+			All Amazon plugins
+			Biblioteka Narodowa (Books - PL)
+			Allmovie (Movies - EN)
+			Beyaz Perde (Movies - TR)
+			Alapage (Video Games - FR)
+			Gamespot (Video Games - EN)
+
+--------------------------------------------------------------------
+
+1.2.2
+
+	* Bug fixed in some plugins:
+		IMDb (Movies - EN)
+		MusicBrainz (Music - EN)
+
+	* Bugs fixed with extraction of information from playlist for
+	  music collections.
+
+	* Bug fixed when filtering soon after startup a collection
+	  displayed in picture mode.
+	  
+	* In picture mode, if modification on an item changed its
+	  place in the list, it was not selected after clicking on
+	  it.
+
+	* When updating GCstar, the extract plugins are also updated
+	  if required.
+
+--------------------------------------------------------------------
+
+1.2.1
+
+	* New plugin to fetch information from Allmovie (EN) provided
+	  by Zombiepig.
+
+	* 2 extra spaces were added on the end of long text fields
+	  when saving.
+
+	* Size of the fields list in the settings for user-defined
+	  collections could be changed.
+
+	* In preferences, toolbar size could be set to system setting
+	  instead of a specific value.
+
+	* Labels for Tonight and Play buttons were always shown, even
+	  if the user choose to display only icons in toolbars (this is
+	  a system setting, not a GCstar's one).
+
+	* A bug prevented a user from creating a new kind of collection
+	  on startup.
+
+--------------------------------------------------------------------
+
+1.2.0
+
+	* Bug fixed when fetching information for an item while in
+	  image mode.
+
+	* If a fetch was canceled and a different one was launched,
+	  the previous results were used again.
+
+	* When changing the main picture of an item, it was loaded
+	  two times.
+
+	* Bug fixed in some plugins because of websites changes:
+		Allocine (Movies - FR)
+		CSFD.cz (Movies - CS)
+		IMDb (Movies - EN)
+
+	* Some missing translations have been added to
+	  DE, ES and SV versions.
+ 
+--------------------------------------------------------------------
+
+1.2.0.beta3
+
+	* Correct number of displayed items is used in status
+	  bar when filtering in image mode.
+	
+	* An error is displayed when trying to export from
+	  command line to HTML with a non existing model.
+
+	* The query field in the window where the user may
+	  select the plugin to use was sometimes not initialized.
+
+	* It's now possible to perform a quick search also in image
+	  mode. Quick search begins when the user enters some characters
+	  while the list is active.
+
+	* These keys are managed in picture mode: Page Up, Page Down,
+	  Home and End.
+
+	* When a critical error occurs, user may report a bug
+	  semi-automatically.
+
+	* The progress bars in splash screen and in status area
+	  of main window are more accurate.
+
+	* Search dialog was not centered on first opening. The same
+	  applied to the window used to create a new collection type.
+
+	* Bug fixed in some plugins because of websites changes:
+		Alapage (Books - FR)
+		Cinemotions (Movies - FR)
+		Dicshop (Movies - SV)
+		Merlin (Books - PL)
+		
+	* Some missing translations have been added to
+	  FR, SV, PL and CA versions.
+
+--------------------------------------------------------------------
+
+1.2.0.beta2
+
+	* When the picture was hidden in one of the default
+	  collections, all the fields next to it were also
+	  hidden.
+
+	* When using some searches of filters, if nothing was
+	  displayed, the panel displayed the warning message
+	  instead of the "View All" button.
+
+	* Escape XML entities in long text fields for saved
+	  collections.
+
+	* Fixed a bug when there is no active collection and
+	  another one could not be opened.
+
+	* Fixed a potential problem when using command line actions
+	  if no explicit model has been specified.
+
+	* HTML export on command line has a default template
+
+--------------------------------------------------------------------
+
+1.2.0.beta1
+	
+	* Swedish translation added thanks to Ramon Radnoci.
+
+	* Indonesian translation added thanks to Nugrahadi.
+
+	* Brazilian Protuguese translation added thanks to Daniel Valença.
+
+	* Wine collections added thanks to Yves Martin.
+	
+	* New plugin to fetch information from websites:
+		Movies:
+			DVDSpot (EN)
+			  provided by Marc Deslauriers
+			CSFD.cz (CS)
+			  provided by Pajdus
+			Beyaz Perde (TR)
+			  provided by Zuencap
+			MovieMeter (NL)
+			  provided by MaTiZ
+			Port.hu (HU)
+			  provided by an anonymous contributor
+		Books:
+			BDGest (FR)
+			  provided by Rataflo
+			National Library, Merlin, NUKat and Mareno (PL)
+			  provided by WG
+			Bokkilden (NO)
+			  provided by Tian
+			Fnac and Mediabooks (PT), Bol and InternetBookShop (IT),
+			  provided by TPF
+		Video Games:
+			DicoDuNet (FR)
+			  provided by TPF
+
+	* New plugin to export to Latex format created by Zserghei.
+
+	* When creating a new collection or at first startup, user can
+	  import an existing collection with some of the available
+	  plugins.
+
+	* When grouping items, a new option is available to add the
+	  number of items in a category.
+
+	* An option has been added for grouping of orphaned
+	  items or not. Items whitout a master, when grouping is
+	  activated, are together on the end of the list by
+	  default. But they could be mixed with masters for
+	  ordering.
+
+	* In detailed view, the order of the columns could be
+	  changed using drag and drop on their headers.
+
+	* It's possible to select a field for sorting when
+	  exporting (if applicable).
+
+	* Only the required pictures are copied during export.
+
+	* New field in movies collections to store a numeric
+	  identifier. The unique identifier displayed next to
+	  the title is now read-only.
+
+	* Added a field to collections of video games: Executable.
+	  This field could contain the path to a program that
+	  could be launched directly from a Play button in
+	  GCstar's toolbar.
+
+	* When changing field to use for fetching, the value from
+	  panel is used.
+
+	* Delete key removes current item in multiple lists.
+
+	* When opening window to perform searches, the first
+	  field has focus.
+
+	* Removed dot from picture format when exporting to
+	  Tellico (Patch from Robby Stephenson).
+
+	* Use proxy for updates (Patch from Javier Donaire).
+
+	* Bug fixed in some plugins because of websites changes:
+		All Amazon plugins
+		IMDb (Movies - EN)
+		Allocine (Movies - FR)
+		FilmUP (Movies - IT)
+		Alapage, JeuxVideo.com (Games - FR)
+		Gamespot (Games - EN)
+		Adlibris (Books - FI, SV)
+		Casadelibro (Books - ES)
+
+	* Bug fixed when performing an update (gcstar -u) if
+	  a new directory should be created.
+	
+	* Bug fixed with plugin to import a collection
+	  generated from Ant Movie Catalog that contains
+	  some semicolons.
+
+	* Bug fixed in read only mode when data contains some
+	  HTML tags.
+
+	* Bug fixed with the title of the window when using
+	  "Tonight" feature.
+
+	* When opening a collection of a type different than the
+	  current one, if a filter was present, nothing was
+	  displayed.
+
+	* Updated bug report URL in man page and when using
+	  -h or --help on command line.
+	
+	* Reduced time for startup and to load a collection
+	
+--------------------------------------------------------------------
+
+1.1.1
+
+	* Bug fixed when items are grouped and the grouping field is
+	  changed.
+
+	* FilmWeb plugin was not working anymore because of website
+	  changes.
+	  
+	* Better layout for Paths tab in preferences.
+
+--------------------------------------------------------------------
+
+1.1.0
+
+	* Instead of specifying many external applications (for web
+	  pages, video and audio files), you may use the settings
+	  defined by the system. It works for any Unix (including
+	  GNU/Linux) using XFCE, Gnome or KDE) and also for MacOS X and
+	  for Microsoft Windows.
+
+	* Numismatic collections added thanks to szdavid.
+	  They could be imported and exported from/to Tellico.
+
+	* Catala translation added thanks to Ponç J. Llaneras.
+
+	* Arabic translation added thanks to Muhammad Bashir Al-Noimi.
+
+	* New plugins to get information from websites. All of them
+	  are made by TPF.
+		Books: Adlibris (FI, SV), Casadelibro (ES), Fnac (FR)
+		Video games: Alapage (FR), Amazon (US, DE, FR, UK)
+
+	* The directory used to store pictures could be specific to a
+	  collection. It's defined in the collection properties
+	  (File menu > Properties)
+
+	* Path of directory used to store pictures could contain some
+	  special text.
+		- %WORKING_DIR% or . will be replaced with collection directory
+			(use only on beginning of path)
+		- %FILE_BASE% will be replaced by collection file name
+			without suffix (.gcs)
+	  Default value (that could be restored) is now:
+			./%FILE_BASE%_pictures/
+
+	* A new type of field is available for user-defined
+	  collections: "Dependant on other fields". It will be generated
+	  thanks to other fields. The Default value should then contain the
+	  format were %Name of other field% will be replaced with the
+	  value of the field.
+
+	* New fields for default collections: Add date. Its default
+	  value when adding a new item is the current date.
+
+	* If the Fetch button is clicked with right button of the mouse,
+	  the plugin to use will be asked to the user, even if one is
+	  specified in preferences.
+
+	* When a value is truncated in web search results, a tooltip
+	  popup containing the whole text is displayed when the mouse
+	  pointer is over it.
+
+	* Some options not useful for most users are hidden until the
+	  expert mode is activated
+
+	* In dialog for date selection, double-clicking on a date
+	  validate it.
+	
+	* When importing from GCfilms, it's possible to reuse unique
+	  identifiers instead of generating them.
+	  
+	* Image was not updated in images list when downloading
+	  information.
+	  
+	* Bug fixed when dropping a picture dragged from a web page.
+
+	* Number of items was not updated when an item was removed.
+
+	* Windows installation program doesn't install dependencies.
+	  More information here:
+		http://wiki.gcstar.org/en/install_windows
+
+--------------------------------------------------------------------
+
+Task and bugs number refer to items on Gna! project page:
+https://gna.org/projects/gcstar/
+
+1.0.0
+
+	* Management of music collection.
+
+	* Extraction of video information from a file has been
+	  re-added (it has been removed when creating GCstar
+	  from GCfilms).
+		(bug #7157)
+
+	* Plugin for music collection using MusicBrainz website.
+
+	* Import and export music collections from and to Tellico.
+	
+	* Information about an album could be extracted from a
+	  playlist.
+
+	* New plugin for video games using MobyGames (EN) made by TPF.
+
+	* New plugin for books using Alapage (FR) made by TPF.
+	
+	* New plugin for movies using MovieCovers.com (FR) made by
+	  Patrick Fratczak.
+
+	* It's possible to search using EAN or UPC code (barcode)
+	  instead of ISBN for books using one of the plugins for Amazon.
+
+	* In file properties dialog, there are also the full file
+	  path, the file size and the number of items in the collection.
+
+	* Lists used for some data (such as genre for movies or codes
+	  for video games) could be reordered using drag and drop.
+
+	* Widths of columns in detailed mode are saved when leaving the
+	  application or opening another file.
+		(bug #7666)
+
+	* In list of plugins for web searches, the fields that could
+	  be used for searches are displayed.
+
+	* New item in Help menu to display all the available plugins
+	  for web searches.
+
+	* Templates provided for HTML export of music collections.
+
+	* New template for HTML export of book collections: FloFred
+	  provided by Florent.
+
+	* --verbose option added to installation program.
+	
+	* All Amazon plugins changed because of website changes.
+	
+	* Patch from tiwek to get original titles from FilmWeb.
+	
+	* Added in search dialog some information about the kind of
+	  comparison that will be performed.
+
+	* When specifying a grouping field from toolbar, the master
+	  is always auto-generated.
+		(bug #7500)
+
+	* Fixed bug with CVS import for collections that are not movies
+	  collections.
+
+	* Fixed bug with character encoding in XML files.
+		(bug #7584)
+
+	* Fixed bug with installation program that prevented an upgrade
+	  without manual removal of previous files.
+		(bug #7481)
+
+	* Fixed bugs with external programs that contains spaces in
+	  their paths on Win32 systems.
+
+--------------------------------------------------------------------
+
+0.5.0
+
+	* Bookmarks management (Menu "My Collections").
+	  It could be used to organize your collections and have
+	  a quicker access to them from GCstar.
+	  
+	* New "Advanced" search where the user could define the filter
+	  to use.
+
+	* Internet search could be made according to many fields. It
+	  concerns for the moment only books collections where search
+	  could be made using ISBN.
+		(bug #6898)
+
+	* Results of web search could be previewed.
+
+	* New import plugin to merge 2 GCstar collections.
+		(sr #1293)
+
+	* New plugins for video games using JeuxVideo.com (FR) website
+	  provided by TPF.
+
+	* New plugins for books using Amazon.de (DE) website
+	  provided by Frenkx.
+
+	* New plugins for books using Amazon.uk (EN) website.
+
+	* German translation updated by Frenkx.
+	
+	* New item in "Help" menu to report a bug.
+	
+	* ISBN field could contain an 'X' character.
+
+	* Bugs fixed with import plugins when inserting items in current
+	  collection.
+
+	* Export plugin for .tar.gz also stores collection information
+	  (description, owner,...)
+
+	* HTML template "Shelf" has a new feature. Information within a
+	  group could be hidden or shown.
+
+	* Bug has been fixed for Windows installation program
+		(bug #7122)
+
+--------------------------------------------------------------------
+
+0.4.1
+
+	* Mail programs could be defined. They will be used to
+	  send e-mails instead of Sendmail or direct SMTP server.
+	  Default configuration provided for Sylpheed-Claws,
+	  Thunderbird and Evolution.
+
+	* Search could be performed according to original
+	  title for movies collections.
+		(sr #1246)
+
+	* Bug fixed with old HTTP::Headers versions.
+		(sr #1245)
+
+	* Bug fixed for Windows users with launch of external
+	  programs.
+		(bug #6762)
+
+--------------------------------------------------------------------
+
+0.4
+
+	* Added books collection management.
+	
+	* 2 plugins for books: Amazon.com (EN) and Amazon.fr (FR).
+	
+	* Import book collections from Tellico and Alexandria.
+	  Export book collections to Tellico.
+	
+	* If grouping is done using a value that is a list, it will
+	  be splitted. So an item will appear many times, for each
+	  value.
+
+	* New command line options to execute some tasks automatically.
+	  More information here:
+		http://www.gcstar.org/doc.execute
+
+	* "gcstar --help" is more verbose. A man page has also been
+	  created.
+
+	* Borrowers information (Name and e-mail address) could be
+	  imported from these formats: LDIF, Sylpheed-Claws, VCARD.
+
+	* Pictures could be saved with a file name that is prefixed
+	  with the item title or name (instead of gcstar_).
+		(sr #1175)
+
+	* It is now possible to set some properties on a collection
+	  (a name, owner name and e-mail address, description). It is
+	  done through File menu, Properties item.
+
+	* A play button is in toolbar for collections that needs one
+	  (as for movies collections). It could also be set for
+	  user-defined collections.
+
+	* For user-defined collections, a read-only layout is also
+	  generated.
+	  
+	* HTML export is also possible for user-defined collections.
+
+	* Saving is faster and gives more feedback to user.
+
+	* When importing data from Internet, if the preview for an
+	  image is used, it won't be downloaded only once.
+	  
+	* Some templates used by HTML export have been made valid
+	  XHTML 1.0 Strict: Shelf, Tabs, Tian, Tian-Mario
+	  
+	* New option in preferences to set if the previous
+	  collection should be loaded on startup.
+	  
+	* Locked status is stored in the collection itself and not
+	  globally.
+
+	* Force UTF-8 encoding for models files.
+		(bug #6545)
+
+	* Bug fixed with search.
+		(bug #6536)
+
+	* Bug fixed when no user-defined collection exists.
+		(bug #6520)
+
+--------------------------------------------------------------------
+
+0.3
+
+	* It is now possible to create personal collections.
+	  Such a collection will contain some fields set by the
+	  user according to her or his needs. More information
+	  in the documentation:
+		http://www.gcstar.org/doc.models.en.php
+
+	* If something is changed in a collection and the
+	  auto-save feature is not activated, the user is warned
+	  when closing the collection.
+
+	* Installer failed when an unsupported locale was used.
+		(bug #6324)
+		
+	* CSV import didn't correcty set the charset to UTF-8.
+
+	* Added an update shortcut in Start menu for Windows users.
+		
+	* HTML templates was not listed on Windows systems.
+		(bug #6366)
+
+	* Website plugins works also if sites send pages in a compressed
+	  format (useful for AniDB that was broken).
+
+--------------------------------------------------------------------
+
+0.2
+
+	* Added Video games management: GCgames.
+	
+	* 2 plugins for video games to import from websites:
+	  GameSpot.com (EN) and JeuxVideo.fr (FR). They also
+	  import screenshots and the tips that could be found.
+
+	* Added Turkish translation thanks to KaraGarga.
+
+	* Collections member could be grouped directly from toolbar.
+	  More options are available for different kind of grouping
+	  in preferences dialog.
+
+	* A picture could be dragged and dropped from a web browser
+	  to any displayed picture (movie cover for GCfilms,
+	  box picture or screenshot for GCgames).
+
+	* Bug fixes and performances enhancements.

@@ -1,0 +1,1364 @@
+1.6.1
+
+	* Nouvelles fonctionnalités
+		- Le module d'importation CSV permet de choisir le champ à utiliser
+		  pour récupérer les informations sur Internet.
+		- Les graphiques générés pour les statistiques sont lissés.
+	* Changements dans les collections
+		- New default collections:
+			Séries TV. Pour par exemple gérer une collection de DVDs de séries.
+			Logiciels, créé par Qoolman
+		- Collections de jeux vidéos :
+			Nouveaux champs : Région, Numéro de série.			
+	* Nouveaux modules pour récupérer des informations depuis des sites web
+		- Séries TV :
+			Thetvdb
+			Themoviedb
+	* Corrections de problèmes
+		- Il était impossible de supprimer plus de 9 éléments d'une collection
+		  en une seule fois.
+		- Arrêt du logiciel lors de l'utilisation d'une image non existante en
+		  mode image.
+		- En mode lecture seule, certains caractères étaient mal affichés.
+		- Ajout d'une option dans les collections en mode lecture seule pour
+		  afficher ou masquer des champs lorsqu'ils sont vides.
+		- Problème corrigé au démarrage quand certains éléments n'étaient pas
+		  présents dans la barre d'outils.
+		- Le menu "Voir les modules" ne fonctionnait plus.
+		- Ajouter du bouton Lecture pour les collections d'épisodes de séries.
+		- Après un changement de collection, il y avait des problèmes lors de
+		  l'affichage d'un élément dans une fenêtre.
+		- La dépendence sur Sort::Naturally a été enlevée.
+		- Date::Calc n'était pas montré dans les dépendances alors qu'il est
+		  nécessaire pour les statistiques.
+		  
+-------------------------------------------------------------------
+
+1.6.0
+	* Nouvelles fonctionnalités
+		- Génération de statistiques :
+			Nouvelle action dans le menu 'Fichier' pour créer des images basées
+			sur le nombre d'éléments ayant la même valeur pour un champ donné
+			(exemple : combien de jeux vidéos dans chaque genre).
+			Le type de graphique est modifiable (barres, zones, camembert).
+			Un historique montrant l'évolution de la collection peut être créé.
+		- Des miniatures des images sont conservées. Cela permet un temps de
+	      démarrage significativement plus court quand de grandes images sont
+	      utilisées.
+		- Déposer par cliquer-glisser un fichier sur une collection l'y
+		  ajoutera si le fichier est :
+		    Une vidéo sur une collection de film.
+		    Un ebook (ou livre électronique) sur une collection de livres.
+	* Nouvelles traductions
+		- Traduction Chinois (Traditionnel) ajoutée grâce à 林雪凡.
+	* Changements dans l'interface utilisateur
+		- Certains textes affichés dépendent de la collection. Ceci afin de
+		  rendre l'utilisation plus agréable. Par exemple 'Nouvel élément'
+		  est remplacé par 'Nouveau film', "Nouveau jeu', etc selon la
+		  collection en cours.
+		- Nouveau menu lors d'un clic droit sur le bouton permettant de choisir
+		  un fichier. Il propose l'option de choisir à la place un répertoire.
+		  C'est utile si un répertoire doit être passé à un programme externe
+		  comme par exemple pour un rip de DVD.
+		- Les éléments ont un nouveau bouton, 'Rafraîchir' qui va télécharger
+		  à nouveau les informations depuis le site web utilisé au départ.
+		- Les champs avec un historique ont une fonctionnalité de suggestion
+		  automatique quand l'utilisateur commence à taper.
+		- Le menu contextuel du clic droit fonctionne comme attendu quand
+		  plusieurs éléments sont sélectionnés.
+		- La collection peut être sauvegardée s'il y a eu des changements
+		  sans avoir besoin de cliquer sur un élement de la liste.
+		- Lors de la fermeture d'une collection sans nom de fichier,
+		  l'utilisateur a la possibilité de sauver, d'annuler ou de renoncer
+		  aux changements.
+		- La fenêtre pour ouvrir un fichier n'est plus sensible à la casse pour
+		  les extensions de fichiers.
+		- Nouveaux filtres pour les vidéos et les livres électroniques lors de
+		  leur association à un élément de collection.
+		- Nouveaux thèmes et thèmes modifiés, pour l'affichage de la liste en
+		  images, grâce à Qoolman.
+	* Changements dans les collections
+		- Nouveau type de collection :
+			Cartes à puce (par jimjim92).
+		- Les collections de livres peuvent avoir un lien vers une version
+		  électronique locale ou en ligne.
+		- Collection de jeux vidéos :
+			Nouveaux champs : Exclusivité, Note presse, Taille et Résolutions.
+	    - Collection musicale :
+	        Nouveau champ : Note presse.
+	* Changements pour l'exportation, l'importation, la récupération Internet
+	  et l'extraction
+		- Nouveau module pour exporter vers un disque externe. Il se contente
+		  de copier la collection dans un répertoire avec toutes les images
+		  dans un sous-répertoire, avec la possibilité de tout compresser.
+		  Utile pour copier une collection pour GCstar Viewer sur Android.
+			http://wiki.gcstar.org/fr/gcstar_viewer
+	  	- Nouveau module pour exporter dans le format Palm PDB.
+		- Des modules de récupération sont indiqués comme préférés. Ce sont des
+		  sites proposant du contenant de qualité et dont le module fonctionne
+		  parfaitement. Ils sont indiqués en premier dans la liste des modules
+		  et sont marqués par une étoile.
+		- Les modules par défaut correspondent à la langue de l'utilisateur.
+		- L'importation CSV a une option pour récupérer les informations depuis
+		  des sites Internet.
+		- Le module DVDFr (Films - FR) supporte la recherche par EAN. Ce qui
+		  signifie qu'il est possible de directement l'utiliser avec un lecteur
+		  de code-barres.
+		- L'importation de Tellico gère l'ISBN et le rang pour les collections
+		  de livres, et le développeur pour les collections de jeux vidéos
+		  (patch de DanielS).
+		- L'exportation HTML gère correctement les images et les liens avec les
+		  modèles génériques (par exemple Shelf).
+		- L'importation depuis un répertoire n'est plus affichée lorsqu'une
+		  collection d'un type incompatible est ouverte.
+	* Nouveaux modules pour récupérer des informations depuis des sites web
+		- Movies:
+			Amazon UK (EN) et DVDEmpire (EN) écrits par dingsi.
+			CartelesPeliculas (ES) écrit par DoVerMan.
+	* Corrections de problèmes
+		- Correction d'un bug empêchant d'ouvrir une collection avec des champs
+		  utilisateur dans certaines circonstances.
+		- Quand des champs sont cachés, ils n'apparaissent plus dans les
+		  versions réduites (ex : sous-titres dans une collection de films).
+		- La fenêtre 'Ce soir' fonctionne comme attendu après un changement de
+		  collection.
+		- Les menus n'étaient pas mis à jour sur un système Windows.
+		- Le dépôt d'une collection par cliquer-glisser sur la fenêtre
+		  principale ne fonctionnait pas toujours correctement.
+		- Problèmes corrigés dans certains modules de recherche :
+		    - Nombre important de corrections par Tenbaht, dont :
+		        DVDFr
+		        OFDb
+		        Imdb
+		        Alpacine
+		        BeyazPerde
+		        Csfd
+		        Moviemeter
+		        Onet
+	* Modules supprimés :
+		- DVDSpot (site fermé)
+		- MovieClub FR et MovieClub NL (site fermé)
+
+-------------------------------------------------------------------
+	  
+1.5.0
+
+	* Changements dans l'interface utilisateur
+		- Quand trop de champs sont affichés dans la boîte de dialogue
+		  permettant de choisir lesquels doivent être affichés, des barres
+		  de défilement sont utilisées.
+	* Changements dans les collections
+		- Ajout d'un attribut optionnel sur les champs d'une collection,
+		  sorttype, qui impose la méthode de tri pour ce champ. Peut contenir
+		  la valeur 'number' ou 'date'.
+	* Corrections de problèmes
+		- La prévisualition lors du téléchargement d'informations ne
+		  fonctionnait plus.
+		- Le bouton pour ouvrir la page web associée à un élément était
+		  désactivée quand la collection était verrouillée.
+		- Il était impossible de changer le titre à rechercher sur les sites
+		  web.
+		- Certaines collections ne pouvaient plus être ouvertes si des champs
+		  personnalisés étaient utilisés.
+		- Les groupes des champs étaient affichés plus d'une fois lors de
+		  l'ajout de champs personnalisés.
+		- Plusieurs corrections pour le mode image.
+		- La liste des acteurs n'était pas récupérée lors de l'utilisation
+		  d'imdb avec un module d'importation.
+		- Le tri par date de sortie ne fonctionnait pas avec des formats
+		  différents de 'yyyy-mm-dd'.
+		- Sur les systèmes Windows, GCstar store à présent sa configuration
+		  dans le répertoire des données applicatives de l'utilisateur, plutôt
+		  que dans le répertoire d'installation. Cela permet d'arrêter que
+		  GCstar ait besoind des droits administrateur pour fonctionner. Au
+		  premier lancement de cette nouvelle version, GCstar va
+		  automatiquement copier la configuration depuis l'ancien emplacement.
+		- Exporter seulement les élément visibles fonctionne à présent
+		  correctement avec les filtres de type "Éléments correspondants à au
+		  moins un critère".
+		- La recherche OFDB avec des caractères allemands fonctionne
+		  correctement.
+		- Plus de message d'avertissement dans la console lors d'une recherche.
+		- Correction avec l'affichage sous forme d'étoile pour les petits
+		  écrans.
+		- Meilleur redimensionnement des images lorsqu'affichées dans une
+		  fenêtre.
+		- GCstar installe maintenant correctement les icones dans le thème
+		  hicolor et contient aussi maintenant une icône vectorielle SVG.
+
+-------------------------------------------------------------------
+
+1.5.0 beta1
+
+	* Changements dans l'interface utilisateur
+		- Les éléments peuvent être groupés en mode image comme en mode
+		  détaillé.
+		- Les images sont redimensionnées si nécessaires lorsqu'elles sont
+		  affichées dans une fenêtre.
+		- Les filtres utilisateurs peuvent être ajoutés à la barre d'outils.
+		- Un clic droit sur le bouton "Télécharger" affiche un menu permettant
+		  de choisir le mode de récupération des données.
+		- La colonne utilisée pour la recherche rapide en mode détaillée est
+		  celle utilisée pour ordonner.
+		- Le fichier associé à un élément peut être une URL (http ou ftp) au
+		  lieu d'un fichier local.
+		- La boîte de recherche affiche un message quand aucun champ n'a été
+		  sélectionné pour un modèle personnalisé.
+
+	* Changements pour l'exportation, l'importation, la récupération Internet
+	  et l'extraction
+	  	- L'utilisateur peut choisir pour chaque champ de quel site
+	  	  l'information doit être récupérée et dans quel ordre. 
+		- Module d'importation depuis un répertoire modifié par BubbleGum
+			Possibilité d'ajouter seulement les éléments récents.
+			Le chemin peut être mis à jour si le fichier a été déplacé.
+			Le nom de fichier est analysé pour retrouver des informations.
+			Les fichiers sous-titres sont recherchés.
+			Des expressions régulières définies par l'utilisateur permettent
+			d'enlever des éléments des noms des fichiers.
+			Plus de possibilités quand plusieurs ou aucun résultat.
+		
+	* Changements dans les collections par défaut
+		- Nouveaux types de collections :
+			Timbres (par Bigoud).
+			Périodiques/Magazines (par yggdrasiil).
+			Véhicules Miniatures (par jimjim92).
+		- Le rang a été ajouté aux collections de livres.
+		- La note presse a été ajoutée aux collections de films.
+
+	* Nouveaux modules pour récupérer des informations depuis des sites web :
+		- Jeux vidéos:
+			Amazon (CA - EN) et NextGame (IT) écrits par TPF.
+		- Films:
+			Internet Bookshop (IT) écrit par t-storm.
+			Alpacine et CartelesMetropoliGlobal (ES) écrits par DoVerMan.
+			Kinopoisk (RU) écrit par Nazarov Pavel.
+		- Livres:
+			Saraiva (PT) écrit par nirev.
+		- Bandes dessinées:
+			Manga-Sanctuary (FR) écrit par Biggriffon.
+
+	* Corrections de problèmes
+		- Les collections contenant des caractères invalides sont
+		  automatiquement réparées au lieu d'afficher un message d'erreur et
+		  d'être inutilisables.
+		- Protections contre la corruption des données si un problème arrive
+		  au moment de la sauvegarde.
+		- Les historiques étaient perdus lors de la modification du modèle de
+		  collection.
+		- Problèmes corrigés lorsque le regroupement était utilisé et que des
+		  espaces étaient présents dans la liste.
+		- La taille par défaut de l'historique des fichiers ouverts est 5 au
+		  lieu de 1.
+		- La fenêtre de l'élément était affiché après la fermeture de l'image
+		  si affichée dans une fenêtre.
+		- Les recherches avec une comparaison numérique n'était pas bien
+		  sauvegardées.
+		- Des problèmes avec les suffixes ont été corrigés dans le module
+		  d'importation depuis un répertoire.
+		- Quand une collection est verrouillée, les éléments dans le menu
+		  contextuel d'une image sont désactivés si nécessaire.
+		- Les valeurs dans les champs d'options n'étaient pas correctement
+		  exportées avec les modèles personnels.
+		- Problème corrigé si une recherche était lancé alors que l'élément
+		  courant était modifié.
+		- Problèmes corrigés dans certains modules de recherche :
+			Tous les modules Amazon
+			Tous les modules Tvdb (Episodes de séries TV)
+			Adlibris (Livres - FI, SV)
+			Alapage (Livres - FR)
+			Alapage (Jeux vidéos - FR)
+			Allocine (Films - FR)
+			Bedetheque (Bandes dessinées - FR)
+			Bol (Livres - IT)
+			Buscape (Livres - PT)
+			Cinemotions (Films - FR)
+			DicoDuNet (Jeux vidéos - FR)
+			Discogs (Musique - EN)
+			FilmWeb (Films - PL)
+			Fnac (Livres - FR)
+			GameSpot (Jeux vidéos - EN)
+			IMDb (Films - EN)
+			ISBNdb (Livres - EN)
+			JeuxVideo.com (Jeux vidéos - FR)
+			MobyGames (Jeux vidéos - EN)
+			nooSFere (Livres - FR)
+			OFDb (Films - DE)
+
+-------------------------------------------------------------------
+
+1.4.3
+
+	* Nouvelles traductions
+		- Traduction Néerlandaise ajoutée grâce à kim.
+
+	* Changement pour l'exportation, l'importation, la récupération Internet et
+	  l'extraction
+	  	- Recherche depuis des sites Internet plus rapide.
+		- Le module Discogs (Musique - EN) gère les recherches par artiste ou
+		  label.
+
+	* Corrections de problèmes
+		- Problème d'affichage en mode image résolu lors du renommage ou de la
+		  suppression d'éléments.
+		- Les raccourcis clavier peuvent aussi être définis pour les recherches
+		  sauvegardées.
+		- Les ACL du système sont utilisés lors de la vérification des
+		  permissions.
+		- Les options par défaut n'étaient pas utilisées lors du 1er démarrage.
+		- Problème corrigé avec la recherche interactive en mode image.
+		- Les recherches Internet ne fonctionnaient plus avec les nouvelles
+		  versions de Storable.
+		- Problèmes corrigés dans certains modules de recherche :
+			Amazon (Films - FR)
+			Amazon (Livres - FR)
+			Discogs (Musique - EN)
+			FilmAffinity (Films - EN and ES)
+			GameSpot (Jeux vidéos - EN) 
+
+-------------------------------------------------------------------
+
+1.4.2
+
+	* Changement pour l'exportation, l'importation, la récupération Internet et
+	  l'extraction
+		- Les informations peuvent être récupérées en utiliser l'auteur pour les
+		  bandes dessinées. Utilisé par le module Bedetheque.
+		- Plus de modules peuvent utiliser une grande image si l'option est
+		  activée (Grâce à adiGuba).
+			Allocine (Films - FR)
+			Cinemotions (Films - FR)
+		- L'indentifiant et l'étiquette sont importés depuis les collections
+		  créées avec Ant Movie Catalog.
+
+	* Nouveaux modules pour récupérer des informations depuis des sites web
+		- nooSFere (Livres - FR) écrit par TPF
+		- TheLegacy (Jeux vidéos - DE) écrit par TPF
+
+	* Corrections de problèmes
+		- Le titre n'etait pas mis à jour lors de l'ouverture d'un élément dans
+		  une fenêtre.
+		- La note n'était pas conservée lorsqu'affichée en mode image et
+		  récupérée depuis un site web.
+		- Le titre dans la liste était incorrect pour certaines collections
+		  quand plusieurs éléments étaient modifiés ensemble.
+		- Lors d'un changement manuel d'image, la précédente n'était pas
+		  toujours sélectionnée dans la fenêtre de sélection de fichier.
+		- Dupliquer un élément duplique aussi les images qui sont gérées par
+		  GCstar.
+		- Un point en trop était ajouté à la fin des adresses mails des
+		  emprunteurs lors de l'envoi d'un message.
+		- L'option pour utiliser des grandes images étaient ignoré pour les
+		  importations depuis une liste de noms ou un répertoire.
+		- L'importation .tar.gz échouait pour les collections par défaut avec
+		  des champs ajoutés.
+		- L'exportation depuis la ligne de commande ne copiait pas les images.
+		- Problèmes corrigés dans certains modules de recherche :
+			Tous les modules Tvdb (Episodes séries TV)
+			Allocine (Films - FR)
+			Bedetheque (Bandes dessinées - FR). Grâce à Ogddit
+			Cinemotions (Films - FR)
+			Fnac (Livres - FR)
+			JeuxVideo.com (Jeux vidéos - FR)
+
+-------------------------------------------------------------------
+
+1.4.1
+
+	* Nouveau module pour importer les collections depuis MyMovies écrit par
+	  Rob Maas.
+
+	* Traductions manquantes ajoutées en Grec et Polonais.
+
+	* Corrections de problèmes
+		- Les collections de musique étaient corrompues.
+		- Les modules d'exportations géraient mal les images sans suffixe.
+		- L'option pour récupérer les grandes images était cachée sous Windows.
+		- Quelques textes n'étaient pas traduits.
+		- Problème corrigé en mode image lorsque qu'une mise à jour d'un
+		  élément était faite avec un filtre.
+		- Problème corrigé dans certains modules de recherche :
+			- Amazon (Jeux vidéos - FR)
+			- Fnac (Livres - FR)
+
+-------------------------------------------------------------------
+
+1.4.0
+
+	* Les modèles par défaut peuvent être modifiés depuis l'interface graphique
+	  pour y ajouter des champs définis par l'utilisateur. Ces champs seront
+	  dans des onglets séparés (un pour chaque groupe) ou dans des éléments
+	  repliables selon le type de disposition utilisé. Les champs
+	  supplémentaires sont stockés dans la collection elle-même pour permettre
+	  de la partager entre plusieurs machines ou systèmes.
+
+	* Nouveau modèle par défaut pour gérer les collections d'épisodes de séries
+	  TV.
+
+	* Nouvelles traductions
+		- Traduction ukrainienne ajoutée grâce à Ailandar.
+		- Traduction hongroise ajoutée grâce à Takács László Krisztián.
+		- Traduction grecque ajoutée grâce à Dimitri Glentadakis.
+
+	* Améliorations de la barre d'outils
+		- L'utilisateur peut choisir quels boutons sont affichés et dans quel
+		  ordre.
+		- Les éléments utiles des menus peuvent aussi être utilisés comme
+		  boutons dans la barre d'outils.
+		- Une recherche rapide peut être ajoutée à la barre d'outils.
+		- De nouveaux contrôles sont disponibles pour changer le type de liste
+		  ou la disposition des informations.
+
+	* Options et préférences modifiées ou ajoutées
+		- Le nombre de colonnes en mode image peut être calculé dynamiquement
+		  par GCstar.
+		- Une langue peut être indiquée dans les propriétés d'une collection.
+		  Elle sera utilisée pour les vérifications orthographiques.
+		- Les menus détachables peuvent être désactivés.
+		- 2 tailles d'image différentes peuvent être utilisées pour les modes
+		  d'affichage image et détaillé.
+		- Le comportement des programmes indiqués a changé. A présent, GCstar
+		  utilisera ceux du système si une commandee vide est utilisé. Cela
+		  permet de ne modifier le choix que pour quelques formats en gardant
+		  celui par défaut pour les autres.
+		- Ajout de l'option pour un éditeur d'image spécifié par l'utilisateur.
+
+	* Améliorations de la recherche
+		- L'utilisateur peut enregistrer une recherche avancée ou celle en
+		  cours pour en faire un filtre.
+		- Nouveaux types de comparaison dans la recherche avancée :
+		  'Ne contient pas' et 'Expression régulière'.
+		- Une option dans la recherche avancée permet d'indiquer si elle doit
+		  distinguer ou non les majuscules des minuscules.
+		- Une autre option de la recherche avancée permet d'ignorer les accents
+		  et autres diacritiques.
+		- Quand la comparaison est 'Intervalle', il y a 2 champs pour entrer
+		  les valeurs dans les critères d'une recherche avancée.
+		- Une option dans la recherche et remplacement avancée permet
+		  d'indiquer si elle doit distinguer ou non les majuscules des
+		  minuscules.
+		- Meilleures performances.
+
+	* Changements dans l'interface utilisateur
+		- Nouvelles images par défaut quand aucun n'est indiquée.
+		- L'utilisateur peut changer l'image par défaut dans les propriétés de
+		  la collection.
+		- L'image principale de certains collections par défaut peut être
+		  tournée pour voir l'arrière. Elle est tournée lorsque le bouton qui
+		  apparaît quand l'image est survolée est utilisé. Ou lorsqu'une des
+		  touche F ou Retour Arrière est pressée alors que l'image est active.
+		- Les notes sont affichées graphiquement, avec un système d'étoiles.
+		- Les sélections de champs sont faite avec une vue hiérarchique.
+		- La confirmation standard est utilisée lors d'une tentative
+		  d'écrasement d'un fichier existant.
+		- Le titre de la fenêtre suit les recommandations GNOME HIG en
+		  affichant d'abord le nom de la collection.
+		- Un clic droit sur une image donne la possibilité de l'ouvrir avec un
+		  éditeur d'image. Si Gnome2::VFS est présent, la liste est remplie
+		  les applications installées qui sont associées aux images.
+		- Le bouton lié à la page web affiche le nom du module utilisé pour
+		  récupérer les informations.
+
+	* Changement pour l'exportation, l'importation, la récupération Internet et
+	  l'extraction
+		- Les informations peuvent être obtenues depuis un CD audio en
+		  utilisant FreeDB grâce à DomiX.
+		- Il est possible d'ajouter de nouveaux éléments ou de créer une
+		  nouvelle collection de films ou de musique à partir de fichiers dans
+		  un répertoire (Menu Fichier > Importer > Répertoire).
+		- Une nouvelle option permet de récupérer les grandes images depuis les
+		  sites quand elles sont disponibles. Cela n'a d'effet pour l'instant
+		  qu'avec ces modules :
+			JeuxVideo.com (Jeux Vidéos - FR)
+			MobyGames (Jeux Vidéos - EN)
+		- L'ordre de tri peut être indiqué lors d'une exportation.
+		- L'exportation HTML redimensionne les images selon la hauteur
+		  indiquée.
+		- Nouveau modèle pour l'exportation HTML pour les collections de jeux
+		  de société créée par Piwi.
+		- Les modèles par défaut pour l'export HTML sont disponibles même si
+		  des spécifiques sont définis.
+		- Un jeu de caractères peut être indiqué pour l'exportation CSV.
+
+	* Changements dans les collections par défaut
+		- Le verso pour les pochettes a été ajouté à ces collections :
+		  Jeux vidéos.
+		- Nouveau champ 'Région' pour les collections de films.
+		- Nouveau champ 'Origine' pour les collections musicales.
+
+	* Nouveaux modules pour récupérer des informations depuis des sites web :
+ 		- Books :
+		 	Chapitre.com et Le-Livre (FR) écrits par TPF
+		- Bandes dessinées :
+			Bedetheque (FR) écrit par Chessnico
+		- Films:
+			Onet et Stopklatka (PL) écrits par Marek Cendrowicz
+		- Jeux vidéos :
+			Amazon (JP) écrit par TPF
+		
+
+	* Autres améliorations
+		- Il est possible de marque un élément comme rendu depuis la fenêtre
+		  affichant la liste des éléments empruntés. Elle affiche aussi
+		  l'historique des prêts.
+		- Lors de l'ouverture d'une collection créée avec une version plus
+		  récente, un avertissement est affiché pour informer l'utilisateur
+		  que des données pourrait être perdue si elle est sauvegardée.
+		- Le programme d'installation enregistre les fichiers de types .gcs
+		  pour qu'ils soient ouverts avec GCstar.
+		- Si le fichier associé à un élément n'est pas trouvé lorsque sa
+		  lecture est lancée, un message d'erreur est affiché.
+
+	* Corrections de problèmes
+		- Le filtre des emprunteurs était vide avec une disposition en lecture
+		  seule.
+		- Problème corrigé lorsqu'il y avait des caractères spéciaux dans le
+		  modèle e-mail pour les emprunteurs.
+		- Le format de date n'était pas utilisé dans le panneau lecture seule,
+		  dans la recherche avancée and dans l'historique des emprunts.
+		- Il y avait un problème en filtrant une collection avec des éléments
+		  regroupés.
+		- Rechercher et remplacer ne marchait pas pour les champs complexes.
+		- Après importation, le nombre d'élements n'était pas mis à jour en
+		  mode détaillé.
+		- Le bouton Suivant ne fonctionnait pas lors de l'utilisation de
+		  'Plusieurs sites' pour récupérer les informations depuis Internet.
+		- Problème anticipé dans le cas d'une collection d'un type utilisateur
+		  avec un champ supprimé.
+		- L'exportation .tar.gz n'ajoutait pas le modèle lorsqu'il était
+		  personnel avec un nom.
+		- Problème corrigé quand le champ de regroupement contenait un nombre
+		  entre parenthèses.
+		- Le tri par un nombre ou une date était incorrect lors de
+		  l'exportation.
+		- Problème corrigé avec les modules d'importation/exportation avec un
+		  nom traduit lorsqu'ils étaient utilisés en ligne de commande.
+		- Problème corrigé avec le module pour importer une liste de nom
+		  lorsqu'il était utilisé depuis la ligne de commande.
+		- Lors de l'extraction des informations depuis un fichier vidéo, rien
+		  ne se passait si des valeurs n'étaient pas sélectionnées.
+		- Avec les modèles Tian et Tian-Mario pour l'exportation HTML, les
+		  liens internes étaient faux.
+		- Problème corrigé dans certains modules de recherche :
+			Tous les modules Amazon
+			CulturaliaNet (Films - ES)
+			FilmWeb (Films - PL)
+			IMDb (Films - EN)
+			JeuxVideo.com (Jeux Vidéos - FR)
+			JeuxVideo.fr (Jeux Vidéos - FR)
+			OFDb (Films - DE)
+
+-------------------------------------------------------------------
+
+1.3.2
+
+	
+	* Traduction Galicienne ajoutée grâce à Daniel Espiñeira.
+
+	* Nouveaux modules pour récupérer des informations depuis des sites web :
+		- Musique : Discogs (EN) fourni par TPF
+
+	* Nouveau modèle pour l'exportation HTML: Float (Films)
+
+	* Changements pour la récupération d'informations
+		- La note est récupérée depuis le site IMDb (Films - EN).
+		- Les champs vides ne sont pas utilisés.
+
+	* Corrections de problèmes
+		- Il y avait un problème lorsque les élements était groupés avec les
+		  articles à la fin.
+		- La suppression du dernier élément d'un groupe provoquait des erreurs.
+		- Des caractères invalides était insérés dans les collections.
+		- Le format pour les dates n'était pas utilisé lors de l'exportation.
+		- Le nombre d'éléménts dans la barre d'état n'était parfois pas mis à jour.
+		- Les nombres à virgule était tronqués dans les listes détaillées.
+		- Le champ à utiliser pour trier lors d'une exportation n'était pas restoré lors
+		  d'une nouvelle exportation.
+		- Le mot 'Serie' n'était pas traduit dans les collections de livres.
+		- Les éléments 'Favori' et 'Mots-clés associés' sont remis dans l'ordre lors du
+		  choix des éléments à afficher.
+		- Problème corrigé dans certains modules de recherche :
+			Tous les modules Amazon
+			BDGest (Livres - FR)
+			DVDFr (Films - FR)
+			FilmUP (Films - IT)
+			JeuxVideo.com (Jeux Vidéos - FR)
+			JeuxVideo.fr (Jeux Vidéos - FR)
+			MusicBrainz (Musique - EN)
+
+-------------------------------------------------------------------
+
+1.3.1
+
+	* Nouveaux modules pour récupérer des informations depuis des sites web :
+		- Jeux Vidéos :
+			Ludus (IT) fourni par TPF
+		- Livres :
+			ISBNdb (EN), Buscape (PT) et LiberOnWeb (IT) fournis par TPF.
+			
+	* Corrections de problèmes
+		- Une image de couverture modifiée depuis une fenêtre ne l'était pas
+		  dans le panneau principal.
+		- Pour les nouveaux livres, le champ Lu est initialisé à "Non lu".
+		- Supprimer plusieurs éléments en mode image pouvait parfois causer
+		  une erreur.
+		- Le module d'exportation XML ne listait pas les modèles par défaut et
+		  n'arrivait pas à ouvrir ceux spécifiés dans un fichier.
+		- La vérification orthographique est désactivée si le dictionnaire
+		  nécessaire n'est pas trouvé au lieu de générer une erreur.
+		- Problème corrigé dans certains modules de recherche :
+			Tous les modules Amazon
+			Alapage (Jeux Vidéos - FR)
+			BDGest (Livres - FR)
+			Gamespot (Jeux Vidéos - EN)
+			JeuxVideo.com (Jeux Vidéos - FR)
+			JeuxVideo.fr (Jeux Vidéos - FR)
+			TricTrac (Jeux de société - FR)
+
+--------------------------------------------------------------------
+
+1.3.0
+
+	* Sélections multiples
+		- Plusieurs éléments peuvent être sélectionnés en même temps dans la
+		  liste en utilisant les touches Control et Shift. Ils peuvent alors
+		  être modifiés ou supprimés ensemble.
+		- Il est possible de choisir plusieurs éléments dans les résultats
+		  d'une recherche Internet. Tous seront ajoutés à la collection
+		  courante. Les informations du premier seront ajoutées à l'élément
+		  courant.
+
+	* Collections de jeux de plateau ajoutées grâce à Zombiepig.
+
+	* Améliorations du mode image
+		- Il est possible d'ajouter un effet en surimpression pour obtenir un
+		  meilleur aspect.
+		- Nouveaux thèmes pour le mode image lors de l'utilisation d'une image
+		  de fond: Glass et DarkGlass. Ils ajoutent un reflet sous l'image.
+		- Meilleur aspect pour les éléments empruntés.
+		- Une couleur peut être choisie pour la sélection, y compris avec une
+		  image de fond.
+
+	* Champs ajoutés ou modifiés
+		- Pour les collections de films, la liste d'acteurs est à présent une
+		  vraie liste. Un rôle peut aussi être associé à chaque acteur.
+		- Des mots-clés peuvent être assignés aux éléments. Il est aussi
+		  possible d'en marquer certains comme favoris.
+
+	* Options et préférences modifiées ou ajoutées
+		- Un vérificateur orthographique est disponible pour les champs texte
+		  longs. Il peut être activé ou désactivé dans l'onglet Options des
+		  préférences.
+		- Les utilisateurs peuvent changer les raccourcis associés aux
+		  éléments dans les menus. Le menu doit être mis en surbrillance. Il
+		  faut ensuite presser la combinaison de touches à utiliser.
+		- Les utilisateurs peuvent choisir le format pour afficher la date. Ce
+		  format est le même que celui utilisé par strftime(3).
+		- Une nouvelle option permet de choisir ce qui doit être fait quand un
+		  texte replié est trop long.
+		- Il est possible d'indiquer un fichier contenant des cookies qui
+		  seront utilisés par les modules de téléchargement d'informations qui
+		  en ont besoin.
+		- Un nouveau thème a été ajouté aux panneaux en lecture seule : Dark.
+		- En mode détaillé, un autre champ peut être utilisé pour trier les
+		  éléments groupés sous un parent.
+		- Légère ré-organisation de la boîte de dialogue pour les préférences
+
+	* Améliorations de la recherche avancée
+		- Les champs pour saisir les données sont changés en fonction de ce
+		  qui est attendu. Par exemple pour les champs qui ont un historique,
+		  ceux-ci seront affichés.
+		- Il est possible de choisir de faire une recherche sur tous les
+		  champs.
+		 
+		 
+	* Nouveaux modules pour récupérer des informations depuis des sites web :
+		- Jeux de plateaux :
+			Board Game Geek (EN) fourni par Zombiepig
+			Reservoir Jeux et Tric Trac (FR) fournis par Florent
+		- Films :
+			NasheKino et Animator (RU) fournis par zserghei
+
+	* Importation CSV
+		- Des champs peuvent être ignorés.
+		- Un jeu de caractères peut être indiqué.
+
+	* Ligne de commande
+		- Une nouvelle option en ligne de commande, --list-plugins a été
+		  ajoutée pour lister tous les modules de récupération d'informations
+		  associés à un type de collection donné.
+		- Si un mauvais nom de module est passé à la ligne de commande, une
+		  erreur explicite est affichée.
+		- Meilleure gestion des images.
+
+	* Corrections de problèmes
+		- Le raccourci pour ajouter un nouvel élément a été changé de Ctrl-A
+		  en Ctrl-T. A présent Ctrl-A est à nouveau disponible pour
+		  sélectionner tout le texte.
+		- La bulle d'information affichée dans les résultats d'une recherche
+		  Internet est masquée lorsque l'on clique dessus.
+		- Lors de l'annulation de la création d'une nouvelle collection, la
+		  précédente était fermée.
+		- Le cliquer-glisser des images fonctionne aussi quand le chemin
+		  contient un espace.
+		- La sélection d'une image se fait à partir du dernier répertoire
+		  utilisé s'il n'y a pas d'image en cours.
+		- Certains modules pour sites web ne mettaient pas de suffixe pour les
+		  images téléchargées.
+		- Problèmes corrigés avec le tri lors de l'exportation.
+		- Après une importation, le nombre d'éléments dans la barre de status
+		  n'etait pas mis à jour.
+		- Problème corrigé lorsqu'un module ne retournait pas d'image quand
+		  l'utilisateur se servait de l'importation depuis une liste
+		  d'éléments.
+		- Problème corrigé dans certains modules de recherche :
+			Tous les modules Amazon
+			Biblioteka Narodowa (Livres - PL)
+			Allmovie (Films - EN)
+			Beyaz Perde (Films - TR)
+			Alapage (Jeux Vidéos - FR)
+			Gamespot (Jeux Vidéos - EN)
+
+--------------------------------------------------------------------
+
+1.2.2
+
+	* Problème corrigé dans certains modules de recherche:
+		IMDb (Films - EN)
+		MusicBrainz (Musique - EN)
+
+	* Problème corrigé avec l'extraction des informations depuis
+	  une liste de lecture pour les collections de musique.
+
+	* Problème corrigé lorsqu'un filtrage était utilisé peu de
+	  temps après le démarrage sur une collection affichée en
+	  mode image.
+
+	* En mode image, si les modifications d'un élément changeait
+	  sa place dans la liste, il n'était pas sélectionné après que
+	  l'on ait cliqué dessus.
+
+	* Lors de mises à jour de GCstar, les modules d'extraction
+	  sont aussi mis à jour.
+
+--------------------------------------------------------------------
+
+1.2.1
+
+	* Nouveaux modules pour récupérer les informations depuis
+	  le sites Internet Allmovie (EN). Fourni par Zombiepig
+
+	* 2 espaces supplémentaires étaient ajoutés à la fin des champs
+	  contenant un texte long lors de la sauvegarde.
+
+	* La taille de la liste des champs dans les réglages pour les
+	  collections définies par l'utilisateur peut être changée.
+
+	* Dans les préférences, la taille de la barre d'outils peut être
+	  laissée à la valeur par défaut du système plutôt que d'utiliser
+	  une valeur spécifique.
+
+	* Les labels pour les boutons "Ce soir" et "Lecture" étaient
+	  toujours affichés, même si l'utilisateur avait choisir de ne
+	  montrer que les icones (paramètre du système et non un de 
+	  GCstar).
+
+	* Un problème empêchait un utilisateur de créer un nouveau type de
+	  collection au démarrage.
+
+--------------------------------------------------------------------
+
+1.2.0
+
+	* Problème corrigé lors du téléchargement des informations
+	  associée à un élement et que le mode image est utilisé.
+
+	* Si une recherche était interrompue et une nouvelle lancée,
+	  les résultats de la précédentes était réutilisés.
+
+	* Lors du changement de l'image principale d'un élément, elle
+	  était chargée deux fois.
+
+	* Problèmes corrigés avec certains modules de recherche
+	  Internet dûs à des changements de sites.
+		Allocine (Films - FR)
+		CSFD.cz (Films - CS)
+		IMDb (Films - EN)
+
+	* Quelques traductions manquantes ont été ajoutées aux langues
+	  suivantes : DE, ES et SV.
+ 
+--------------------------------------------------------------------
+
+1.2.0.beta3
+
+	* Le bon nombre d'éléments est affiché dans la barre de
+	  statut lorsque l'utilisateur utilise des filtres en mode
+	  image.
+	
+	* Une erreur est affichée lorsque l'on essaye d'exporter en
+	  HTML avec un modèle qui n'existe pas.
+
+	* Le champ de recherche dans la fenêtre permettant de
+	  choisir un module n'était parfois pas initialisé.
+
+	* Quand une erreur critique survient, l'utilisateur peut
+	  soumettre un rapport d'anomalie de manière
+	  semi-automatique.
+
+	* Les barres de progression de l'écran de démarrage et
+	  dans la barre d'état de la fenêtre principale sont plus
+	  précises.
+
+	* La fenêtre de recherche n'était pas centrée à la première
+	  ouverture. Il en était de même pour la fenêtre permettant
+	  de créer un type de collection personnalisé.
+
+	* La recherche rapide est à présent aussi disponible en mode
+	  image. Cette recherche commence dès que l'utilisateur tape
+	  des caractères alors que la liste est active.
+
+	* Ces touches du clavier sont gérées en mode image :
+	  Avancer d'une page, Reculer d'une page, Début, Fin.
+
+	* Problèmes corrigés avec certains modules de recherche
+	  Internet dûs à des changements de sites.
+		Alapage (Livres - FR)
+		Cinemotions (Films - FR)
+		Dicshop (Films - SV)
+		Merlin (Livres - PL)
+		
+	* Quelques traductions manquantes ont été ajoutées aux langues
+	  suivantes : FR, SV, PL et CA.
+
+--------------------------------------------------------------------
+
+1.2.0.beta2
+
+	* Lorsque l'image était masquée dans un des types de
+	  collections par défaut, tous les éléments placés à
+	  côté l'était également.
+
+	* Lors de l'utilisation de recherches ou de filtres, si
+	  rien n'était trouvé, le panneau affichait le message
+	  d'avertissement au lieu du bouton "Voir Tous".
+
+	* Echappement des entités XML dans les fichiers de
+	  collections.
+
+	* Correction d'un problème lorsqu'il n'y avait pas de
+	  collection active et qu'une autre ne pouvait pas
+	  être ouverte.
+
+	* Correction d'un problème potentiel lors de l'utilisation
+	  des fonctionnalités en ligne de commande et qu'aucun
+	  modèle n'a été explicitement spécifié.
+
+	* L'exportation HTML en ligne de commande a un modèle
+	  par défaut.
+
+--------------------------------------------------------------------
+
+1.2.0.beta1
+	
+	* Traduction suédoise ajoutée grâce à Ramon Radnoci.
+
+	* Traduction indonésienne ajoutée grâce à Nugrahadi.
+
+	* Traduction portugais brésilien ajoutée grâce à Daniel Valença.
+
+	* Collections de vin ajoutée grâce à Yves Martin.
+	
+	* Nouveaux modules pour récupérer les informations depuis
+	  des sites Internet :
+		Films :
+			DVDSpot (EN)
+			  Fourni par Marc Deslauriers
+			CSFD.cz (CS)
+			  Fourni par Pajdus
+			Beyaz Perde (TR)
+			  Fourni par Zuencap
+			MovieMeter (NL)
+			  Fourni par MaTiZ
+			Port.hu (HU)
+			  Fourni par un contributeur anonyme
+		Livres :
+			BDGest (FR)
+			  Fourni par Rataflo
+			National Library, Merlin, NUKat et Mareno (PL)
+			  Fournis par WG
+			Bokkilden (NO)
+			  Fourni par Tian
+			Fnac et Mediabooks (PT)
+			  Fournis par TPF
+			Fnac and Mediabooks (PT), Bol and InternetBookShop (IT)
+			  provided by TPF
+		Jeux vidéos :
+			DicoDuNet (FR)
+			  provided by TPF
+
+	* Nouveau module pour exporter en format Latex créé par
+	  Zserghei.
+
+	* Lors de la création d'une nouvelle collection, ou au premier
+	  démarrage, l'utilisateur peut importer une collection
+	  existante en utilisant certains des mopdules disponibles.
+					  
+	* Lorsque les éléments sont groupés, une nouvelle option permet
+	  d'afficher le nombre d'éléments dans les catégories.
+
+	* Une option a été ajoutée pour regrouper ou non les
+	  éléments orphelins. Les éléments sans maître lorsque
+	  le regroupement est activé seront tous ensemble à la
+	  fin par défaut. Mais il est aussi possible de les
+	  mélanger avec les groupes lors du tri.
+
+	* En vue détaillée, il est possible de ré-ordonner les
+	  colonnes par des cliquer-glisser sur leurs en-têtes.
+
+	* Il est possible de choisir le champ à utiliser pour
+	  trier lors d'une exportation (si cela a un sens).
+
+	* Durant l'exportation, seules les images requises sont
+	  copiées.
+
+	* Nouveau champ dans les collections de films pouvant
+	  contenir un identifiant numérique. L'identifiant
+	  interne affiché à côté du titre est à présent en
+	  lecture seule.
+
+	* Ajout d'un champ dans les collections de jeux vidéos :
+	  Exécutable. Ce champ peut contenir le chemin vers un
+	  programme qui peut être lancé directement depuis la
+	  barre d'outils de GCstar.
+
+	* Lorsque le champ de recherche est changé pour la
+	  récupération d'informations, la valeur de la fiche
+	  est utilisée.
+
+	* La touche Supprimer enlève l'élément courant des
+	  listes multiples.
+
+	* Lors de l'ouverture de la fenêtre pour effectuer des
+	  recherches, le premier champ est actif.
+
+	* Le point dans le format d'image est enlevé lors d'un
+	  export Tellico (Patch de Robby Stephenson).
+
+	* Utilisation du proxy lors des mises à jour.
+	  (Patch de Javier Donaire).
+
+	* Problème corrigé avec certains modules de recherche
+	  Internet dûs à des changements de sites.
+		Tous les modules Amazon
+		IMDb (Films - EN)
+		Allocine (Films - FR)
+		FilmUP (Films - IT)
+		Alapage, JeuxVideo.com (Jeux - FR)
+		Gamespot (Jeux - EN)
+		Adlibris (Livres - FI, SV)
+		Casadelibro (Livres - ES)
+
+	* Problème corrigé lors d'une mise à jour (gcstar -u)
+	  si un nouveau répertoire doit être créé.
+	
+	* Problème corrigé avec le module pour importer les
+	  collections Ant Movie Catalog contenant des points-
+	  virgules.
+
+	* Problème corrigé en mode lecture seule lorsque les
+	  données contiennent des balises HTML.
+	
+	* Problème corrigé avec le titre de la fenêtre lors de
+	  l'utilisation de la fonctionnalité "Ce soir".
+
+	* Lors de l'ouverture d'une collection d'un type différent
+	  de celui courant, si un filtre était présent, rien
+	  n'était affiché.
+
+	* Mise à jour de l'adresse pour signaler une anomalie
+	  dans la page de manuel et lors de l'utilisation de
+	  l'option -h ou --help en ligne de commande.
+	
+	* Amélioration des temps nécessaires pour le démarrage
+	  et pour ouvrir une collection.
+	
+--------------------------------------------------------------------
+
+1.1.1
+
+	* Problèmes corrigés lorsque les éléments sont regroupés et
+	  que le champ de regroupement est modifié.
+
+	* Le module pour FilmWeb ne fonctionnait plus à cause de
+	  changement sur le site web.
+	  
+	* Meilleur disposition pour l'onglet Chemin des préférences.
+
+--------------------------------------------------------------------
+
+1.1.0
+
+	* Au lieu de définir plusieurs applications externes (pour
+	  les pages web, les fichiers vidéo ou audio), il est
+	  possible d'utiliser les réglages du système. Cela fonctionne
+	  pour tous les Unix (dont GNU/Linux) qui utilise XFCE, Gnome
+	  ou KDE, et aussi pour MacOS X et Microsoft Windows.
+
+	* Collections numismatiques ajoutée grâce à szdavid.
+	  Elles peuvent être importées et exportées
+	  depuis/vers Tellico.
+
+	* Traduction catalane ajoutée grâce à Ponç J. Llaneras
+
+	* Traduction arabe ajoutée grâce à Muhammad Bashir Al-Noimi.
+
+	* Nouveau modules de récuperation de données depuis des
+	  sites Internet. Tous ont été écrits par TPF.
+		Livres : Adlibris (FI, SV), Casadelibro (ES), Fnac (FR)
+		Jeux vidéos : Alapage (FR), Amazon (US, DE, FR, UK)
+
+	* Le répertoire utilisé pour stocker les images peut être
+	  spécifique à une collection. Il est défini dans les
+	  propriétés de la collection (Menu Fichier > Propriétés)
+
+	* Le chemin du répertoire utilisé pour stocker les images
+	  peut contenir des chaînes spéciales :
+		- %WORKING_DIR% ou . sera remplacé par le répertoire de
+			la collection (seulement utilisable en début)
+		- %FILE_BASE% sera remplacé par le fichier contenant
+			la collection sans son suffixe (.gcs)',
+	  La valeur par défaut (qui peut être restorée) est à présent :
+			./%FILE_BASE%_pictures/
+
+	* Nouveau type de champ pour les collections utilisateurs :
+	  "Dépendant d'autres champs". Son contenu sera généré à
+	  partir d'autres champs. La valeur Défaut doit alors contenir
+	  le format où %Nom d'un champ% sera replacé par la valeur du
+	  champ correspondant.
+
+	* Nouveau champ pour les collections par défaut : Date d'ajout.
+	  sa valeur par défaut lors de l'ajout d'un nouvel élément est
+	  la date courante.
+
+	* Si le bouton permettant de récupérer les informations sur
+	  Internet est cliqué avec le bouton droit de la souris, le
+	  module à utiliser est demandé à l'utilisateur. Ceci même s'il
+	  y en a un de spécifié dans les préférences.
+
+	* Quand une valeur est tronquée dans les résultats d'une
+	  recherche web, une bulle contenant le texte complet est
+	  affiché lorsque le pointeur de la souris est au-dessus.
+
+	* Certaines options inutiles pour la plupart des utilisateurs
+	  sont cachées à moins que le mode expert ne soit activée.
+
+	* Double-cliquer sur une date dans la boîte de dialogue
+	  correspondante la valide.
+
+	* Lors de l'importation depuis GCfilms, il est possible de
+	  réutiliser les identifiants uniques au lieu de les
+	  regénérer.
+
+	* L'image n'était pas mise à jour lors du téléchargement
+	  d'informations en mode image.
+	
+	* Problème corrigé lors du dépôt d'une image glissée depuis
+	  une page web.
+	
+	* Le nombre d'éléments n'était pas mis à jour lors de la
+	  suppression d'un élément.
+
+
+--------------------------------------------------------------------
+
+Les numéros de tâche et d'anomalies correspondent à ceux présents
+sur la page du projet sur Gna! :
+https://gna.org/projects/gcstar/
+
+1.0.0
+
+	* Gestion des collections musicales.
+
+	* L'Extraction des informations des vidéos depuis un
+	  fichier a été introduit à nouveau (cela avait été
+	  supprimé lors de la création de GCstar à partir de
+	  GCfilms).
+		(anomalie #7157)
+	  
+	* Module pour les collections musicales récupérant les
+	  informations depuis le site MusicBrainz.
+
+	* Importation et exportation des collections musicales
+	  depuis et vers Tellico.
+
+	* Les informations d'un album peuvent être extraites
+	  depuis une liste de lecture (playlist)
+
+	* Nouveau module pour les jeux vidéos utilisant
+	  MobyGames (EN) créé par TPF.
+
+	* Nouveau module pour les livres utilisant Alapage (FR)
+	  créé par TPF.
+	
+	* Nouveau module pour les films utilisant MovieCovers.com
+	 (FR) créé par Patrick Fratczak.
+
+	* Il est possible de chercher en utilisant un code EAN ou
+	  UPC (code barre) au lieu de l'ISBN pour les livres avec
+	  les modules Amazon.
+
+	* Dans la fenêtre des propriétés d'un fichier, il y aussi
+	  le chemin complet, la taille du fichier et le nombre
+	  d'éléments dans la collection.
+
+	* Les listes utilisées pour certaines données (comme le
+	  genre pour les films ou les codes pour les jeux vidéos)
+	  peuvent être ré-ordonnés à la souris.
+
+	* Les largeurs des colonnes dans le mode détaillé sont
+	  sauvegardées quand l'application est quittée ou qu'un
+	  autre fichier est ouvert.
+		(anomalie #7666)
+
+	* Dans la liste des modules pour la recherche Internet, la
+	  liste des champs pouvant être utilisés est affichée.
+
+	* Nouvel élément dans le menu Aide pour afficher tous les
+	  modules disponibles pour les recherches Internet.
+
+	* Modèles pour l'exportation HTML des collections musicales.
+
+	* Nouveau modèle pour l'exportation HTML des collections de
+	  livres : FloFred fourni par Florent.
+
+	* L'option --verbose a été ajoutée au programme
+	  d'installation.
+	
+	* Tous les modules Amazon ont été changé pour cause de
+	  changements sur le site web.
+
+	* Patch fourni par tiwek pour récupérer le titre original
+	  depuis FilmWeb.
+
+	* Dans la boîte de dialogue de recherche des informations
+	  ont été ajoutées à propos du type de comparaison effectuée.
+
+	* Quand un champ de regroupement est spécifié depuis la
+	  barre d'outils, le 1er élément des groupes est
+	  automatiquement généré.
+		(anomalie #7500)
+
+	* Correction d'une anomalie avec l'importation CVS pour les
+	  collections autres que de films.
+
+	* Corrections de bugs avec l'encodage des caractères
+	  dans les fichiers XML.
+		(anomalie #7584)
+
+	* Correction d'un problème avec le programme d'installation
+	  qui empêchait la mise à jour par dessus une version
+	  existante.
+		(anomalie #7481)
+
+	* Les programmes externes contenant un espace dans le nom
+	  peuvent être utilisés sur les systèmes Win32.
+
+--------------------------------------------------------------------
+
+0.5.0
+
+	* Gestion des favoris (Menu "Mes collections").
+	  Cela peut servir à organiser des collections et y
+	  avoir rapidement accès depuis GCstar.
+	  
+	* Ajout d'une recherche "Avancée" où l'utilisateur peut définir
+	  les filtres à appliquer dans le détail.
+
+	* La recherche sur Internet peut être faite selon plusieurs
+	  champs. Ca concerne pour le moment seulement les collections
+	  de livres où la recherche peut se faire aussi avec l'ISBN.
+		(anomalie #6898)
+
+	* Un aperçu est disponible pour les résultats d'une recherche
+	  sur le web.
+
+	* Nouveau module d'importation pour fusionner 2 collections
+	  GCstar.
+		(assistance #1293)
+
+	* Nouveau module pour les jeux vidéos utilisant JeuxVideo.com
+	  (FR) fourni par TPF.
+
+	* Nouveau module pour les livres utilisant Amazon.de (DE) fourni
+	  par Frenkx.
+
+	* Nouveau module pour les livres utilisant Amazon.uk (EN).
+
+	* Traduction allemande mise à jour par Frenkx.
+	
+	* Nouvel élément dans le menu "Aide" pour signaler un problème.
+
+	* Le champ ISBN peut contenir le caractère 'X'.
+
+	* Problème corrigés avec les modules d'importation lors de
+	  l'insertion des éléments dans la collection courante.
+
+	* Le module d'exportation en .tar.gz enregistre aussi les
+	  informations sur la collection (description, propriétaire,...)
+
+	* Le modèle HTML "Shelf" a des fonctionnalités pour afficher ou
+	  cacher les informations d'un groupe.
+
+	* Problème corrigé dans le programme d'installation Windows.
+		(anomalie #7122)
+
+--------------------------------------------------------------------
+
+0.4.1
+
+	* Des programmes peuvent être définis pour les emails.
+	  Ils seront utilisés à la place de Sendmail ou d'un 
+	  serveur SMTP. Une configuration par défaut est fournie
+	  pour pouvoir utiliser Sylpheed-Claws,
+	  Thunderbird et Evolution.
+
+	* La recherche peut être faite selon le titre original
+	  pour les collections de films.
+		(assistance #1246)
+
+	* Problème corrigé avec les anciennes versions
+	  de HTTP::Headers
+		(assistance #1245)
+		
+	* Problème corrigé pour les utilisateurs Windows avec
+	  le lancement de programmes externes.
+		(anomalie #6762)
+
+--------------------------------------------------------------------
+
+0.4
+
+	* Ajout de la gestion des collections de livres.
+	
+	* 2 modules pour les livres : Amazon.com (EN)
+	  et Amazon.fr (FR).
+	
+	* Importation des collections de livres depuis Tellico
+	  et Alexandria.
+	  Exportation des collections de livres vers Tellico.
+	
+	* Si le groupage est fait selon une valeur qui est une liste,
+	  elle sera séparée en plusieurs valeurs. Ainsi un élément
+	  apparaîtra plusieurs fois, une pour chaque valeur.
+
+	* Nouvelles options en ligne de commande pour automatiquement
+	  réaliser certaines opérations. Plus de détails :
+		http://www.gcstar.org/doc.execute
+
+	* "gcstar --help" donne plus d'insformations. Une page de
+	  manuel a aussi été créée.
+
+	* Les informations sur les emprunteurs (nom et adresse
+	  e-mail peuvent être importés depuis ces formats :
+	  LDIF, Sylpheed-Claws, VCARD.
+
+	* Les images peuvent être enregistrées en utilisant
+	  le titre ou le nom de l'élément comme préfixe (au
+	  lieu de gcstar_).
+		(assistance #1175)
+
+	* Il est à présent possible de rajouter des informations
+	  à une collection (Nom, propriétaire, adresse e-mail,
+	  description). Cela se fait par le menu Fichier, élément
+	  Propriétés.
+
+	* Un bouton Lecture est présent dans la barre d'outils
+	  pour les collections qui le nécessite (comme les
+	  collections de films). Les collections définies par
+	  l'utilisateur peuvent aussi régler cela.
+
+	* Pour les collections définies par l'utilisateur, un
+	  affichage en lecture seule est également généré.
+	  
+	* L'exportation HTML est aussi disponible pour les
+	  collections définies par l'utilisateur.
+
+	* La sauvegarde est plus rapide et renseigne mieux
+	  l'utilisateur.
+	  
+	* Lors de l'importation de données depuis Internet, si la
+	  prévisualisation d'une image est utilisée, elle ne sera
+	  téléchargée qu'une fois.
+
+	* Certains modèles utilisés par l'exportation HTML ont été
+	  rendus valides XHTML 1.0 strict :
+	  Shelf, Tabs, Tian, Tian-Mario
+
+	* Nouvelle option dans les préférences pour décider si la
+	  collection précédente doit être chargée au démarrage.
+	  
+	* L'information de verrouillage est stockée dans la collection
+	  elle-même.
+
+	* Encodage UTF-8 imposé pour les modèles de collections.
+		(anomalie #6545)
+
+	* Correction d'un problème avec la recherche.
+		(anomalie #6536)
+
+	* Problème corrigé lorsqu'aucun collection utilisateur
+	  n'existe.
+		(anomalie #6520)
+
+--------------------------------------------------------------------
+
+
+0.3
+
+	* Possibilité de créer des collections personnelles. Une
+	  telle collection contiendra des champs définis par
+	  l'utilisateur selon ses besoins. Plus d'informations
+	  dans la documentation :
+		http://www.gcstar.org/doc.models.fr.php
+
+	* S'il y a eu des changements dans une collection et que
+	  la fonctionnalité de sauvegarde automatique n'est pas activée,
+	  l'utilisateur est prévenu au moment de fermer la collection.
+
+	* L'installation ne s'exécutait pas quand une langue non
+	  supportée était utilisée.
+		(anomalie #6324)
+
+	* L'importation CSV ne passait pas le fichier en UTF-8.
+
+	* Ajout d'un raccourci de mise à jour dans le menu Démarrer
+	  pour les utilisateurs Windows.
+		
+	* Les modèles HTML n'étaient pas listés sur les systèmes
+	  Windows
+		(anomalie #6366)
+
+--------------------------------------------------------------------
+0.2
+
+	* Ajout de la gestion de jeux vidéos: GCgames.
+	
+	* 2 modules pour importer les informations des jeux
+	  vidéos depuis des sites Internet : 
+	  GameSpot.com (EN) and JeuxVideo.fr (FR).
+	  Ils peuvent aussi importer des captures d'écran et
+	  les astuces trouvées.
+
+	* Traduction turque ajoutée grâce à KaraGarga.
+	
+	* Les membres d'une collection peuvent directement être
+	  regroupés depuis la barre d'outils. Plus d'options à ce
+	  sujet sont présente dans les préférences.
+
+	* Une image peut être déposée à la souris depuis un
+	  navigateur web sur les images affichées (l'affiche du
+	  film pour GCfilms, la boîte du jeu ou les captures d'écran
+	  pour GCgames).
+
+	* Correction d'anomalies et amélioration des performances.

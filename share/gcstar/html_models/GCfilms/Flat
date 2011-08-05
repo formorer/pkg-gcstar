@@ -1,0 +1,109 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template made by Yanbab. Flat and compact list.
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+
+body {
+	color:black;
+	background-color : white;
+	font-family : arial, sans-serif;
+	font-size : 12px;
+	margin : 10px;
+}
+
+td {
+	font-family : arial, sans-serif;
+	font-size : 12px;
+}
+
+h1 {
+	font-size:130%;
+	font-weight:bold;
+	border-bottom : solid black 1px;
+	margin:0px;
+}
+
+.borrowed1 {
+}
+
+#footer {
+	border-top : solid black 1px;	
+	font-size:small;
+	color : #666;
+}
+a {
+	color : #666;
+	text-decoration : none;	
+
+}
+a:hover {
+	text-decoration : underline;
+}
+#total {
+	float: right;
+	font-weight: bold;
+}
+.title {
+ 	font-size : 110%;
+ 	font-weight : bold;
+}
+
+.synopsis {
+	margin-top : .6em;
+	text-align : justify;
+
+	margin-bottom : 1.5em;
+	color : #333;
+}
+
+.image {
+	margin-bottom : 1.5em;
+}
+
+.detail {
+	float : right;
+	text-align : right;
+	color : #888;
+}
+</style>
+</head>
+<body>
+<div id="total">$$TOTALNUMBER$$ $$ITEMS$$</div>
+<h1>$$PAGETITLE$$</h1>
+<table cellpadding="8" cellspacing="0">
+[/HEADER]
+[ITEM]
+<tr class="borrowed$$borrower_FLAG$$">
+  <td valign="top" align="center" bgcolor="#ddd" width="80" >
+  	<img align="top" src="$$image$$" height="$$HEIGHT_PIC$$" border="0" alt="$$title$$" title="$$title$$" class="image">
+  </td>
+  <td valign="top">
+  	<div class="detail">$$genre$$ - $$country$$ - $$time$$<br>
+    $$date$$</div>
+    
+  	<div class="title">$$title$$</div>
+    $$director$$ <br>
+    
+    <div class="synopsis">$$actors_LABEL$$$$SEPARATOR$$$$actors$$<br>
+    	$$synopsis$$
+    </div>
+    
+  </td>
+</tr>
+[/ITEM]
+[FOOTER]
+</table>
+<div id="footer">
+	$$GENERATOR_NOTE$$
+</div>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

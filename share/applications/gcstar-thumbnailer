@@ -1,0 +1,260 @@
+#!/usr/bin/perl
+use strict;
+
+use XML::Simple;
+use URI::file;
+use Gtk2;
+
+{
+    # GCS file to load
+    my $uriIn = URI->new($ARGV[0]);
+    my $fileIn = $uriIn->file;
+
+    my $maxIcons = 16;
+    my $itemsPerRow = 4;
+    my $skin;
+    my $skinFile;
+
+    # Find user selected skin
+    # Fix - hardcoded path
+    open (CONF, $ENV{'HOME'}.'/.config/gcstar/GCstar.conf');
+    my $line;
+    foreach $line (<CONF>) {
+        if ($line =~ /listImgSkin=(.*)/)
+        {
+            $skinFile= $1;
+        }
+    }
+    if (!$skinFile)
+    {
+        $skinFile = "Wood";
+    }
+    close (CONF);
+
+    # Fix - hardcoded path
+    $skin = "/usr/local/share/gcstar/list_bg/".$skinFile."/list_bg.png";
+
+    # Load the collection file temporarily, to grab the model type
+    my $collectionXML= XMLin($fileIn, forcearray => 1);
+
+    # Load the collection model to determine id and cover fields
+    # Fix - hardcoded path
+    my $collectionModel = XMLin("/usr/local/lib/gcstar/GCModels/".$collectionXML->{type}.".gcm");
+    my $idField = $collectionModel->{options}->{fields}->{id};
+    my $picField = $collectionModel->{options}->{fields}->{cover};
+
+    # Now that we now the id field, reopen collection xml using proper id
+    $collectionXML= XMLin($fileIn, forcearray => 1, keyattr=>$idField);
+    my $collectionItems=$collectionXML->{item};
+    
+    my $count;
+    my $favCount;
+    my $nonFavCount;
+    my @images;
+    my @favourites;
+    my @nonFavourites;
+
+    # Hacky part, but for some reason items won't load as an array, so just jump through collection grabbing the first few covers
+    # (Prefer favourites - so I don't see romantic comedies as the thumbnail for my films!!)
+
+    foreach my $collectionItem (values %$collectionItems)
+    {
+        if ($collectionItem->{$picField})
+        {
+            if ($collectionItem->{favourite})
+            {
+                if ($favCount < $maxIcons)
+                {
+                     @favourites[$favCount] = $collectionItem->{$picField};              
+                     $favCount++;
+                }
+            }
+            else
+            {
+                     @nonFavourites[$nonFavCount] = $collectionItem->{$picField};
+                     $nonFavCount++; 
+            }
+            
+        }
+    }
+
+    # Load a few pixbufs
+    my $gcstarIconPixBuf;
+    my $backgroundPixBuf;
+
+    # Fix - hardcoded path
+    $gcstarIconPixBuf = Gtk2::Gdk::Pixbuf->new_from_file("/usr/local/share/gcstar/icons/gcstar_24x24.png");
+    $backgroundPixBuf = Gtk2::Gdk::Pixbuf->new_from_file($skin);
+
+
+    my $tempPixbuf;
+    my @pixBuf;
+    my $bgWidth = $backgroundPixBuf->get_width;
+    my $bgHeight = $backgroundPixBuf->get_height;
+    my $maxHeight;
+
+    # Load covers to pixbufs, scale them to fit in background
+    for (my $imgCount = 0; $imgCount < $maxIcons; $imgCount++)
+    {
+        if (@favourites[$imgCount])
+        {
+            @pixBuf[$imgCount] = Gtk2::Gdk::Pixbuf->new_from_file(@favourites[$imgCount]);
+            # Scale to 80% of background size (seems like a good size)
+            @pixBuf[$imgCount] = scaleMaxPixbuf(@pixBuf[$imgCount], $bgWidth*.80, $bgHeight*.80);
+            if (@pixBuf[$imgCount]->get_height > $maxHeight)
+            {
+                $maxHeight = @pixBuf[$imgCount]->get_height;
+            }
+        } 
+        elsif (@nonFavourites[$imgCount - $favCount])
+        {
+            @pixBuf[$imgCount] = Gtk2::Gdk::Pixbuf->new_from_file(@nonFavourites[$imgCount - $favCount]);
+            # Scale to 80% of background size (seems like a good size)
+            @pixBuf[$imgCount] = scaleMaxPixbuf(@pixBuf[$imgCount], $bgWidth*.80, $bgHeight*.80);
+            if (@pixBuf[$imgCount]->get_height > $maxHeight)
+            {
+                $maxHeight = @pixBuf[$imgCount]->get_height;
+            }
+        }
+        else
+        {
+            # If we run out of items in the collection with covers, just make empty pixbufs for simplicity
+            @pixBuf[$imgCount] = Gtk2::Gdk::Pixbuf->new('rgb',1,8,$bgWidth * .80,$bgHeight * .80);
+            @pixBuf[$imgCount]->fill(0x00000000);
+        }
+    }
+
+    my $factor;
+    my $rows;
+    my $destHeight;
+    
+    # Change the positioning slightly if it's a reflection type skin (items sit higher on shelf)
+    # Work out number of rows of pictures, and desired height of rows (not much logic to these numbers,
+    # it's just what looks good)
+    if ($skinFile =~ /Glass/)
+    {
+        $factor = 40;
+        if ($maxHeight < 70)
+        {
+            $rows = 4;
+            $destHeight = $bgHeight - 145;
+        }
+        elsif ($maxHeight < 130)
+        {
+            $rows = 3;
+            $destHeight = $bgHeight - 100;
+        }
+        else
+        {
+            $rows = 2;
+            $destHeight = $bgHeight;
+        }
+    }
+    else
+    {
+        $factor = 10;
+        if ($maxHeight < 70)
+        {
+            $rows = 4;
+            $destHeight = $bgHeight - 60;
+        }
+        elsif ($maxHeight < 130)
+        {
+            $rows = 3;
+            $destHeight = $bgHeight - 15;
+        }
+        else
+        {
+            $rows = 3;
+            $destHeight = $bgHeight;
+        }
+    }
+
+    # Put covers on background
+    for (my $imgCount = 0; $imgCount < $itemsPerRow * $rows; $imgCount++)
+    {
+        $tempPixbuf = $backgroundPixBuf->copy;
+        @pixBuf[$imgCount]->composite($tempPixbuf,
+                                        ( $bgWidth - @pixBuf[$imgCount]->get_width ) / 2,
+                                        $bgHeight - @pixBuf[$imgCount]->get_height - $factor,
+                                        @pixBuf[$imgCount]->get_width, @pixBuf[$imgCount]->get_height,
+                                        ( $bgWidth - @pixBuf[$imgCount]->get_width ) / 2,
+                                        $bgHeight - @pixBuf[$imgCount]->get_height - $factor,
+                                        1, 1,
+                                        'nearest', 255);
+
+        if ($rows > 2)
+        {
+            # If needed, crop image to avoid wasted space
+            $tempPixbuf = $tempPixbuf->new_subpixbuf(0,$bgHeight-$destHeight,$bgWidth,$destHeight);
+        }
+        @pixBuf[$imgCount] = $tempPixbuf;   
+    }
+
+    # Get pixbuf ready for final image
+    $tempPixbuf = Gtk2::Gdk::Pixbuf->new('rgb',1,8,$bgWidth * $itemsPerRow,$destHeight * $rows);
+    $tempPixbuf->fill(0x00000000);
+
+    # Put each cover in place
+    for (my $imgCount = 0; $imgCount < $itemsPerRow * $rows; $imgCount++)
+    {
+        @pixBuf[$imgCount]->composite($tempPixbuf,
+                                      @pixBuf[0]->get_width * ($imgCount % $itemsPerRow),
+                                      @pixBuf[0]->get_height * int($imgCount / $itemsPerRow),
+                                      @pixBuf[5]->get_width,
+                                      @pixBuf[5]->get_height,
+                                      @pixBuf[0]->get_width * ($imgCount % $itemsPerRow),
+                                      @pixBuf[0]->get_height * int($imgCount / $itemsPerRow),
+                                      1, 1, 'nearest', 255);
+    }
+
+    # Scale to specified size, or else to max 128 pixels wide/high
+    if ($ARGV[2])
+    {
+        $tempPixbuf = scaleMaxPixbuf($tempPixbuf,$ARGV[2],$ARGV[2]);
+    }
+    else
+    {
+        $tempPixbuf = scaleMaxPixbuf($tempPixbuf,128,128);
+    }
+
+    # Place little gcstar icon in corner
+    $gcstarIconPixBuf->composite($tempPixbuf,
+                                  $tempPixbuf->get_width - $gcstarIconPixBuf->get_width - 4,
+                                  $tempPixbuf->get_height - $gcstarIconPixBuf->get_height - 5,
+                                  $gcstarIconPixBuf->get_width,
+                                  $gcstarIconPixBuf->get_height, 
+                                  $tempPixbuf->get_width - $gcstarIconPixBuf->get_width - 4,
+                                  $tempPixbuf->get_height - $gcstarIconPixBuf->get_height - 5,
+                                  1,1,'nearest',255);
+
+    # Save pixbuf
+    $tempPixbuf->save($ARGV[1],"png");
+
+}
+
+sub scaleMaxPixbuf
+{
+    my ($pixbuf, $maxWidth, $maxHeight) = @_;
+
+    my ($width, $height) = ($pixbuf->get_width, $pixbuf->get_height);
+    if (($height > $maxHeight) || ($width > $maxWidth)) 
+    {
+        my ($newWidth, $newHeight);
+        my $ratio = $height / $width;
+        if (($width) * ($maxHeight / $height) < $maxWidth)
+        {
+            $newHeight = $maxHeight;
+            $newWidth = $newHeight / $ratio;
+        }
+        else
+        {
+            $newWidth = $maxWidth;
+            $newHeight = $newWidth * $ratio;
+        }
+
+ 	$pixbuf = $pixbuf->scale_simple($newWidth, $newHeight, 'bilinear');
+    }
+
+    return $pixbuf;
+}

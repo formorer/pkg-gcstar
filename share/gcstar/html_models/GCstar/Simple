@@ -1,0 +1,96 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template made by Tian. A really simple list that could be printed
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+body
+{
+ color:black;
+}
+h1
+{
+ text-align:center;
+ font-size:200%;
+ font-weight:bold;
+}
+table
+{
+ border-collapse:collapse;
+ margin:1em 5%;
+ margin-bottom:3em;
+ width:90%;
+}
+tr+tr
+{
+ border-top:1px solid black;
+}
+.borrowed1
+{
+ color:#777777;
+ font-style:italic;
+}
+th
+{
+ border-bottom:2px solid black;
+ margin:0;
+ padding:1em;
+ font-weight:bold;
+}
+td
+{
+ padding:0.2em 1em;
+}
+#legend
+{
+ margin:1em;
+ border:1px solid black;
+ display:inline;
+ padding:0.5em;
+}
+#note
+{
+ border-top:1px solid black;
+ margin:3em 8%;
+ margin-bottom:2em;
+ padding-top:0.5em;
+ text-align:center;
+ font-size:90%;
+}
+#note a
+{
+ color:black ! important;
+ text-decoration:underline;
+ font-weight:bold;
+}
+</style>
+</head>
+<body>
+<h1>$$PAGETITLE$$</h1>
+<table>
+<tr>
+ [LOOP1 values=GCSfields idx=title]
+ <th>$$title_LABEL$$</th>
+ [/LOOP1]
+</tr>
+[/HEADER]
+[ITEM]
+<tr class="borrowed$$borrower_FLAG$$">
+ [LOOP2 values=GCSfields idx=field]
+ <td>$$field$$</td>
+ [/LOOP2]
+</tr>
+[/ITEM]
+[FOOTER]
+</table>
+[LENDING]<p id="legend" class="borrowed1">$$BORROWED_ITEMS$$</p>[/LENDING]
+<p id="note">$$GENERATOR_NOTE$$</p>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

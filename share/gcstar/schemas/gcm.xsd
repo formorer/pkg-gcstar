@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : gcm.xsd
+    Created on : April 26, 2007, 9:32 PM
+    Author     : toroman
+    Description:
+        Validates GCM files!
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="panelsItem">
+        <xs:sequence maxOccurs="unbounded">
+            <xs:element name="item" type="panelsItem" maxOccurs="unbounded" minOccurs="0" />
+        </xs:sequence>
+        
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="style" type="xs:string" />
+        <xs:attribute name="for" type="xs:string"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="label" type="xs:string"/>
+        <xs:attribute name="editable" type="xs:string" />
+        <xs:attribute name="title" type="xs:string" />
+        <xs:attribute name="collapsed" type="xs:string" />
+        <xs:attribute name="value" type="xs:string" />
+        <xs:attribute name="values" type="xs:string" />
+        <xs:attribute name="place" type="xs:string" />
+        <xs:attribute name="tip" type="xs:string" />
+        <xs:attribute name="width" type="xs:string" />
+        <xs:attribute name="height">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[1-9]+\d*(em)?" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="row" type="xs:integer"/>
+        <xs:attribute name="col" type="xs:integer"/>
+        <xs:attribute name="rows" type="xs:integer"/>
+        <xs:attribute name="cols" type="xs:integer"/>
+        <xs:attribute name="colspan" type="xs:integer" />
+        <xs:attribute name="expand">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="true" />
+                    <xs:enumeration value="false" />
+                    <xs:enumeration value="default" />
+                    <xs:enumeration value="horizontal" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        
+        <xs:attribute name="header" type="xs:boolean" />
+        <xs:attribute name="nomargin" type="xs:boolean" />
+        <xs:attribute name="flat" type="xs:boolean" />
+        
+        <xs:attribute name="align">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="left" />
+                    <xs:enumeration value="right" />
+                    <xs:enumeration value="top" />
+                    <xs:enumeration value="bottom" />
+                    <xs:enumeration value="center" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        
+    </xs:complexType>
+    
+    <xs:element name="collection">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="lang" type="xs:string" />
+                <xs:element name="options">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="defaults">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="image" type="xs:string" minOccurs="0" />
+                                        <xs:element name="groupby" type="xs:string" minOccurs="0" />
+                                        <xs:element name="listImageWidth" type="xs:integer" minOccurs="0" />
+                                        <xs:element name="listImageHeight" type="xs:integer" minOccurs="0" />
+                                    </xs:all>                                    
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="overlay">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="image" type="xs:string" minOccurs="0" />
+                                        <xs:element name="paddingLeft" type="xs:integer" minOccurs="0" />
+                                        <xs:element name="paddingRight" type="xs:integer" minOccurs="0" />
+                                        <xs:element name="paddingTop" type="xs:integer" minOccurs="0" />
+                                        <xs:element name="paddingBottom" type="xs:integer" minOccurs="0" />
+                                    </xs:all>                                    
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="fields">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="id" type="xs:string" />
+                                        <xs:element name="title" type="xs:string" />
+                                        <xs:element name="cover" type="xs:string" />
+                                        <xs:element name="url" type="xs:string" minOccurs="0" />
+                                        <xs:element name="play" type="xs:string" minOccurs="0" />
+                                        <xs:element name="search" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="field" type="xs:string" maxOccurs="unbounded" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="results" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="field" type="xs:string" maxOccurs="unbounded"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="values" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="value" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute name="displayed" type="xs:string" use="required"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="groups">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="group" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="label" type="xs:string" use="required"/>
+                                    <xs:attribute name="id" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="random">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="filter" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:attribute name="value" use="required" type="xs:integer" />
+                                    <xs:attribute name="numeric" use="required" type="xs:boolean" />
+                                    <xs:attribute name="field" use="required" type="xs:string" />
+                                    <xs:attribute name="comparison" use="required">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="eq"/>
+                                                <xs:enumeration value="contain"/>
+                                                <xs:enumeration value="lt"/>
+                                                <xs:enumeration value="le"/>
+                                                <xs:enumeration value="gt"/>
+                                                <xs:enumeration value="ge"/>
+                                                <xs:enumeration value="range"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="after" type="xs:integer" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="fields">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="field" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="values" type="xs:string" />
+                                    <xs:attribute name="value" type="xs:string" use="required"/>
+                                    <xs:attribute name="type" use="required">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="number" />
+                                                <xs:enumeration value="short text" />
+                                                <xs:enumeration value="single list" />
+                                                <xs:enumeration value="long text" />
+                                                <xs:enumeration value="button" />
+                                                <xs:enumeration value="yesno" />
+                                                <xs:enumeration value="date" />
+                                                <xs:enumeration value="history text" />
+                                                <xs:enumeration value="double list" />
+                                                <xs:enumeration value="options" />
+                                                <xs:enumeration value="file" />
+                                                <xs:enumeration value="image" />
+                                                <xs:enumeration value="checked text" />
+                                                <xs:enumeration value="triple list" />
+                                                <xs:enumeration value="formatted" />
+                                                <xs:enumeration value="url" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="separator" type="xs:integer" />
+                                    <xs:attribute name="notnull" type="xs:boolean" />
+                                    <xs:attribute name="min" type="xs:integer" />
+                                    <xs:attribute name="max" type="xs:integer"/>
+                                    <xs:attribute name="label3" type="xs:string" />
+                                    <xs:attribute name="label2" type="xs:string" />
+                                    <xs:attribute name="label1" type="xs:string" />
+                                    <xs:attribute name="label" type="xs:string" use="required"/>
+                                    <xs:attribute name="init" type="xs:string" use="required"/>
+                                    <xs:attribute name="imported" type="xs:boolean" />
+                                    <xs:attribute name="group" type="xs:string" use="required"/>
+                                    <xs:attribute name="format" type="xs:string"/>
+                                    <xs:attribute name="tip" type="xs:string" />
+                                    <xs:attribute name="step" type="xs:decimal" />
+                                    <xs:attribute name="history" type="xs:boolean" />
+                                    <xs:attribute name="default" type="xs:string" />
+                                    <xs:attribute name="displayed" type="xs:string" />
+                                    <xs:attribute name="flat" type="xs:boolean" />
+                                    <xs:attribute name="sorttype">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="number" />
+                                                <xs:enumeration value="date" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="lending" use="required" type="xs:boolean" />
+                        <xs:attribute name="tags" type="xs:boolean" />
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="filters">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="group" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="filter" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attribute name="values" type="xs:string" />
+                                                <xs:attribute name="quick" type="xs:boolean" />
+                                                <xs:attribute name="preprocess" type="xs:string" />
+                                                <xs:attribute name="numeric" type="xs:boolean" />
+                                                <xs:attribute name="labelselect" type="xs:string" />
+                                                <xs:attribute name="labelon" type="xs:string" />
+                                                <xs:attribute name="labeloff" type="xs:string" />
+                                                <xs:attribute name="label" type="xs:string" />
+                                                <xs:attribute name="field" type="xs:string" use="required"/>
+                                                <xs:attribute name="comparison" type="xs:string" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="label" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="panels">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="panel" maxOccurs="unbounded">
+                                <xs:complexType  >
+                                    <xs:sequence>
+                                        <xs:element name="item" maxOccurs="unbounded" type="panelsItem" />
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                    <xs:attribute name="label" type="xs:string" use="required"/>
+                                    <xs:attribute name="editable" type="xs:boolean" use="required" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+            <xs:attribute name="name" use="required" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

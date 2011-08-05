@@ -1,0 +1,37 @@
+GCstar, gestionnaire de collections personnelles
+
+Application permettant de gérer ses collections.
+Plus d'informations : http://www.gcstar.org/
+
+Installation
+------------
+
+Vous devez avoir au préalable installé Gtk2, perl et perl-gtk2.
+Puis lancez le script install comme indiqué ci-dessous.
+Pour faire une installation sur tout le systeme, lancez le en tant que root.
+
+Pour installer en mode graphique :
+./install
+
+Pour installer en mode texte :
+./install --text
+
+Pour automatiquement installer dans un répertoire :
+./install --prefix=/chemin/vers/le/repertoire
+
+
+Contribution
+------------
+
+Si vous souhaitez contribuer à GCstar, consultez cette page :
+
+http://gcstar.org/contribute
+
+
+Rapport d'anomalie
+------------------
+
+Pour soumettre un rapport d'anomalie, rendez vous ici :
+
+http://forums.gcstar.org/viewforum.php?id=9
+

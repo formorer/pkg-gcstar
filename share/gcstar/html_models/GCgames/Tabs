@@ -1,0 +1,284 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+  Template made by Tian. It emulates a notebook display.
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+body {
+ margin:0;
+ padding:0;
+ background:white;
+}
+h1 {
+ text-align:center;
+ color:#7c551a;
+}
+h2 {
+ background:transparent;
+ margin:0 0 1em;
+ color:#ffffff;
+}
+.item {
+ height:23em;
+ clear:both;
+ margin:1em;
+ padding:0.5em;
+ background:#e3c79e;
+ border:1px dashed #7c551a;
+}
+.imgbox {
+ text-align:center;
+ float:left;
+ margin-right:1em;
+ width:120px;
+}
+a img {
+ border:0;
+}
+h3 {
+ color:#513D23;
+ background:#ffffff;
+ cursor:default;
+ margin:0;
+ padding:0.4em;
+ display:none;
+ font-size:100%;
+ border-left:0.1em solid black;
+ border-bottom:0.1em solid white;
+ border-right:0.1em solid black;
+ border-top:0.1em solid black;
+ -moz-border-radius-topright:2em;
+ z-index:99;
+ position:relative;
+}
+div > h3
+{
+ display:block;
+}
+.description h3, .tips h3 {
+ background:#ffffff;
+ border-bottom:0.1em solid black;
+}
+.info, .description, .tips {
+ float:left;
+ width:12em;
+}
+.info dl, .description table, .tips div {
+ border:0.1em solid black;
+ padding:1em 0.5em 0.5em;
+ margin:-0.1em 0 0;
+ z-index:1;
+ position:relative;
+ width:45em;
+ height:15em;
+ background:white;
+}
+.description table, .tips div {
+ display:none;
+ margin-left:-11.8em;
+ width:44.8em;
+}
+.tips div {
+ margin-left:-23.8em;
+}
+dt {
+ float:left;
+ width:15em;
+ font-weight:bold;
+ height:1.5em;
+ color:#A49480;
+}
+dd {
+ padding:0;
+ margin-left:15em;
+ height:1.5em;
+ color:#555555;
+}
+.codes {
+ width:99%;
+}
+.codes td, .codes th {
+ padding:0.2em;
+ width:50%;
+}
+.codes th, .codes .odd td {
+ background:#e8ded0;
+}
+.codes + .codes {
+ margin:1em 0;
+ padding:1em 0;
+ border-top:2px solid #7c551a;
+ border-bottom:2px solid #7c551a;
+}
+#note {
+ text-align:center;
+ margin:2em 5em;
+ background:#e3c79e;
+ border:1px solid #7c551a;
+ padding:0.3em;
+}
+#note a {
+ font-weight:bold;
+ color:#7c551a;
+}
+[NOJAVASCRIPT]
+.info:hover dl,.description:hover table, .tips:hover div {
+ padding-top:1em;
+ display:block;
+ color:#555555;
+ z-index:2;
+}
+.description:hover table, .tips:hover div {
+ border:0;
+ border-top:0.1em solid black;
+ margin-top:-0.1em;
+ margin-left:-11.9em;
+ height:14.9em;
+ z-index:100;
+}
+.tips:hover div {
+ margin-left:-23.9em;
+}
+.info:hover h3, .description:hover h3, .tips:hover h3 {
+ background:#ffffff;
+ border-bottom:0;
+ border-bottom:0.1em solid white;
+ z-index:999;
+}
+[/NOJAVASCRIPT]
+[JAVASCRIPT]
+h3 {
+ cursor:pointer;
+ background:#e8ded0 ! important;
+}
+.description_active table, .tips_active div {
+ padding-top:1em;
+ display:block;
+ color:#555555;
+ z-index:2;
+}
+.description_active table, .tips_active div {
+ border:0;
+ border-top:0.1em solid black;
+ margin-top:-0.1em;
+ margin-left:-11.9em;
+ height:14.9em;
+ z-index:100;
+}
+.tips_active div {
+ margin-left:-23.9em;
+}
+.info_active h3, .description_active h3, .tips_active h3 {
+ background:#ffffff ! important;
+ border-bottom:0.1em solid white;
+ z-index:999;
+}
+.tips div {
+ overflow:auto;
+}
+td.desc {
+ height:5em;
+}
+td.desc p {
+ margin:0;
+ padding:0;
+ overflow:auto;
+ height:7em;
+}
+[/JAVASCRIPT]
+</style>
+[JAVASCRIPT]
+<script type="text/javascript">
+<!--
+ function showMe(cssClass, objectId)
+ {
+  divs = document.getElementById('item'+objectId).getElementsByTagName("div")
+  for(i=0; i < divs.length; i++)
+  {
+   if ((divs[i].className != 'imgbox') && (divs[i].className.substr(0,4) != 'note'))
+   {
+    if (divs[i].className.indexOf(cssClass) != -1)
+    {
+     divs[i].className = cssClass + '_active ' + cssClass
+    }
+    else
+    {
+     idx = divs[i].className.indexOf(' ')
+     if (idx != -1)
+     {
+      //alert('Setting ' + divs[i].className.substring(idx + 1))
+      divs[i].className = divs[i].className.substring(idx + 1)
+     }
+    }
+   }
+  }
+ }
+-->
+</script>
+[/JAVASCRIPT]
+</head>
+<body>
+<h1>$$PAGETITLE$$</h1>
+[/HEADER]
+[ITEM]
+<div class="item" id="item$$IDX$$">
+ <h2>$$name$$</h2>
+ <div class="imgbox">
+  <img src="$$boxpic$$" height="$$HEIGHT_PIC$$" alt="$$name$$" title="$$name$$" />
+ </div>
+ <div class="info[JAVASCRIPT]_active info[/JAVASCRIPT]">
+  <h3[JAVASCRIPT] onclick="showMe('info', $$IDX$$)"[/JAVASCRIPT]>$$info_LABEL$$</h3>
+  <dl>
+   <dt>$$platform_LABEL$$</dt>
+   <dd>$$platform$$</dd>
+   <dt>$$genre_LABEL$$</dt>
+   <dd>$$genre$$</dd>
+   <dt>$$players_LABEL$$</dt>
+   <dd>$$players$$</dd>
+   <dt>$$editor_LABEL$$</dt>
+   <dd>$$editor$$</dd>
+   <dt>$$released_LABEL$$</dt>
+   <dd>$$released$$</dd>
+   <dt>$$rating_LABEL$$</dt>
+   <dd>$$rating$$/10</dd>
+   <dt>$$completion_LABEL$$</dt>
+   <dd>$$completion$$</dd>
+   <dt>$$borrower_LABEL$$</dt>
+   <dd>$$borrower$$</dd>
+  </dl>
+ </div>
+ <div class="description">
+  <h3[JAVASCRIPT] onclick="showMe('description', $$IDX$$)"[/JAVASCRIPT]>$$description_LABEL$$</h3>
+  <table>
+   <tr><td><a href="$$screenshot1$$"><img height="100" src="$$screenshot1$$" alt="$$screenshot1_LABEL$$" /></a></td>
+   <td><a href="$$screenshot2$$"><img height="100" src="$$screenshot2$$" alt="$$screenshot2_LABEL$$" /></a></td></tr>
+   <tr><td colspan="2" class="desc"><p>$$description$$</p></td></tr>
+  </table>
+ </div>
+ <div class="tips">
+  <h3[JAVASCRIPT] onclick="showMe('tips', $$IDX$$)"[/JAVASCRIPT]>$$tips_LABEL$$</h3>
+  <div>
+   <table class="codes">
+   <tr><th>$$code_LABEL$$</th><th>$$Effect_LABEL$$</th></tr>
+    $$code_TABLE$$
+   </table>
+   <table class="codes">
+   <tr><th>$$unlockable_LABEL$$</th><th>$$Howto_LABEL$$</th></tr>
+    $$unlockable_TABLE$$
+   </table>
+   <p>$$secrets$$</p>
+  </div>
+ </div>
+</div>
+[/ITEM]
+[FOOTER]
+<div id="note">$$GENERATOR_NOTE$$</div>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

@@ -1,0 +1,29 @@
+pageBg = "#000000"
+
+boxBg = "#333333"
+boxColor = "#eeeeee"
+boxStyle = "weight='bold'"
+boxJustify = "center"
+
+headerBg = "#000000"
+headerColor = "#ffffff"
+headerStyle = "size='xx-large' weight='bold'"
+headerJustify = "center"
+
+subheaderBg = "#000000"
+subheaderColor = "#ffffff"
+subheaderStyle = "size='x-large' weight='bold'"
+subheaderJustify = "center"
+
+labelBg = "#333333"
+labelColor = "#eeeeee"
+labelStyle = ""
+
+fieldBg = "#333333"
+fieldColor = "#eeeeee"
+fieldStyle = ""
+
+expanderBg = "#000000"
+expanderColor = "#ffffff"
+expanderArrow = "#ffffff"
+expanderPrelight = "#333333"

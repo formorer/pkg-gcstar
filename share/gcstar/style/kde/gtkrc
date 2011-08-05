@@ -1,0 +1,746 @@
+# style <name> [= <name>]
+# {
+#   <option>
+# }
+#
+# widget <widget_set> style <style_name>
+# widget_class <widget_class_set> style <style_name>
+
+# Here is a list of all the possible states.  Note that some do not apply to
+# certain widgets.
+#
+# NORMAL - The normal state of a widget, without the mouse over top of
+# it, and not being pressed, etc.
+#
+# PRELIGHT - When the mouse is over top of the widget, colors defined
+# using this state will be in effect.
+#
+# ACTIVE - When the widget is pressed or clicked it will be active, and
+# the attributes assigned by this tag will be in effect.
+#
+# INSENSITIVE - When a widget is set insensitive, and cannot be
+# activated, it will take these attributes.
+#
+# SELECTED - When an object is selected, it takes these attributes.
+#
+# Given these states, we can set the attributes of the widgets in each of
+# these states using the following directives.
+#
+# fg - Sets the foreground color of a widget.
+# fg - Sets the background color of a widget.
+# bg_pixmap - Sets the background of a widget to a tiled pixmap.
+# font - Sets the font to be used with the given widget.
+#
+
+style "gcStocks"
+{
+  # Redefine used stock items. Each entry contains the stock item
+  # name and the file name (it should be in the same directory as
+  # this file.
+  stock["gtk-preferences"] = 
+  {
+  	{"preferences.png"}
+  }
+  stock["gtk-properties"] = 
+  {
+  	{"properties.png"}
+  }
+  stock["gtk-find"] = 
+  {
+  	{"find.png"}
+  }
+  stock["gtk-new"] = 
+  {
+  	{"new.png"}
+  }
+  stock["gtk-home"] = 
+  {
+  	{"home.png"}
+  }
+  stock["gtk-save"] = 
+  {
+  	{"save.png"}
+  }
+  stock["gtk-save-as"] = 
+  {
+  	{"saveas.png"}
+  }
+  stock["gtk-open"] = 
+  {
+  	{"open.png"}
+  }
+  stock["gtk-directory"] = 
+  {
+  	{"paths.png"}
+  }
+  stock["gtk-refresh"] = 
+  {
+  	{"refresh.png"}
+  }
+  stock["gtk-select-color"] = 
+  {
+  	{"display.png"}
+  }
+  stock["gtk-execute"] = 
+  {
+  	{"tonight.png"}
+  }
+  stock["gtk-quit"] = 
+  {
+  	{"quit.png"}
+  }
+  stock["gtk-help"] = 
+  {
+  	{"help.png"}
+  }  
+  stock["gtk-delete"] = 
+  {
+  	{"delete.png"}
+  }
+  stock["gtk-ok"] =
+  {
+  	{"ok.png"}
+  }
+  stock["gtk-yes"] =
+  {
+  	{"ok.png"}
+  }
+  stock["gtk-cancel"] =
+  {
+  	{"cancel.png"}
+  }
+  stock["gtk-no"] =
+  {
+  	{"cancel.png"}
+  }
+  stock["gtk-network"] =
+  {
+  	{"internet.png"}
+  }
+  stock["gtk-clear"] =
+  {
+  	{"clear.png"}
+  }
+  stock["gtk-convert"] =
+  {
+  	{"import.png"}
+  }
+  stock["gtk-paste"] =
+  {
+  	{"export.png"}
+  }
+  stock["gtk-cdrom"] =
+  {
+  	{"cdrom.png"}
+  }
+  stock["gtk-harddisk"] =
+  {
+  	{"harddisk.png"}
+  }
+  stock["gtk-add"] =
+  {
+  	{"add.png"}
+  }
+  stock["gtk-remove"] =
+  {
+  	{"remove.png"}
+  }
+  stock["gtk-sort-descending"] =
+  {
+  	{"sortdown.png"}
+  }
+  stock["gtk-sort-ascending"] =
+  {
+  	{"sortup.png"}
+  }
+  stock["gtk-go-up"] =
+  {
+    {"arrowup.png"}
+  }
+  stock["gtk-go-down"] =
+  {
+    {"arrowdown.png"}
+  }
+  stock["gtk-go-back"] =
+  {
+    {"arrowleft.png"}
+  }
+  stock["gtk-go-forward"] =
+  {
+    {"arrowright.png"}
+  }
+  stock["gtk-jump-to"] =
+  {
+    {"sortdown.png"}
+  }
+}
+
+# Default theme that will use as a base for other ones
+style "gcDefault" = "gcStocks"
+{
+  # Menu bar shadows drawn around it
+  GtkMenuBar::shadow_type = GTK_SHADOW_ETCHED_IN
+  # Tool bar shadows drawn around it
+  GtkToolbar::shadow_type = GTK_SHADOW_ETCHED_IN
+  # Frame bar shadows drawn around it
+  GtkFrame::shadow_type = GTK_SHADOW_ETCHED_IN
+  # Notebook shadows drawn around it
+  GtkNotebook::shadow_type = GTK_SHADOW_ETCHED_IN
+  # How toolbar buttons should be displayed
+  GtkToolbar::button_relief = GTK_RELIEF_NONE
+  # Background color for even rows in lists
+  GtkTreeView::even_row_color = "#ffffff"
+  # Background color for odd rows in lists
+  GtkTreeView::odd_row_color = "#f0f0f0"
+  # Sized for the handle used to resize the panel
+  GtkPaned::handle_size = 8
+  xthickness = 2
+  ythickness = 2
+
+  # Define default background colors for all states
+  bg[NORMAL] = "#f0f0f0"
+  bg[PRELIGHT] = "#999999"
+  bg[ACTIVE] = "#999999"
+  bg[INSENSITIVE] = "#f0f0f0"
+  bg[SELECTED] = "#999999"
+
+  # Define default foreground colors for all states
+  fg[NORMAL] = "#000000"
+  fg[PRELIGHT] = "#000000"
+  fg[ACTIVE] = "#000000"
+  fg[INSENSITIVE] = "#ffffff"
+  fg[SELECTED] = "#ffffff"
+  
+  # Define default text (in edit boxes) colors for all states
+  text[SELECTED] = "#000000"
+  
+  # Define default background (in edit boxes) colors for all states
+  base[NORMAL] = "#ffffff"
+  base[ACTIVE] = "#d3d3d3"
+  base[SELECTED] = "#d3d3d3"
+  base[PRELIGHT] = "#d3d3d3"
+  base[INSENSITIVE] = "#ffffff"
+  
+  # This engine is used to replace various widgets with pictures
+  engine "pixmap"
+  {
+    # Will replace all boxes with this picture
+    image
+    {
+    	function	= BOX
+		recolorable	= TRUE
+		file		= "box.png"
+		border      = { 1,1,1,1 }
+		stretch		= TRUE
+	}
+    # Will replace all shadows with this picture
+    image
+    {
+    	function	= SHADOW
+		recolorable	= TRUE
+		file		= "box.png"
+		border      = { 1,1,1,1 }
+		stretch		= TRUE
+	}
+	
+	# Replaces all the arrows used in widgets with these pictures.
+	image
+    {
+		function	= ARROW
+		recolorable	= TRUE
+		overlay_file	= "arrowup.png"
+		overlay_border	= { 0, 0, 0, 0 }
+		overlay_stretch	= FALSE
+		arrow_direction	= UP
+    }
+    image
+    {
+		function	= ARROW
+		recolorable	= TRUE
+		overlay_file	= "arrowdown.png"
+		overlay_border	= { 0, 0, 0, 0 }
+		overlay_stretch	= FALSE
+		arrow_direction	= DOWN
+     }
+    image
+    {
+		function	= ARROW
+		recolorable	= TRUE
+		overlay_file	= "arrowleft.png"
+		overlay_border	= { 0, 0, 0, 0 }
+		overlay_stretch	= FALSE
+		arrow_direction	= LEFT
+     }
+    image
+    {
+		function	= ARROW
+		recolorable	= TRUE
+		overlay_file	= "arrowright.png"
+		overlay_border	= { 0, 0, 0, 0 }
+		overlay_stretch	= FALSE
+		arrow_direction	= RIGHT
+     }
+ 
+  }
+
+}
+# Used for menu bar
+style "gcMenubar" = "gcDefault"
+{
+  bg[NORMAL] = "#f0f0f0"
+}
+# Used for tool bar
+style "gcToolbar" = "gcDefault"
+{
+  bg[NORMAL] = "#d7d7ed"
+}
+# Used for tool bar buttons
+style "gcToolbarButton" = "gcDefault"
+{
+  bg[PRELIGHT] = "#d7d7ed"
+  bg[ACTIVE] = "#d3d3d3"
+  bg[NORMAL] = "#d7d7ed"
+  engine "pixmap"
+  {
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = PRELIGHT
+	  shadow          = OUT
+	  file            = "box.png"
+	  border          = {1, 1, 1, 1}
+	  stretch         = TRUE
+    }
+  }
+}
+style "gcToolbarToggleButton" = "toolbarButton"
+{
+  bg[PRELIGHT] = "#e7e7ff"
+}
+# Used for all displayed buttons
+style "gcButton" = "gcDefault"
+{
+  fg[ACTIVE] = "#000000"
+  
+  # Different pictures for different states
+  engine "pixmap"
+  {
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = NORMAL
+	  shadow          = OUT
+	  file            = "box2.png"
+	  border          = {4, 4, 3, 3}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = PRELIGHT
+	  shadow          = IN
+	  file            = "box3.png"
+	  border          = {4, 4, 3, 3}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = PRELIGHT
+	  shadow          = OUT
+	  file            = "box3.png"
+	  border          = {4, 4, 3, 3}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = ACTIVE
+	  shadow          = IN
+	  file            = "active.png"
+	  border          = {4, 4, 3, 3}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = SELECTED
+	  shadow          = IN
+	  file            = "active.png"
+	  border          = {4, 4, 3, 3}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = INSENSITIVE
+	  shadow          = OUT
+	  file            = "active.png"
+	  border          = {4, 4, 3, 3}
+	  stretch         = TRUE
+    }
+  }
+}
+style "gcCheckButton" = "gcButton"
+{
+  fg[PRELIGHT] = "#000000"
+  fg[NORMAL] = "#000000"
+  fg[ACTIVE] = "#000000"
+  fg[SELECTED] = "#000000"
+
+  bg[PRELIGHT] = "#d3d3d3"
+
+  # Use defined pictures for check boxes
+  engine "pixmap"
+  {
+	image
+	{
+		function        = CHECK
+		recolorable     = TRUE
+		shadow          = OUT
+		overlay_file    = "unchecked.png"
+		overlay_stretch = FALSE
+	}
+    image
+    {
+		function        = CHECK
+		recolorable     = TRUE
+		shadow          = IN
+		overlay_file    = "checked.png"
+		overlay_stretch = FALSE
+    }
+  }
+}
+
+# For radio button
+style "gcRadioButton" = "gcButton"
+{
+  fg[PRELIGHT] = "#2e3766"
+  fg[NORMAL] = "#732c7c"
+  fg[ACTIVE] = "#732c7c"
+  fg[SELECTED] = "#732c7c"
+
+  bg[PRELIGHT] = "#cccce5"
+
+  # Use defined pictures for check boxes
+  engine "pixmap"
+  {
+	image
+	{
+		function        = OPTION
+		recolorable     = TRUE
+		shadow          = OUT
+		overlay_file    = "radiounchecked.png"
+		overlay_stretch = FALSE
+	}
+    image
+    {
+		function        = OPTION
+		recolorable     = TRUE
+		shadow          = IN
+		overlay_file    = "radiochecked.png"
+		overlay_stretch = FALSE
+    }
+    image
+    {
+		function	= FLAT_BOX
+		recolorable	= TRUE
+		file		= "box.png"
+		border		= {0,0,0,0}
+		stretch		= TRUE
+    }
+  }
+}
+
+style "gcLabel" = "gcDefault"
+{
+  fg[NORMAL] = "#000000"
+  font_name = "Sans Bold"
+}
+# Notebooks are defined with this style
+style "gcTabs" = "gcDefault"
+{
+  bg[NORMAL] = "#f0f0f0"
+  #bg[ACTIVE] = "#f0f0f0"
+  bg[ACTIVE] = "#f0f0f0"
+  fg[ACTIVE] = "#999999"
+  
+  engine "pixmap"
+  {
+    # top background tabs
+	image
+	{
+		function = EXTENSION
+		state = ACTIVE
+		gap_side = BOTTOM
+		file = "box2.png"
+		border = {2,2,2,2}
+		stretch = TRUE
+	}
+	# top foreground tab
+	image
+	{
+		function = EXTENSION
+		gap_side = BOTTOM
+		file = "box2.png"
+		border = {2,2,2,2}
+		stretch = TRUE
+	}
+    # left background tabs
+	image
+	{
+		function = EXTENSION
+		state = ACTIVE
+		gap_side = RIGHT
+		file = "active.png"
+		border = {0,0,0,0}
+		stretch = TRUE
+	}
+	# left foreground tab
+	image
+	{
+		function = EXTENSION
+		gap_side = RIGHT
+		file = "vertical.png"
+		border = {2,2,0,0}
+		stretch = TRUE
+	}
+		
+	# tabs on top
+	image
+	{
+		function = BOX_GAP
+		gap_side = TOP
+		file = "tab_corner.png"
+		border = {1,1,1,1}
+		stretch = TRUE
+	}
+	# tabs on left
+	image
+	{
+		function = BOX_GAP
+		gap_side = LEFT
+		file = "tab_corner.png"
+		border = {1,1,1,1}
+		stretch = TRUE
+	}
+  }
+}
+style "gcFrame" = "gcDefault"
+{
+  bg[INSENSITIVE] = "#f3f3f3"
+  bg[NORMAL] = "#999999"
+  bg[ACTIVE] = "#f3f3f3"
+  bg[SELECTED] = "#f3f3f3"
+  bg[PRELIGHT] = "#f3f3f3"
+  # Remove all global theme definition
+  engine ""
+  {
+  }
+}
+# Redefine horizontal scrollbars
+style "gcHscroll" = "gcFrame"
+{
+  engine "pixmap"
+  {
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = NORMAL
+	  shadow          = OUT
+	  file            = "horizontal.png"
+	  border          = {2, 2, 2, 2}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = PRELIGHT
+	  shadow          = OUT
+	  file            = "horizontal_hover.png"
+	  border          = {2, 2, 2, 2}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = ACTIVE
+	  shadow          = IN
+	  file            = "bghonrizontalscroll.png"
+	  border          = {4, 4, 4, 4}
+	  stretch         = TRUE
+    }
+  }
+}
+# Redefine vertical scrollbars
+style "gcVscroll" = "gcFrame"
+{
+  engine "pixmap"
+  {
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = NORMAL
+	  shadow          = OUT
+	  file            = "vertical.png"
+	  border          = {2, 2, 2, 2}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = PRELIGHT
+	  shadow          = OUT
+	  file            = "vertical_hover.png"
+	  border          = {2, 2, 2, 2}
+	  stretch         = TRUE
+    }
+    image 
+    {
+      function        = BOX
+	  recolorable     = TRUE
+	  state           = ACTIVE
+	  shadow          = IN
+	  file            = "bgverticalscroll.png"
+	  border          = {0, 0, 0, 0}
+	  stretch         = TRUE
+    }
+  }
+}
+# Used for lists
+style "gcTreeView" = "default"
+{
+  text[NORMAL] = "#000000"
+  text[SELECTED] = "#000000"
+  text[ACTIVE] = "#000000"
+  text[INSENSITIVE] = "#000000"
+  text[PRELIGHT] = "#000000"
+  base[NORMAL] = "#ffffff"
+  base[SELECTED] = "#d3d3d3"
+  base[ACTIVE] = "#ffffff"
+  base[INSENSITIVE] = "#ffffff"
+  base[PRELIGHT] = "#ffffff"
+}
+# Used for spin buttons
+style "gcSpin" = "default"
+{
+  engine "pixmap"
+  {
+      image
+      {
+		function	= ARROW
+		recolorable	= TRUE
+		overlay_file	= "spinup.png"
+		overlay_border	= { 0, 0, 0, 0 }
+		overlay_stretch	= FALSE
+		arrow_direction	= UP
+      }
+      image
+      {
+		function	= ARROW
+		recolorable	= TRUE
+		overlay_file	= "spindown.png"
+		overlay_border	= { 0, 0, 0, 0 }
+		overlay_stretch	= FALSE
+		arrow_direction	= DOWN
+      }
+  
+  }
+}
+
+
+style "gctooltips" = "default"
+{
+  bg[NORMAL] = "#ffffdc"
+}
+
+
+
+#For sliders
+style "gcSlider" = "default"
+{
+	engine "pixmap" {
+		# TROUGH NORMAL
+		image {
+			function = BOX
+			recolorable	= FALSE
+			detail		= "trough"
+			file		= "box.png"
+			border		= {1,1,1,1}
+			stretch		= TRUE
+			orientation	= HORIZONTAL
+		}
+		# SLIDER NORMAL
+	    image {
+			function	= SLIDER
+			recolorable	= FALSE
+			state		= NORMAL
+			file		= "box2.png"
+			border		= {2,2,2,2}
+			stretch		= TRUE
+			orientation	= HORIZONTAL
+		}
+		# SLIDER PRELIGHT
+		image {
+			function	= SLIDER
+			recolorable	= FALSE
+			state		= PRELIGHT
+			file		= "box3.png"
+			border		= {2,2,2,2}
+			stretch		= TRUE
+			orientation	= HORIZONTAL
+		}
+		# SLIDER INSENSITIVE
+		image {
+			function	= SLIDER
+			recolorable	= FALSE
+			state		= INSENSITIVE
+			file		= "active.png"
+			border		= {0,0,0,0}
+			stretch		= TRUE
+			orientation	= HORIZONTAL
+		}
+	}
+}
+
+# Associates previously defined styles to widgets
+
+# Default rule
+widget "*" style "gcDefault"
+
+widget "*GCMenubar" style "gcMenubar"
+widget "*GCToolbar" style "gcToolbar"
+widget "*GCToolbar.*GtkButton" style : highest "gcToolbarButton"
+widget "*GCToolbar.*GtkToggleButton" style "gcToolbarToggleButton"
+class "GtkImage" style "gcStocks"
+class "GtkButton" style : highest "gcButton"
+widget "*GtkButton.*" style : highest "gcButton"
+class "*Scale*" style : highest "gcSlider"
+widget "*GCMoviesTextList" style : highest "gcTreeView"
+widget "*GCMoviesDetailsList" style : highest "gcTreeView"
+widget "*GtkTreeView.*GtkButton" style :highest "gcButton"
+class "GtkCheckButton" style : highest "gcCheckButton"
+class "GtkCheckMenuItem" style : highest "gcCheckButton"
+widget "*GtkCheckButton.*" style : highest "gcCheckButton"
+class "GtkRadioButton" style : highest "gcRadioButton"
+class "GtkRadioMenuItem" style : highest "gcRadioButton"
+class "GtkPaned" style "gcFrame"
+class "GtkFrame" style : highest "gcFrame"
+class "GtkNotebook" style : highest "gcTabs"
+widget "*GCInfoTabs.*GtkLabel" style "gcLabel"
+class "GtkHScrollbar" style : highest "gcHscroll"
+class "GtkVScrollbar" style : highest "gcVscroll"
+class "GtkSpinButton" style : highest "gcSpin"
+widget "gtk-tooltips" style "gctooltips"

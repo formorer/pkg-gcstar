@@ -1,0 +1,1 @@
+?package(gcfilms):needs="X11" section="Apps/Office" title="gcfilms" command="/usr/bin/gcfilms" icon="/usr/share/gcfilms/gcfilms.png"

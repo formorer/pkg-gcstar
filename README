@@ -1,0 +1,37 @@
+GCstar, personal collections manager
+
+Application useful to manage your collections.
+More information available on http://www.gcstar.org/
+
+Install
+-------
+
+You need to have Gtk2, perl and perl-gtk2 on your system.
+
+Then launch install script (being root for a system wide installation).
+Here are available options:
+
+Graphic mode installation:
+./install
+
+Text mode installation:
+./install --text
+
+Automatic installation in a directory
+./install --prefix=/path/to/directory
+
+
+Contribution
+------------
+
+If you want to contribute to GCstar, consult this page:
+
+http://gcstar.org/contribute
+
+
+Bug submission
+--------------
+
+To submit a bug, go there:
+
+http://forums.gcstar.org/viewforum.php?id=4

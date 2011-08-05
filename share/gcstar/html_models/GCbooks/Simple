@@ -1,0 +1,10 @@
+<metamodel>
+	<model>Simple</model>
+	<fields>
+		<field>title</field>
+		<field>authors</field>
+		<field>publisher</field>
+		<field>publication</field>
+		<field>format</field>
+	</fields>
+</metamodel>

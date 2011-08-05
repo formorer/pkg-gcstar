@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2007 Yves Martin -->
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCwines">
+	<lang>GCwines</lang>
+
+	<options>
+		<defaults>
+			<image>no.png</image>
+		</defaults>
+
+		<fields>
+			<id>id</id>
+			<title>name</title>
+			<cover>bottlelabel</cover>
+			<url>website</url>
+			<results></results>
+		</fields>
+
+		<values id="tasted">
+			<value displayed="TastedNo">0</value>
+			<value displayed="TastedYes">1</value>
+		</values>
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+
+	</options>
+
+	<groups>
+		<group id="Main" label="General" />
+		<group id="Details" label="Details" />
+		<group id="Tasting" label="Tasting" />
+	</groups>
+
+	<random>
+		<filter field="quantity" comparison="gt" numeric="true" value="0"/>
+	</random>
+
+	<fields lending="false" tags="true">
+		<field value="id"
+				type="number"
+				imported="false"
+				init=""
+				group=""
+				label=""/>
+		<field value="name"
+				type="formatted"
+				init="%designation% %vineyard% %vintage%"
+				group="Main"
+				label="Name"/>
+		<field value="designation"
+				type="history text"
+				init="NewItem"
+				group="Main"
+				label="Designation"/>
+		<field value="vineyard"
+				type="history text"
+				init=""
+				group="Main"
+				label="Vineyard"/>
+		<field value="vintage"
+				type="number"
+				init=""
+				group="Main"
+				label="Vintage"/>
+		<field value="type"
+				type="history text"
+				init=""
+				group="Main"
+				label="Type"/>
+		<field value="grapes"
+				type="single list"
+				history="true"
+				group="Main"
+				label="Grapes"/>
+		<field value="soil"
+				type="history text"
+				group="Main"
+				label="Soil"/>
+		<field value="producer"
+				type="history text"
+				group="Main"
+				label="Producer"/>
+		<field value="country"
+				type="history text"
+				group="Main"
+				label="Country"/>
+		<field value="volume"
+				type="number"
+				init="750"
+				group="Main"
+				label="Volume"/>
+		<field value="alcohol"
+				type="number"
+				group="Main"
+				label="Alcohol"/>
+		<field value="medal"
+				type="short text"
+				group="Main"
+				label="Distinction"/>
+
+		<field value="location"
+				type="history text"
+				init=""
+				group="Details"
+				label="Location"/>
+		<field value="shelfindex"
+				type="short text"
+				displayed="Position"
+				group="Details"
+				label="ShelfIndex"/>
+		<field value="quantity"
+				type="number"
+				init="0"
+				group="Details"
+				label="Quantity"/>
+		<field value="purchasedate"
+				type="date"
+				group="Details"
+				label="PurchaseDate"/>
+		<field value="purchaseprice"
+				type="number"
+				group="Details"
+				label="PurchasePrice"/>
+		<field value="gift"
+				type="short text"
+				group="Details"
+				label="Gift"/>
+		<field value="bottlelabel"
+				group="Details"
+				label="BottleLabel"
+				type="image"
+				default="view"/>
+		<field value="website"
+				group="Details"
+				label="Website"
+				type="url" />
+		<field value="tasted"
+				type="yesno"
+				group="Tasting"
+				label="Tasted"/>
+		<field value="rating"
+				group="Tasting"
+				label="PanelRating"
+				max="10"
+				init="0"
+				type="number"
+				displayas="graphical"/>
+		<field value="comments"
+				type="long text"
+				group="Tasting"
+				label="Comments"/>
+		<field value="serving"
+				type="long text"
+				group="Tasting"
+				label="Serving"/>
+		<field value="tasting"
+				type="long text"
+				group="Tasting"
+				label="TastingField"/>
+	</fields>
+
+	<filters>
+		<group label="Main">
+			<filter field="vintage" comparison="range" labelselect="FilterRange" numeric="true" quick="true" />
+			<filter field="type" comparison="contain" numeric="false" quick="true" />
+			<filter field="grapes" comparison="contain" numeric="false" quick="true" />
+		</group>
+		<group label="Details">
+			<filter field="purchasedate" comparison="ge" labelselect="&gt;=" numeric="false" quick="false" />
+			<filter field="quantity" comparison="ge" labelselect="&gt;=" numeric="true" quick="true" />
+			<filter field="gift" comparison="contain" numeric="true" quick="false" />
+			<filter field="bottlelabel" comparison="contain" numeric="true" quick="false" />
+			<filter field="website" comparison="contain" numeric="true" quick="false" />
+		</group>
+		<group label="Tasting">
+			<filter field="comments" comparison="contain" numeric="true" quick="false" />
+			<filter field="tasted" comparison="eq" values="both" labeloff="FilterTastedNo" labelon="FilterTastedYes" quick="true" />
+			<filter field="rating" comparison="ge" labelselect="FilterRatingSelect" numeric="true" quick="true" />
+		</group>
+	</filters>
+
+	<panels>
+		<panel editable="true" label="PanelForm" name="form">
+			<item type="line">
+				<item expand="true" for="name" type="value" />
+			</item>
+			<item expand="true" type="notebook">
+				<item expand="true" title="General" type="tab" value="main">
+					<item type="table" cols="4" expand="true" rows="9">
+						<item col="0" row="0" for="designation" type="label" />
+						<item col="1" row="0" colspan="3" for="designation" type="value" />
+						<item col="0" for="vineyard" row="1" type="label" />
+						<item col="1" for="vineyard" row="1" type="value" colspan="3" />
+						<item col="0" row="2" for="vintage" type="label"/>
+						<item col="1" row="2" for="vintage" type="value" width="4"/>
+						<item col="2" for="type" row="2" type="label" />
+						<item col="3" for="type" row="2" type="value" />
+						<item col="0" for="volume" row="3" type="label" />
+						<item col="1" for="volume" row="3" type="value" />
+						<item col="2" for="alcohol" row="3" type="label" />
+						<item col="3" for="alcohol" row="3" type="value" />
+						<item expand="true" type="expander" title="Grapes" collapsed="%grapes%" row="4" col="0" colspan="4">
+							<item type="value" for="grapes"/>
+						</item>
+						<item col="0" for="soil" row="5" type="label" />
+						<item col="1" for="soil" row="5" type="value" colspan="3" />
+						<item col="0" for="country" row="6" type="label" />
+						<item col="1" for="country" row="6" type="value" colspan="3" />
+						<item col="0" for="producer" row="7" type="label" />
+						<item col="1" for="producer" row="7" type="value" colspan="3" />
+						<item col="0" for="medal" row="8" type="label" />
+						<item col="1" for="medal" row="8" type="value" colspan="3" />
+					</item>
+				</item>
+				<item expand="true" title="Details" type="tab" value="details">
+					<item type="box">
+						<item type="table" cols="4" expand="true" rows="4">
+							<item col="0" for="location" row="0" type="label" />
+							<item col="1" for="location" row="0" type="value" />
+							<item col="2" for="shelfindex" row="0" type="label" />
+							<item col="3" for="shelfindex" row="0" type="value" />
+							<item col="0" for="quantity" row="1" type="label" />
+							<item col="1" for="quantity" row="1" type="value" />
+							<item col="0" for="purchasedate" row="2" type="label" />
+							<item col="1" for="purchasedate" row="2" type="value" />
+							<item col="2" for="purchaseprice" row="2" type="label" />
+							<item col="3" for="purchaseprice" row="2" type="value" />
+							<item col="0" for="gift" row="3" type="label" />
+							<item col="1" for="gift" row="3" type="value" />
+						</item>
+						<item type="box">
+							<item for="bottlelabel" type="label" expand="horizontal" align="center" />
+							<item for="bottlelabel" height="200" type="value" expand="horizontal" align="center" />
+						</item>
+						<item type="line" expand="true">
+							<item for="website" type="label" />
+							<item for="website" type="value" />
+						</item>
+					</item>
+				</item>
+				<item type="tab" expand="true" title="Tasting" value="tasting">
+					<item type="table" cols="3" expand="true" rows="4">
+						<item col="0" for="tasted" row="0" type="value" />
+						<item col="1" for="rating" row="0" type="label" />
+						<item col="2" for="rating" row="0" type="value" />
+						<item col="0" for="comments" row="1" type="label" />
+						<item col="1" colspan="2" expand="true" for="comments" row="1" type="value" />
+						<item col="0" for="serving" row="2" type="label" />
+						<item col="1" colspan="2" expand="true" for="serving" row="2" type="value" />
+						<item col="0" for="tasting" row="3" type="label" />
+						<item col="1" colspan="2" expand="true" for="tasting" row="3" type="value" />
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line">
+				<item expand="true" for="deleteButton" type="special" />
+			</item>
+		</panel>
+
+		<panel editable="false" label="PanelReadOnly" name="readonly">
+			<item type="line">
+				<item expand="true" for="name" type="value" style="header" />
+			</item>
+			<item type="table" cols="4" expand="true" rows="9" >
+				<item col="0" row="0" for="designation" type="label" />
+				<item col="1" row="0" colspan="3" for="designation" type="value" />
+				<item col="0" for="vineyard" row="1" type="label" />
+				<item col="1" for="vineyard" row="1" type="value" colspan="3" />
+				<item col="0" row="2" for="vintage" type="label"/>
+				<item col="1" row="2" for="vintage" type="value"/>
+				<item col="2" for="type" row="2" type="label" />
+				<item col="3" for="type" row="2" type="value" />
+				<item col="0" for="volume" row="3" type="label" />
+				<item col="1" for="volume" row="3" type="value" />
+				<item col="2" for="alcohol" row="3" type="label" />
+				<item col="3" for="alcohol" row="3" type="value" />
+				<item col="0" for="grapes" type="value" expand="true" row="4" colspan="4" />
+				<item col="0" for="soil" row="5" type="label" />
+				<item col="1" for="soil" row="5" type="value" colspan="3" />
+				<item col="0" for="country" row="6" type="label" />
+				<item col="1" for="country" row="6" type="value" colspan="3" />
+				<item col="0" for="producer" row="7" type="label" />
+				<item col="1" for="producer" row="7" type="value" colspan="3" />
+				<item col="0" for="medal" row="8" type="label" />
+				<item col="1" for="medal" row="8" type="value" colspan="3" />
+			</item>
+			<item expand="true" title="Details" type="expander" value="quantity">
+				<item type="box">
+					<item type="expander" title="Storage" expand="true" collapsed="%location% - %shelfindex% (%quantity%)">
+						<item type="table" cols="4" expand="true" rows="2">
+							<item col="0" for="location" row="0" type="label" />
+							<item col="1" for="location" row="0" type="value" />
+							<item col="2" for="shelfindex" row="0" type="label" />
+							<item col="3" for="shelfindex" row="0" type="value" />
+							<item col="0" for="quantity" row="1" type="label" />
+							<item col="1" for="quantity" row="1" type="value" />
+						</item>
+					</item>
+					<item type="expander" title="Acquisition" expand="true" collapsed="%purchasedate% (%purchaseprice%)">
+						<item type="table" cols="4" expand="true" rows="1">
+							<item col="0" for="purchasedate" row="0" type="label" />
+							<item col="1" for="purchasedate" row="0" type="value" />
+							<item col="2" for="purchaseprice" row="0" type="label" />
+							<item col="3" for="purchaseprice" row="0" type="value" />
+						</item>
+					</item>
+					<item type="line" expand="true">
+						<item for="gift" type="label" />
+						<item for="gift" type="value" />
+					</item>
+					<item type="box">
+						<item for="bottlelabel" type="label" expand="horizontal" align="center" />
+						<item for="bottlelabel" height="200" type="value" expand="horizontal" align="center" />
+					</item>
+					<item type="line" expand="true">
+						<item for="website" type="label" />
+						<item for="website" type="value" />
+					</item>
+				</item>
+			</item>
+			<item expand="true" title="Tasting" type="expander" value="tasting">
+				<item type="table" cols="3" expand="true" rows="4">
+					<item col="0" for="tasted" row="0" type="value" />
+					<item col="1" for="rating" row="0" type="label" />
+					<item col="2" for="rating" row="0" type="value" />
+					<item col="0" for="comments" row="1" type="label" />
+					<item col="1" colspan="2" expand="true" for="comments" row="1" type="value" />
+					<item col="0" for="serving" row="2" type="label" />
+					<item col="1" colspan="2" expand="true" for="serving" row="2" type="value" />
+					<item col="0" for="tasting" row="3" type="label" />
+					<item col="1" colspan="2" expand="true" for="tasting" row="3" type="value" />
+				</item>
+			</item>
+			<item type="expander" title="PanelTags">
+				<item expand="true" for="tags" type="value" />
+				<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+			</item>
+		</panel>
+	</panels>
+</collection>

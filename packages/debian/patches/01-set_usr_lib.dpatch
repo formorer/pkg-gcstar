@@ -1,0 +1,26 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## test.dpatch by  <nyall@crackfox>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad gcstarzombiepig-1.6~/bin/gcstar gcstarzombiepig-1.6/bin/gcstar
+--- gcstarzombiepig-1.6~/bin/gcstar	2009-09-20 17:12:25.000000000 -0300
++++ gcstarzombiepig-1.6/bin/gcstar	2009-09-20 17:29:43.000000000 -0300
+@@ -44,12 +44,12 @@
+ use POSIX qw(locale_h);
+ 
+ $ENV{GCS_BIN_DIR} = $RealBin;
+-($ENV{GCS_LIB_DIR} = $ENV{GCS_BIN_DIR}) =~ s/bin\/?$/lib\/gcstar/;
++($ENV{GCS_LIB_DIR} = $ENV{GCS_BIN_DIR}) =~ s/bin\/?$/share\/gcstar\/lib/;
+ ($ENV{GCS_SHARE_DIR} = $ENV{GCS_BIN_DIR}) =~ s/bin\/?$/share\/gcstar/;
+-use lib File::Spec->canonpath("$RealBin/../lib/gcstar");
++use lib File::Spec->canonpath("$RealBin/../share/gcstar/lib");
+ if (exists $ENV{PAR_TEMP})
+ {
+-    unshift @INC, "$RealBin/../lib/gcstar";
++    unshift @INC, "$RealBin/../share/gcstar/lib";
+ }
+ 
+ # For win32, redirect all the output to files

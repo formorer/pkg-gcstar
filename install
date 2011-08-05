@@ -1,0 +1,788 @@
+#!/usr/bin/perl
+
+###################################################
+#
+#  Copyright 2005-2010 Christian Jodar
+#
+#  This file is part of GCstar.
+#
+#  GCstar is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  GCstar is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with GCstar; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+###################################################
+
+use strict;
+use FindBin qw($RealBin);
+use File::Copy;
+use File::Find;
+use File::Path;
+use File::Basename;
+
+use lib "$RealBin/lib/gcstar";
+use GCLang;
+
+sub usage
+{
+    print "Usage: install [options]\n";
+    print "	--text			Force text installation\n";       
+    print "	--prefix=PREFIX		Installs GCstar in PREFIX [/usr/local]\n";
+    print "	--nomenu		Don't install menu entry\n";
+    print "	--noclean		Don't remove previous installation files\n";
+    print "	--verbose		Display more information during installation\n";
+    print "	--remove		Remove GCstar from system\n";
+    print "	--help			Show this message\n";
+}
+
+use Getopt::Long;
+my ($withHelp, $withText, $withPrefix, $withoutMenu, $withoutClean, $verbose, $remove);
+(usage, exit 1) if !GetOptions("help" => \$withHelp,
+                               "text" => \$withText,
+                               "prefix=s" => \$withPrefix,
+                               "nomenu" => \$withoutMenu,
+                               "noclean" => \$withoutClean,
+                               "verbose" => \$verbose,
+                               "remove" => \$remove);
+           
+(usage, exit 1) if ($ARGV[0]);
+
+sub verbosePrint
+{
+    print @_,"\n" if $verbose;
+}
+
+our $binName = 'gcstar';
+
+chdir $RealBin;
+$ENV{GCS_LIB_DIR} = 'lib/gcstar';
+
+our %lang;
+
+GCLang::loadLangs;
+(my $langCode = uc $ENV{LANG}) =~ s/(^.{2}).*$/$1/;
+$langCode = 'EN' if !$langCode || !$GCLang::langs{$langCode};
+%lang = %{$GCLang::langs{$langCode}};
+
+our $type = 'graphic';
+
+$type = 'text' if (($withPrefix) || ($withHelp) || ($withText) || ($withoutMenu) || ($withoutClean) || ($remove));
+
+sub checkDependencies;
+
+our ($mand, $opt, $optModules) = checkDependencies('GC');
+
+sub clean
+{
+    my $baseDir = shift;
+
+    my $home = $ENV{HOME};
+
+    verbosePrint $lang{InstallCleanDirectory}, $baseDir;
+    foreach (glob $baseDir.'/lib/gcstar/*')
+    {
+        unlink if -f $_;
+        if (-d _)
+        {
+            unlink foreach (glob "$_");
+        }
+    }
+    
+    foreach (glob $baseDir.'/share/gcstar/*')
+    {
+        unlink if -f $_;
+        if (-d _)
+        {
+            unlink foreach (glob "$_");
+        }
+    }
+    
+    unlink $baseDir.'/bin/'.$binName;
+    unlink $baseDir.'/man/man1/'.$binName.'.1.gz';
+
+    # remove menu and mime items
+
+    if (-w '/usr/share/applications')
+    {
+	    unlink '/usr/share/applications/gcstar.desktop';
+    }
+    else
+    {
+	    unlink $home.'/.local/share/applications/gcstar.desktop'; 
+    }
+
+    unlink '/usr/share/pixmaps/gcstar.png'
+	    if (-w '/usr/share/pixmaps');
+	
+	# Remove icons
+	unlink '/usr/share/icons/hicolor/16x16/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/16x16/apps');
+	unlink '/usr/share/icons/hicolor/22x22/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/16x16/apps');
+	unlink '/usr/share/icons/hicolor/24x24/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/24x24/apps');
+	unlink '/usr/share/icons/hicolor/32x32/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/32x32/apps');
+	unlink '/usr/share/icons/hicolor/36x36/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/36x36/apps');
+	unlink '/usr/share/icons/hicolor/48x48/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/48x48/apps');
+	unlink '/usr/share/icons/hicolor/64x64/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/64x64/apps');
+	unlink '/usr/share/icons/hicolor/72x72/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/72x72/apps');
+	unlink '/usr/share/icons/hicolor/96x96/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/96x96/apps');
+	unlink '/usr/share/icons/hicolor/128x128/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/128x128/apps');
+	unlink '/usr/share/icons/hicolor/192x192/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/192x192/apps');
+	unlink '/usr/share/icons/hicolor/256x256/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/256x256/apps');
+	unlink '/usr/share/icons/hicolor/scalable/apps/gcstar.svg'
+		if (-w '/usr/share/icons/hicolor/scalable/apps');
+    system 'gtk-update-icon-cache /usr/share/icons/hicolor';
+    
+    # Remove mime type
+    unlink '/usr/share/mime/packages/gcstar.xml'
+		if (-w '/usr/share/mime/packages');
+
+    system 'update-desktop-database';
+    system 'update-mime-database /usr/share/mime';
+
+}
+
+sub recursiveCopy
+{
+    my ($orig, $dest) = @_;
+
+    mkpath $dest;
+
+    foreach (glob $orig.'/*')
+    {
+        next if /CVS/;
+        copy $_, $dest if -f $_;
+        if (-d $_)
+        {
+            my $dir = basename($_);
+            recursiveCopy($_, $dest.'/'.$dir);
+        }
+    }
+}
+
+sub installMenu
+{
+	my $home = $ENV{HOME};
+
+	if (-w '/usr/share/applications')
+	{
+        verbosePrint $lang{InstallCopyDesktop}, '/usr/share/applications';
+		copy 'share/applications/gcstar.desktop', '/usr/share/applications';
+	}
+	else
+	{
+        verbosePrint $lang{InstallCopyDesktop}, $home.'/.local/share/applications';
+		copy 'share/applications/gcstar.desktop', $home.'/.local/share/applications';
+	}
+
+	copy 'share/gcstar/icons/gcstar_48x48.png', '/usr/share/pixmaps/gcstar.png'
+		if (-w '/usr/share/pixmaps');
+
+	copy 'share/gcstar/icons/gcstar_16x16.png', '/usr/share/icons/hicolor/16x16/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/16x16/apps');
+	copy 'share/gcstar/icons/gcstar_22x22.png', '/usr/share/icons/hicolor/22x22/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/16x16/apps');
+	copy 'share/gcstar/icons/gcstar_24x24.png', '/usr/share/icons/hicolor/24x24/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/24x24/apps');
+	copy 'share/gcstar/icons/gcstar_32x32.png', '/usr/share/icons/hicolor/32x32/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/32x32/apps');
+	copy 'share/gcstar/icons/gcstar_36x36.png', '/usr/share/icons/hicolor/36x36/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/36x36/apps');
+	copy 'share/gcstar/icons/gcstar_48x48.png', '/usr/share/icons/hicolor/48x48/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/48x48/apps');
+	copy 'share/gcstar/icons/gcstar_64x64.png', '/usr/share/icons/hicolor/64x64/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/64x64/apps');
+	copy 'share/gcstar/icons/gcstar_72x72.png', '/usr/share/icons/hicolor/72x72/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/72x72/apps');
+	copy 'share/gcstar/icons/gcstar_96x96.png', '/usr/share/icons/hicolor/96x96/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/96x96/apps');
+	copy 'share/gcstar/icons/gcstar_128x128.png', '/usr/share/icons/hicolor/128x128/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/128x128/apps');
+	copy 'share/gcstar/icons/gcstar_192x192.png', '/usr/share/icons/hicolor/192x192/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/192x192/apps');
+	copy 'share/gcstar/icons/gcstar_256x256.png', '/usr/share/icons/hicolor/256x256/apps/gcstar.png'
+		if (-w '/usr/share/icons/hicolor/256x256/apps');
+	copy 'share/gcstar/icons/gcstar_scalable.svg', '/usr/share/icons/hicolor/scalable/apps/gcstar.svg'
+		if (-w '/usr/share/icons/hicolor/scalable/apps');
+    system 'gtk-update-icon-cache /usr/share/icons/hicolor';
+
+    copy 'share/applications/gcstar.xml', '/usr/share/mime/packages'
+		if (-w '/usr/share/mime/packages');
+
+    system 'update-desktop-database';
+    system 'update-mime-database /usr/share/mime';
+    
+
+}
+
+sub doInstall
+{
+    my ($baseDir, $baseDir2) = @_;
+    $baseDir = $baseDir2->get_text if $baseDir2;
+
+    $baseDir .= '/' if $baseDir !~ /\/$/;
+    print $lang{InstallDirInfo}.$baseDir."\n";
+
+    verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/bin';
+    mkpath $baseDir.'/bin';
+    copy 'bin/gcstar', $baseDir.'/bin/'.$binName;
+    
+    verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/man/man1';
+    mkpath $baseDir.'/man/man1';
+    my $manPage = "$baseDir/man/man1/$binName.1";
+    copy 'man/gcstar.1', $manPage;
+    `gzip -f $manPage 2>&1 >/dev/null`;
+    
+    chmod 0755, $baseDir.'/bin/'.$binName;
+
+    #Copying lib
+    verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/lib/gcstar';
+    recursiveCopy('lib/gcstar', $baseDir.'/lib/gcstar');
+
+    #Copying share
+    verbosePrint $lang{InstallCopyDirectory}, $baseDir.'/share/gcstar';
+    recursiveCopy('share/gcstar', $baseDir.'/share/gcstar');
+
+    chmod 0755, $baseDir.'/share/gcstar/helpers/xdg-open';
+}
+
+if ($type eq 'text')
+{
+    if ($withHelp)
+    {
+        usage;
+    	exit 0;
+    }
+    elsif ($remove)
+    {
+        my $dir;
+        if ($withPrefix)
+        {
+            $dir = $withPrefix;
+        }
+        else
+        {
+            print $lang{InstallPrompt};
+
+            $| = 1;
+            $_ = <stdin>;
+            chomp;
+            $dir = ($_ ? $_ : '/usr/local/');
+        }
+        clean $dir;
+        print "\nRemoved\n";
+	
+        exit 0;
+     }
+
+    print "\n".$lang{InstallMandatory}."\n\n";
+    my %mand = %$mand;
+    my @missing = ();
+    foreach (sort keys %mand)
+    {
+        print $_, ' 'x(35-length($_)), $mand{$_}, "\n";
+        push @missing, $_  if ($mand{$_} eq $lang{InstallMissing});
+    }
+
+    print "\n".$lang{InstallOptional}."\n\n";
+    my %opt = %$opt;
+    foreach (sort keys %opt)
+    {
+        print $_, ' 'x(35-length($_)), $opt{$_}, "\n";
+    }
+    print "\n";
+    if (scalar(@missing))
+    {
+        print "\n".$lang{InstallErrorMissing}."\n\n";
+        print "$_\n" foreach (@missing);
+        exit 1;
+    }
+
+    my $dir;
+    if ($withPrefix)
+    {
+        $dir = $withPrefix;
+    }
+    else
+    {
+        print $lang{InstallPrompt};
+
+        $| = 1;
+        $_ = <stdin>;
+        chomp;
+        $dir = ($_ ? $_ : '/usr/local/');
+    }
+
+    $dir =~ s/^~/$ENV{HOME}/;
+
+    my $dirError = 0;
+    if (! -e $dir)
+    {
+        eval { mkpath $dir };
+        $dirError = 1 if $@;
+    }
+    if (-w $dir && !$dirError)
+    {
+        clean $dir unless ($withoutClean);
+        installMenu unless ($withoutMenu);
+        doInstall $dir;
+    	$dir .= '/' if $dir !~ /\/$/;
+        print "\n",$lang{InstallEnd},"\n",$lang{InstallNoError},"\n",$lang{InstallLaunch},$dir,"bin/",$binName,"\n";
+	
+        exit 0;
+     }
+     else 
+     {
+     	print $lang{InstallNoPermission}."\n";
+     	exit 0;
+     }
+	
+}
+
+sub checkDependencies
+{
+    my $pref = shift;
+
+    my @dependencies = ();
+    my @optionals = ();
+    my $optionalsModules = {};
+
+    my @files = glob 'lib/gcstar/*';
+    for my $component('GCPlugins', 'GCExport', 'GCImport', 'GCExtract', 'GCBackend', 'GCItemsLists')
+    {
+        foreach (glob "lib/gcstar/$component/*")
+        {
+            if (-d $_)
+            {
+                push @files, glob "lib/gcstar/$component/$_/*.pm";
+            }
+            else
+            {
+                push @files, $_;
+            }
+        }
+    }
+  
+    foreach my $file(@files)
+    {
+        open FILE, $file;
+        while (<FILE>)
+        {
+            push (@dependencies, $1) if ((/^\s*use\s*(.*?)\s*(qw.*?)?;/) && ($1 !~ /base|vars|locale|integer|^lib|utf8|strict|^$pref/));
+            if (
+                ((/eval.*?[\"\']use\s*(.*?)[\"\'];/) && ($1 !~ /base|vars|locale|integer|^lib|utf8|strict|\$opt|\$module|^$pref/))
+                ||
+                (/checkModule\([\"\'](.*?)[\"\']\)/)
+               )
+            #"
+            {
+                next if $1 eq 'Time::HiRes';
+                push (@optionals, $1);
+                push @{$optionalsModules->{$1}}, $file;
+            }
+
+        }
+        close FILE;
+    }
+
+    my %saw1;
+    @saw1{@dependencies} = ();
+    @dependencies = sort keys %saw1;
+
+    my %saw2;
+    @saw2{@optionals} = ();
+    @optionals = sort keys %saw2;
+
+    my %mandatoryResults = ();
+    my %optionalResults = ();
+
+    foreach (@dependencies)
+    {
+        $mandatoryResults{$_} = $lang{InstallOK};
+        eval "use $_";
+        $mandatoryResults{$_} = $lang{InstallMissing} if ($@);
+    }
+    foreach (@optionals)
+    {
+        $optionalResults{$_} = $lang{InstallOK};
+        eval "use $_";
+        $optionalResults{$_} = $lang{InstallMissing} if ($@);
+    }
+
+    return \%mandatoryResults, \%optionalResults, $optionalsModules;
+}
+
+eval
+'
+    use Gtk2 \'-init\';
+    use GCDialogs;
+';
+
+our $installDialog = Gtk2::Window->new('toplevel');
+
+sub graphicInstall
+{
+    my $widget = shift;
+    
+    my $dir = $installDialog->{path}->get_text;
+    my $dirError = 0;
+    if (! -e $dir)
+    {
+        eval { mkpath $dir };
+        $dirError = 1 if $@;
+    }
+    if (-w $dir && !$dirError)
+    {
+        clean($installDialog->{path}->get_text)
+            if $installDialog->{clean}->get_active;
+	
+        installMenu if $installDialog->{menu}->get_active;
+	
+        doInstall($installDialog->{path}->get_text);
+	
+	    $dir .= '/' if $dir !~ /\/$/;
+	    
+        my $dialog = Gtk2::MessageDialog->new($installDialog,
+                        [qw/modal destroy-with-parent/],
+                        'info',
+                        'ok',
+                        $lang{InstallEnd}."\n\n".$lang{InstallNoError}."\n\n".$lang{InstallLaunch}.$dir."bin/".$binName);
+        $dialog->run();
+        $dialog->destroy ;
+	
+        Gtk2->main_quit;
+    }
+    else
+    {
+     	my $dialog = Gtk2::MessageDialog->new($installDialog,
+						[qw/modal destroy-with-parent/],
+						'error',
+						'ok',
+						$lang{InstallNoPermission}."\n\n");
+        $dialog->run();
+        $dialog->destroy ;
+    }
+}
+
+sub browse
+{
+    my $widget = shift;
+    my $dialog = new GCFileChooserDialog($lang{InstallDirectory}, $installDialog, 'select-folder');
+    $dialog->set_filename($installDialog->{path}->get_text);
+    my $response = $dialog->run;
+    if ($response eq 'ok')
+    {
+        $installDialog->{path}->set_text($dialog->get_filename);
+    }
+    $dialog->destroy;
+
+}
+
+sub updateLabel
+{
+    my ($tabs, $tabLabel) = @_;
+    
+    my $current = $tabs->get_current_page;
+    $current = 0 if ($current <= 0);
+    my $label = $tabs->get_tab_label_text($tabs->get_nth_page($current));
+    $tabLabel->set_markup("<span size='xx-large' weight='bold' background='#ffffff' foreground='#1c86ee'>$label</span>");
+}
+
+$installDialog->set_title($lang{InstallTitle});
+my $iconPrefix = 'share/gcstar/icons/gcstar_';
+my $pixbuf16 = Gtk2::Gdk::Pixbuf->new_from_file($iconPrefix.'16x16.png');
+my $pixbuf32 = Gtk2::Gdk::Pixbuf->new_from_file($iconPrefix.'32x32.png');
+my $pixbuf48 = Gtk2::Gdk::Pixbuf->new_from_file($iconPrefix.'48x48.png');
+my $pixbuf64 = Gtk2::Gdk::Pixbuf->new_from_file($iconPrefix.'64x64.png');
+$installDialog->set_icon_list($pixbuf16, $pixbuf32, $pixbuf48, $pixbuf64);
+#$installDialog->set_icon_from_file('share/gcstar/icons/gcstar_16x16.png');
+
+my $vbox = new Gtk2::VBox(0,0);
+
+my %mand = %$mand;
+my %opt = %$opt;
+my $tableDepend = new Gtk2::Table(3 + scalar(keys %mand) + scalar(keys %opt),2, 0);
+$tableDepend->set_row_spacings(10);
+$tableDepend->set_col_spacings(20);
+$tableDepend->set_border_width(10);
+
+my $mandMissing = 0;
+my $optMissing = 0;
+my $labelMand = new Gtk2::Label;
+$labelMand->set_markup('<b>'.$lang{InstallMandatory}.'</b>');
+$labelMand->set_alignment(0.5, 0.0);
+$tableDepend->attach($labelMand, 0, 2, 0, 1, 'expand', 'fill', 0, 10);
+my @missings;
+my @oks;
+foreach (sort keys %mand)
+{
+    my $label1 = new Gtk2::Label($_);
+    my $label2 = new Gtk2::Label;
+    
+    if ($mand{$_} eq $lang{InstallMissing})
+    {
+        $label2->set_markup("<span color='red' weight='bold'>".$lang{InstallMissing}."</span>");
+        $mandMissing = 1;
+        push @missings, [$label1, $label2];
+    }
+    else
+    {
+        $label2->set_markup("<span color='green' weight='bold'>".$lang{InstallOK}."</span>");
+        push @oks, [$label1, $label2];
+    }
+    
+}
+my $i = 1;
+foreach (@missings)
+{
+    $tableDepend->attach($_->[0], 0, 1, $i, $i+1, 'fill', 'fill', 0, 0);
+    $tableDepend->attach($_->[1], 1, 2, $i, $i+1, 'fill', 'fill', 0, 0);
+
+    $i++;
+}
+foreach (@oks)
+{
+    $tableDepend->attach($_->[0], 0, 1, $i, $i+1, 'fill', 'fill', 0, 0);
+    $tableDepend->attach($_->[1], 1, 2, $i, $i+1, 'fill', 'fill', 0, 0);
+
+    $i++;
+}
+
+%opt = %$opt;
+my $labelOpt = new Gtk2::Label;
+$labelOpt->set_markup('<b>'.$lang{InstallOptional}.'</b>');
+$tableDepend->attach(new Gtk2::HSeparator, 0, 2, $i, $i+1, 'fill', 'fill', 0, 10);
+$i++;
+$tableDepend->attach($labelOpt, 0, 2, $i, $i+1, 'expand', 'fill', 0, 10);
+
+$i++;
+@missings = ();
+@oks = ();
+foreach (sort keys %opt)
+{
+    my $label1 = new Gtk2::Label($_);
+    my $label2 = new Gtk2::Label;
+
+    if ($opt{$_} eq $lang{InstallMissing})
+    {
+        my $value;
+        foreach my $module (@{$optModules->{$_}})
+        {
+            $module =~ s/.*?GC([^\/]*?)\.pm$/$1/;
+            $value .= $module.",\n";
+        }
+        $value =~ s/,\n$//;
+        $label2->set_markup("<span color='orange' weight='bold'>".$lang{InstallMissingFor}." $value</span>");
+        $label2->set_line_wrap(1);
+        $label2->set_justify('left');
+        $optMissing = 1;
+        push @missings, [$label1, $label2];
+    }
+    else
+    {
+        $label2->set_markup("<span color='green' weight='bold'>".$lang{InstallOK}."</span>");
+        push @oks, [$label1, $label2];
+    }
+}
+foreach (@missings)
+{
+    $tableDepend->attach($_->[0], 0, 1, $i, $i+1, 'fill', 'fill', 0, 0);
+    $tableDepend->attach($_->[1], 1, 2, $i, $i+1, 'fill', 'fill', 0, 0);
+
+    $i++;
+}
+foreach (@oks)
+{
+    $tableDepend->attach($_->[0], 0, 1, $i, $i+1, 'fill', 'fill', 0, 0);
+    $tableDepend->attach($_->[1], 1, 2, $i, $i+1, 'fill', 'fill', 0, 0);
+
+    $i++;
+}
+
+my $scrollDepend = new Gtk2::ScrolledWindow;
+$scrollDepend->set_policy ('automatic', 'automatic');
+$scrollDepend->set_shadow_type('none');
+$scrollDepend->add_with_viewport($tableDepend);
+$scrollDepend->set_size_request(300, 200);
+
+my $hasErrors = 0;
+my $errorLabel = new Gtk2::Label;
+$errorLabel->set_line_wrap(1);
+$errorLabel->set_justify('center');
+my $vboxDepend = new Gtk2::VBox(0,0);
+my $vboxPath = new Gtk2::VBox(0,0);
+my $hboxActions = new Gtk2::HBox(0,0);
+my $hboxControls = new Gtk2::HBox(0,1);
+my $vboxOptions = new Gtk2::VBox(0,0);
+my $ok = new Gtk2::Button->new_from_stock('gtk-ok');
+my $cancel = new Gtk2::Button->new_from_stock('gtk-cancel');
+my $next = new Gtk2::Button->new_from_stock('gtk-go-forward');
+my $previous = new Gtk2::Button->new_from_stock('gtk-go-back');
+
+$ok->can_default(1);
+$cancel->can_default(1);
+$next->can_default(1);
+
+$hboxControls->pack_end($ok, 0, 1, 5);
+$hboxControls->pack_end($next, 0, 1, 5);
+$hboxControls->pack_end($previous, 0, 1, 5);
+$hboxControls->pack_end($cancel, 0, 1, 5);
+
+$vboxOptions->set_border_width(10);
+
+if ($mandMissing)
+{
+    $errorLabel->set_markup('<b>'.$lang{InstallMissingMandatory}.'</b>');
+    $hasErrors = 2;
+}
+else
+{
+	if  ($optMissing)
+	{
+    	$errorLabel->set_markup('<b>'.$lang{InstallMissingOptional}.'</b>');
+    	$hasErrors = 1;
+	}
+	else
+	{
+    	$errorLabel->set_markup('<b>'.$lang{InstallMissingNone}.'</b>');
+	}
+    
+    $installDialog->{menu} = new Gtk2::CheckButton($lang{InstallWithMenu});
+    $installDialog->{menu}->set_active(1);
+    $vboxOptions->pack_start($installDialog->{menu},0,0,10);
+
+    $installDialog->{clean} = new Gtk2::CheckButton($lang{InstallWithClean});
+    $installDialog->{clean}->set_active(1);
+    $vboxOptions->pack_start($installDialog->{clean},0,0,10);
+
+    $hboxActions->set_border_width(20);
+    my $pathLabel = new Gtk2::Label($lang{InstallSelectDirectory});
+    $installDialog->{path} = new Gtk2::Entry;
+    $installDialog->{path}->set_text('/usr/local/');
+    $installDialog->{path}->set_activates_default(1);
+    $hboxActions->pack_start($installDialog->{path},1,1,5);
+    my $openButton = Gtk2::Button->new_from_stock('gtk-open');
+    $openButton->signal_connect('clicked', \&browse, $installDialog);
+    $hboxActions->pack_start($openButton,0,0,5);
+    $vboxPath->pack_start($pathLabel,0,0,5);
+    $vboxPath->pack_start($hboxActions,0,0,5);
+}
+
+$vboxDepend->pack_start($errorLabel,0,0,10);
+$vboxDepend->pack_start($scrollDepend,1,1,0);
+
+
+my $sep1 = new Gtk2::HSeparator;
+my $sep2 = new Gtk2::HSeparator;
+
+#my $image = Gtk2::Image->new_from_file('share/gcstar/logos/about.png');
+#$vbox->pack_start($image,0,0,10);
+
+my $tabs = Gtk2::Notebook->new();
+$tabs->set_border_width(0);
+$tabs->set_tab_pos('left');
+$tabs->set_show_border(1);
+$tabs->set_show_tabs(0);
+
+$tabs->append_page($vboxDepend, $lang{InstallDependencies});
+$tabs->append_page($vboxPath, $lang{InstallPath});
+$tabs->append_page($vboxOptions, $lang{InstallOptions});
+
+my $headerBox = new Gtk2::EventBox;
+my $colorHeaderBg = Gtk2::Gdk::Color->parse('#ffffff');
+$headerBox->modify_bg('normal', $colorHeaderBg);
+my $hboxLabel = new Gtk2::HBox;
+my $leftBox = new Gtk2::EventBox;
+$leftBox->modify_bg('normal', $colorHeaderBg);
+$leftBox->set_size_request(83,57);
+my $tabLabel = new Gtk2::Label;
+my $image = Gtk2::Image->new_from_file('share/gcstar/logos/install.png');
+$hboxLabel->pack_start($leftBox,0,0,0);
+$hboxLabel->pack_start($tabLabel,1,1,0);
+$hboxLabel->pack_start($image,0,0,0);
+$headerBox->add($hboxLabel);
+
+$previous->set_sensitive(0);
+updateLabel($tabs, $tabLabel);
+$next->signal_connect('clicked' => sub {
+    $tabs->next_page;
+    my $currentPage = $tabs->get_current_page;
+    updateLabel($tabs, $tabLabel);
+    if ($currentPage == 2)
+    {
+        my $allocation = $next->allocation;
+        $ok->set_size_request($allocation->width, $allocation->height);
+        $ok->show;
+        $next->hide;
+        $ok->grab_default;
+    }
+    $previous->set_sensitive(1) if $currentPage >= 1;
+});
+
+$previous->signal_connect('clicked' => sub {
+    $tabs->prev_page;
+    my $currentPage = $tabs->get_current_page;
+    updateLabel($tabs, $tabLabel);
+    $previous->set_sensitive(0) if $currentPage == 0;
+    if ($currentPage <= 1)
+    {
+        $ok->hide;
+        $next->show;
+        $next->grab_default;
+    }
+});
+
+my $vboxIn = new Gtk2::VBox(0,0);
+$vboxIn->pack_start($headerBox,0,0,0);
+$vboxIn->pack_start(Gtk2::HSeparator->new,0,0,5);
+$vboxIn->pack_start($tabs,1,1,0);
+my $hboxSpace = new Gtk2::HBox(0,0);
+$hboxSpace->pack_start($vboxIn,1,1,12);
+$vbox->pack_start($hboxSpace,1,1,10);
+
+$vbox->pack_start($sep2,0,0,0);
+$vbox->pack_start($hboxControls,0,0,5);
+
+$installDialog->add($vbox);
+
+$ok->signal_connect('clicked' => \&graphicInstall);
+$cancel->signal_connect('clicked' => sub { Gtk2->main_quit; });
+$installDialog->signal_connect(destroy => sub { Gtk2->main_quit; });
+
+$installDialog->show_all;
+$ok->hide;
+$installDialog->resize(500,400);
+
+if ($hasErrors > 1)
+{
+    $ok->set_sensitive(0);
+    $next->set_sensitive(0);
+	$cancel->grab_default;
+}
+else
+{
+	$next->grab_default;
+}
+
+Gtk2->main;
+
+0;

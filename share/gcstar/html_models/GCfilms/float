@@ -1,0 +1,120 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+	Template made by float
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>$$PAGETITLE$$</title>
+<style type="text/css">
+body {
+	color:#004DFF;
+	background-color : white;
+	font-family : arial, helvetica, sans-serif;
+	font-size : 12px;
+	margin : 10px;
+}
+
+td {
+	font-family : arial, sans-serif;
+	font-size : 12px;
+}
+h1 {
+	font-size:130%;
+	font-weight:bold;
+	border-bottom : solid black 1px;
+	margin:0px;
+}
+.borrowed1 {
+}
+a {
+	color : #666;
+	text-decoration : none;	
+
+}
+a:hover {
+	text-decoration : underline;
+}
+.title {
+ 	font-size : 110%;
+ 	font-weight : bold;
+}
+.synopsis {
+	margin-top : .6em;
+	text-align : justify;
+
+	margin-bottom : 1.5em;
+	color : #333;
+}
+.image {
+	margin-bottom : 1.5em;
+}
+.detail {
+	float : right;
+	text-align : right;
+	color : #888;
+}
+#total {
+	float: center;
+	font-weight: bold;
+	text-align: center;
+}
+#footer {
+	border-top : solid black 1px;	
+	font-size:small;
+	color : #666;
+	text-align: center;
+}
+#top {
+	text-align: left;
+}
+#middle {
+	text-align: center;
+}
+#bottom {
+	text-align: right;
+}
+</style>
+</head>
+<body>
+<a name="top" id="top"></a>
+<div id="total">$$PAGETITLE$$ - $$TOTALNUMBER$$ $$ITEMS$$</div><br><br>
+<table width="550" align="center" cellpadding="8" cellspacing="0">
+[/HEADER]
+[ITEM]
+<tr class="borrowed$$borrower_FLAG$$">
+  <td valign="top" align="center" bgcolor="#E3E1C6" width="80" >
+  	<img align="top" src="$$image$$" height="$$HEIGHT_PIC$$" border="0" alt="$$title$$" title="$$title$$" class="image">
+  </td>
+  <td valign="top" bgcolor="#ECEBD9">
+  	<div class="detail"><b>$$time_LABEL$$:</b>&nbsp;$$time$$<br>
+    <b>$$genre_LABEL$$:</b>&nbsp;$$genre$$</div>
+    <div class="title">$$title$$</div>
+    <div class="synopsis"><b>$$director_LABEL$$:</b><br>$$director$$
+	<br><br><b>$$actors_LABEL$$:</b><br>$$actors$$
+	<br><br><b>$$synopsis_LABEL$$:</b><br>$$synopsis$$
+	<br><br>
+	<b>
+	<table width="100%">
+	<tr>
+	<td align="left"><a href="#top">$$TOP$$</a></td>
+	<td align="center"><a href="$$trailer$$">$$gtk-media-play$$</a></td>
+	<td align="right"><a href="#bottom">$$BOTTOM$$</a></td>
+	</tr>
+	</table>
+	</div> 
+  </td>
+</tr>
+[/ITEM]
+[FOOTER]
+</table>
+<div id="footer">
+	$$GENERATOR_NOTE$$
+</div>
+<a name="bottom" id="bottom"></a>
+</body>
+</html>
+[/FOOTER]
+[POST]
+[/POST]

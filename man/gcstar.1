@@ -1,0 +1,92 @@
+.TH GCSTAR 1 "17 August 2006" "GCstar" "Linux User's Manual"
+.SH NAME
+GCstar \- Personal collection manager
+.SH SYNOPSIS
+.B gcstar
+[\-u UPDATE-OPTIONS] [\-x EXECUTE-OPTIONS] [FILENAME]
+.SH DESCRIPTION
+.B GCstar
+is a Gtk2 program used to manage personal collections.
+.SH OPTIONS
+Without any option, it will open FILENAME if specified or the previously
+opened file. There are also two groups of options.
+
+.SS UPDATE-OPTIONS
+.TP
+.B "\-u, \-\-update"
+Tell GCstar to look for available updates
+.TP
+.B "\-a, \-\-all"
+Update all components
+.TP
+.B "\-c, \-\-collection"
+Update collection models
+.TP
+.B "\-w, \-\-website"
+Update plugins to download information
+.TP
+.B "\-i, \-\-import"
+Update plugins to import data
+.TP
+.B "\-e, \-\-export"
+Update plugins to export data
+.TP
+.B "\-l, \-\-lang"
+Update translations
+.TP
+.B "\-n, \-\-noproxy"
+Don't ask for a proxy
+.SS EXECUTE-OPTIONS
+.TP
+.B "\-x, \-\-execute"
+Enter non-interactive mode
+.TP
+.B "\-c, \-\-collection MODEL"
+Specify the collection type
+.TP
+.B "\-w, \-\-website PLUGIN"
+Specify the plugin to use to download information
+.TP
+.B "\-i, \-\-import PLUGIN"
+Specify the plugin to use to import a collection
+.TP
+.B "\-e, \-\-export PLUGIN"
+Specify the plugin to use to export the collection
+.TP
+.B "\-f, \-\-fields FILENAME"
+File containing fields list to use for import/export
+.TP
+.B "\-o, \-\-output FILENAME"
+Write output in FILENAME instead of standard output
+.TP
+.B "\-\-download TITLE"
+Search for the item with TITLE as name
+.TP
+.B "\-\-importprefs PREFERENCES"
+Preferences for the import plugin
+.TP
+.B "\-\-exportprefs PREFERENCES"
+Preferences for the export plugin
+.P
+.TP
+Preferences for import/export plugins are specified using this schema
+Key1=>Value1,Key2=>Value2
+.SH ENVIRONMENT
+.TP
+.B HOME
+Used to define following variables if needed
+.TP
+.B XDG_CONFIG_HOME
+Where configuration files should be stored. If not defined: $HOME/.config
+.TP
+.B XDG_DATA_HOME
+Where some data will be stored. If not defined: $HOME/.local/share
+.SH BUGS REPORTING
+To report bugs, please use this forum:
+.P
+http://forums.gcstar.org/viewforum.php?id=4
+.SH AUTHORS
+.TP
+Tian <tian@c-sait.net>
+.P
+http://www.gcstar.org/

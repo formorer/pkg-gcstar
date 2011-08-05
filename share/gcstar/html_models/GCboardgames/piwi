@@ -1,0 +1,275 @@
+[HEADER]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<!--
+  Template made by Tian ( http://www.c-sait.net/ ) - Mods by Piwi -->
+<head>
+ <title>$$PAGETITLE$$</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+[JAVASCRIPT]
+ <script type="text/javascript">
+<!--
+expandTooltip="Afficher les informations du jeu";
+collapseTooltip="Masquer les informations du jeu";
+function prn(s)
+{
+ document.write(s)
+}
+function getE(id)
+{
+ return document.getElementById(id)
+}
+function expcolAll(dir,rowNum)
+{
+ for(x=0;x < rowNum;x++) {
+  try {
+   getE('movie'+x).style.display=dir
+   if(dir=="none") getE('switch'+x).innerHTML="+"
+   else getE('switch'+x).innerHTML="&ndash;"
+  }
+  catch(err) { }
+ }
+}
+function toggleDisplay(id,swt)
+{
+ if((getE(id).style.display=="")||(getE(id).style.display=="none")) {
+  getE(id).style.display="block"
+  getE(swt).innerHTML="&ndash;"
+  getE(swt).title=collapseTooltip
+ } else {
+  getE(id).style.display="none"
+  getE(swt).innerHTML="+"
+  getE(swt).title=expandTooltip
+ }
+ return false
+}
+function writeExpandControl(elementId,collapse)
+{
+ prn("<a href=\"#\" class=\"movie-expand\" id=\"switch"+elementId+"\" onclick=\"return toggleDisplay('movie"+elementId+"','switch"+elementId+"');\" title=\""+((collapse) ? expandTooltip : collapseTooltip)+"\">"+((collapse) ? "+" : "&ndash;")+"</a>")
+}
+function searchMovies(text)
+{
+ getE("collapseAll").click()
+ alldt=document.getElementsByTagName("dt")
+ alldd=document.getElementsByTagName("dd")
+ nb=alldt.length
+ re=new RegExp(text,"i")
+ for(i=0;i<nb;i++) {
+  s1=alldt[i].getElementsByTagName("a")[1].innerHTML
+  s2=alldd[i].innerHTML
+  res=0
+  if(getE("searchType").value=="all") res=(re.test(s1)||re.test(s2))
+  else res=re.test(s1)
+  if(res) st="block"
+  else st="none"
+  alldt[i].style.display=st
+  alldd[i].style.display=st
+ }
+}
+-->
+ </script>
+[/JAVASCRIPT]
+ <style type="text/css">
+   body {
+   background:#FEEFCF;
+  }
+  h1 {
+   font-weight:bold;
+   font-size:160%;
+   text-align:center;
+   margin-bottom:1em;
+  }
+  #top {
+   color:#FF912D ! important;
+   background:transparent ! important;
+  }
+  form {
+   text-align:center;
+   border:1px dashed #999999;
+   background:#FCCC67;
+   margin:0 3em;
+   padding:0.5em;
+  }
+  input, select {
+   border:1px solid #666666;
+   background: #FCCC67;
+   color: #993300;
+   margin:0 0.5em;
+  }
+  input:focus, input.submit:hover {
+   background:#FCCC67;
+   color: #993300;
+  }
+    }
+  input:hover, input.submit:hover {
+   background:#FCCC67;
+   color: #993300;
+  }
+  input.submit {
+   cursor:pointer;
+  }
+  #links {
+   margin-top:0.5em;
+   text-align:center;
+   font-size:120%;
+   color: #993300;
+  }
+  img {
+   float:left;
+   margin:0 1em 1em 1em;
+  }
+  dt {
+   color:#FF912D;
+   font-size:120%;
+   margin:0em 0.5em;
+   clear:both;
+  }
+  dd {
+   margin:0.5em 2em 1em;
+   border-left:1px dashed #FF912D;
+   border-bottom:1px dashed #FF912D;
+  }
+  table {
+   font-size:90%;
+   margin:0 1em;
+   border:1px dashed #990000;
+   width:60%;
+   color: #990000;
+  }
+  th {
+   font-weight:bold;
+   text-align:left;
+   width:25%;
+  }
+  .tr1 {
+   background:#FCCC67;
+  }
+  .tr2 {
+   background:#FCCC67;
+  }
+  a {
+   color:#ffaa00;
+   background:transparent;
+   text-decoration:none;
+  }
+  a:hover, a:focus {
+   color:#FCCC67;
+   background-color:#ffaa00;
+  }
+  .topl {
+   color:#BBBBBB;
+   font-size:90%;
+  }
+  .movie-expand {
+   width:1em;
+   text-align:center;
+   font-size:120%;
+   float:left;
+   margin:0.2em;
+  }
+  p, #note {
+   color:#993300;
+   background:#FEEFCF;
+   border:1px dashed #999999;
+   clear:left;
+   margin:1em 2em;
+   padding:0.5em;
+  }
+  .borrowed0 {
+   color:#BBBBBB;
+   background:transparent;
+   text-decoration:none;
+   font-size:50%;
+   display:block;
+  }
+  .borrowed1 {
+   color:#BBBBBB;
+   background:transparent;
+   text-decoration:none;
+   font-size:50%;
+   display:block;
+  }
+  #note {
+  	text-align:center;
+  }
+ </style>
+</head>
+<body>
+ <h1><a id="top">$$PAGETITLE$$</a></h1>
+[JAVASCRIPT]
+ <form onsubmit="searchMovies(getE('searchText').value); return false" action="">
+  <div>
+  <input type="text" id="searchText" title="$$FORM_INPUT$$" size="20" />
+  <select id="searchType">
+   <option value="title">$$FORM_SEARCH1$$</option>
+   <option value="all">$$FORM_SEARCH2$$</option>
+  </select>
+  <input type="button" class="submit" value="$$FORM_SEARCHBUTTON$$" title="$$FORM_SEARCHTITLE$$" onclick="searchMovies(getE('searchText').value)" />
+  <input type="button" class="submit" value="$$FORM_ALLBUTTON$$" title="$$FORM_ALLTITLE$$" onclick="searchMovies('')" />
+  <br />
+  <br />
+  <input  type="button" class="submit" value="$$FORM_EXPAND$$" onclick="expcolAll('block','$$TOTALNUMBER$$')" title="$$FORM_EXPANDTITLE$$" />
+  <input  type="button" id="collapseAll" class="submit" value="$$FORM_COLLAPSE$$" onclick="expcolAll('none','$$TOTALNUMBER$$')" title="$$FORM_COLLAPSETITLE$$" />
+  </div>
+ </form>
+[/JAVASCRIPT]
+ <div id="links">| _ | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z |</div>
+ <dl>
+[/HEADER]
+[ITEM]
+  <dt>
+[JAVASCRIPT]
+   <script type="text/javascript">writeExpandControl('$$IDX$$',1)</script>
+[/JAVASCRIPT]
+   <a id="movielink_$$IDX$$" href="$$URL$$">$$TITLE_FIELD$$</a> | <a class="topl" href="#top">($$TOP$$)</a>   
+   <span class="borrowed$$borrower_FLAG$$">$$borrower_YESNO$$$$borrower_OREMPTY$$</span>
+  </dt>
+  <dd>
+   <div id="movie$$IDX$$" style="display:none;">
+    <img src="$$boxpic$$" alt="$$name$$" title= "$$name$$" height="$$HEIGHT_PIC$$" />     
+     <table>
+     <tr class="tr1"><th>$$playingtime_LABEL$$</th><td>$$playingtime$$</td></tr>
+     <tr class="tr2"><th>$$mechanics_LABEL$$</th><td>$$mechanics$$</td></tr>
+     <tr class="tr1"><th>$$suggestedage_LABEL$$</th><td>$$suggestedage$$</td></tr>
+	<tr class="tr2"><th>$$players_LABEL$$</th><td>$$players$$</td></tr>
+     <tr class="tr1"><th>$$publishedby_LABEL$$</th><td>$$publishedby$$</td></tr>
+     <tr class="tr2"><th>$$designedby_LABEL$$</th><td>$$designedby$$</td></tr>
+     <tr class="tr1"><th>$$illustratedby_LABEL$$</th><td>$$illustratedby$$</td></tr>
+     <tr class="tr2"><th>$$original_LABEL$$</th><td>$$original$$</td></tr>
+     <tr class="tr1"><th>$$expandedby_LABEL$$</th><td>$$expandedby$$</td></tr>
+     <tr class="tr2"><th>$$expansionfor_LABEL$$</th><td>$$expansionfor$$</td></tr>
+     <tr class="tr1"><th>$$released_LABEL$$</th><td>$$released$$</td></tr>
+    </table>
+    <p>$$description$$<br /><br /><em>$$comment$$</em></p>
+   </div>
+  </dd>
+[/ITEM]
+[FOOTER]
+ </dl>
+ <div id="note">$$GENERATOR_NOTE$$ - Modèle  Piwi - Adapté de Tian</div>
+</body>
+</html>
+[/FOOTER]
+[POST]
+
+  my %letters = ();
+  my $idx = 0; foreach (@items)
+  {
+    my $firstLetter = uc(substr($_->{name}, 0, 1));
+    $firstLetter =~ s/[^A-Z]/_/;
+    if (!$letters{$firstLetter})
+    {
+    	$body =~ s/<a id="movielink_$idx"/<a id="$firstLetter"/;
+        $letters{$firstLetter} = 1;
+    }
+    $idx++;
+  }
+
+  foreach (keys %letters)
+  {
+    $header =~ s/\| $_ \|/| <a class="letter" href="#$_">$_<\/a> |/;
+  }
+  $header =~ s/\| ([^<|]) /| <span class="letter">$1<\/span> /g;
+  #$header =~ s/\| ([^<]) \|/| <span class="letter">$1<\/span> |/g;
+[/POST]

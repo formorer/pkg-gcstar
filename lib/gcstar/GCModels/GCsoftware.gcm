@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.gcstar.org/schemas/gcm-revision4.xsd"
+name="GCsoftware">
+	<lang>GCsoftware</lang>
+
+	<options>
+
+		<defaults>
+			<image>no.png</image>
+			<listImageWidth>160</listImageWidth>
+			<listImageHeight>160</listImageHeight>			
+		</defaults>
+
+		<fields>
+			<id>id</id>
+			<title>name</title>
+			<cover>boxpic</cover>
+			<url>web</url>
+			<play>executable</play>
+			<search>
+				<field>ean</field>
+				<field>name</field>
+			</search>
+			<results>
+				<field>name</field>
+				<field>platform</field>
+				<field>category</field>
+				<field>released</field>
+			</results>
+		</fields>
+
+		<overlay>
+            <image>dvd.png</image>
+			<paddingLeft>12</paddingLeft>
+			<paddingRight>16</paddingRight>
+			<paddingTop>16</paddingTop>
+			<paddingBottom>2</paddingBottom>
+		</overlay>
+
+		<values id="favouriteYesno">
+			<value displayed="">0</value>
+			<value displayed="PanelFavourite">1</value>
+		</values>
+		<values id="licenses">
+			<value displayed=""></value>
+			<value displayed="Commercial">Commercial</value>
+			<value displayed="Shareware">Shareware</value>
+			<value displayed="Freeware">Freeware</value>
+			<value displayed="FreewareNoncommercial">Freeware (non-commercial use)</value>			
+			<value displayed="Adware">Adware</value>
+			<value displayed="GNU GPL">GNU GPL</value>
+			<value displayed="MPL">MPL</value>
+			<value displayed="BSD">BSD</value>
+			<value displayed="OtherOpenSource">Other Open Source</value>
+			<value displayed="PublicDomain">Public Domain</value>
+			<value displayed="OtherLicense">Other</value>
+		</values>		
+		<values id="">
+			<value displayed=""></value>
+		</values>
+	</options>
+
+	
+	<groups>
+		<group id="info" label="General"/>
+		<group id="details" label="Details"/>
+	</groups>
+
+	<random>
+	</random>
+	
+	<fields lending="true" tags="true">
+		<field value="id"
+				type="number"
+				label="Id"
+				init=""
+				group="info"
+				imported="false"/>
+		<field value="ean"
+				type="number"
+				label="Ean"
+				tip="Ean"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="name"
+				type="short text"
+				label="Name"
+				init="NewItem"
+				group="info"
+				imported="true"/>
+		<field value="boxpic"
+				type="image"
+				label="Box"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="backpic"
+				type="image"
+				label="ContextImgBack"
+				init=""
+				group="info"
+				linkedto="boxpic"
+				imported="true"/>
+		<field value="platform"
+				type="history text"
+				label="Platform"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="editor"
+				type="history text"
+				label="Editor"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="developer"
+				type="history text"
+				label="Developer"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="released"
+				type="date"
+				label="Released"
+				init=""
+				group="info"
+				imported="true"
+				sorttype="date"/>
+		<field value="license"
+				type="options"
+				label="License"
+				init=""
+				values="licenses"
+				separator="2"
+				group="info"
+				imported="true"/>				
+		<field value="homepage"
+				type="file"
+				format="url"				
+				label="Homepage"
+				init=""
+				group="info"
+				imported="true"/>				
+		<field value="description"
+				type="long text"
+				label="Description"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="web"
+				type="button"
+				format="url"
+				label="Url"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="numberOfCopies"
+				type="number"
+				label="NumberOfCopies"
+				init="1"
+				min="0"
+				max="99999"
+				group="info"
+				imported="true"/>	
+		<field value="price"
+				type="number"
+				label="Price"
+				init=""
+				group="info"
+				imported="true"/>					
+		<field value="category"
+				type="single list"
+				label="Category"
+				init=""
+				group="info"
+				imported="true"/>
+		<field value="rating"
+				type="number"
+				displayas="graphical"
+				label="PanelRating"
+				init="0"
+				max="10"
+				group="details"
+				imported="false"/>
+		<field value="ratingpress"
+				type="number"
+				displayas="graphical"
+				label="PanelPressRating"
+				init="0"
+				min="0"
+				max="10"
+				group="info"
+				imported="true"/>				
+		<field value="case"
+				type="yesno"
+				label="Case"
+				init="1"
+				group="details"
+				imported="false"/>
+		<field value="manual"
+				type="yesno"
+				label="Manual"
+				init="1"
+				group="details"
+				imported="false"/>
+		<field value="added"
+				type="date"
+				label="PanelAdded"
+				init="current"
+				group="details"
+				imported="false"/>
+		<field value="location"
+				type="history text"
+				label="PanelLocation"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="executable"
+				type="file"
+				format="program"
+				label="Executable"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="screenshot1"
+				type="image"
+				label="Screenshot1"
+				init=""
+				default="view"
+				group="details"
+				imported="true"/>
+		<field value="screenshot2"
+				type="image"
+				label="Screenshot2"
+				init=""
+				default="view"
+				group="details"
+				imported="true"/>
+		<field value="comments"
+				type="long text"
+				label="Comments"
+				init=""
+				group="details"
+				imported="false"/>
+		<field value="regInfo"
+				type="triple list"
+				label="RegInfo"
+				label1="RegistrationName"
+				label2="RegistrationNumber"
+				label3="RegistrationComments"
+				init=""
+				group="details"
+				history="false"				
+				imported="true"/>			
+	</fields>
+
+	
+	<filters>
+		<group label="General">
+			<filter field="name" comparison="contain"/>
+			<filter field="platform" comparison="eq" quick="true"/>
+			<filter field="category" comparison="contain" quick="true"/>
+		</group>
+		<group label="Details">
+			<filter field="rating" comparison="ge" numeric="true" labelselect="FilterRatingSelect" quick="true"/>
+		</group>
+	</filters>
+
+
+	<panels>
+		<panel name="form" label="PanelForm" editable="true">
+			<item type="line">
+				<item type="value" for="ean" width="10" tip="" nomargin="true" />
+				<item type="value" for="name" expand="true" nomargin="true" />
+			</item>
+			<item type="notebook" expand="true">
+				<item type="tab" value="info" title="General">
+					<item type="line">
+						<item type="box">
+							<item type="value" for="boxpic" width="200" height="200"/>
+						</item>
+						<item type="table" title="Information" rows="9" cols="2">
+							<item type="label" for="platform" row="0" col="0"/>
+							<item type="value" for="platform" row="0" col="1" expand="true"/>
+							<item type="label" for="editor" row="1" col="0"/>
+							<item type="value" for="editor" row="1" col="1" />
+							<item type="label" for="developer" row="2" col="0"/>
+							<item type="value" for="developer" row="2" col="1" />
+							<item type="label" for="license" row="3" col="0"/>
+							<item type="value" for="license" row="3" col="1" expand="true"/>
+							<item type="label" for="released" row="4" col="0"/>
+							<item type="value" for="released" row="4" col="1" expand="true"/>
+							<item type="label" for="numberOfCopies" row="5" col="0"/>
+							<item type="value" for="numberOfCopies" row="5" col="1" />
+							<item type="label" for="price" row="6" col="0"/>
+							<item type="value" for="price" row="6" col="1" />															
+							<item type="label" for="homepage" row="7" col="0"/>
+							<item type="line" row="7" col="1">
+							    <item type="value" for="homepage" expand="true" nomargin="true"/>
+							    <item type="launcher" for="homepage" nomargin="true"/>							
+						    </item>
+							<item type="expander" title="Category" collapsed="%category%" row="8" col="0" colspan="2">
+								<item type="value" for="category"/>
+							</item>
+						</item>
+					</item>
+					<item type="box" expand="true">
+						<item type="label" for="description"/>
+						<item type="value" for="description" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="details" title="Details">
+					<item type="table" rows="5" cols="4">						
+			            <item type="line" row="0" col="0" colspan="2">
+    			            <item type="value" for="case" />
+				            <item type="value" for="manual" />
+			            </item>		
+						<item type="label" for="added" row="1" col="0"/>
+						<item type="value" for="added" row="1" col="1" expand="true" />
+						<item type="label" for="location" row="1" col="2"/>
+						<item type="value" for="location" row="1" col="3" expand="true" />				            			
+						<item type="label" for="rating" row="2" col="0"/>
+						<item type="value" for="rating" row="2" col="1"/>
+						<item type="label" for="ratingpress" row="2" col="2"/>
+						<item type="value" for="ratingpress" row="2" col="3"/>
+						<item type="label" for="executable" row="3" col="0"/>
+			            <item type="line" row="3" col="1" colspan="3">						
+    						<item type="value" for="executable" expand="true"/>
+						    <item type="launcher" for="executable" nomargin="true"/>    						
+					    </item>
+
+					</item>
+					<item type="table" rows="4" cols="2" expand="true">
+						<item type="label" label="Screenshots" row="0" col="0" colspan="2"/>
+						<item type="value" for="screenshot1" row="1" col="0" width="200" height="150"/>
+						<item type="value" for="screenshot2" row="1" col="1" width="200" height="150"/>
+						<item type="label" for="comments" row="2" col="0" colspan="2"/>
+						<item type="value" for="comments" row="3" col="0" colspan="2" expand="true"/>
+					</item>
+				</item>
+				<item type="tab" value="registration" title="RegistrationInfo">
+					<item type="box" nomargin="true">
+						<item type="label" for="regInfo"/>
+						<item type="value" for="regInfo" expand="true"/>						
+					</item>
+				</item>
+				<item type="tab" value="lending" title="PanelLending">
+					<item type="table" rows="3" cols="3">
+						<item type="label" for="borrower" row="0" col="0"/>
+						<item type="value" for="borrower" row="0" col="1"/>
+						<item type="special" for="mailButton" row="0" col="2"/>
+						<item type="label" for="lendDate" row="1" col="0"/>
+						<item type="value" for="lendDate" row="1" col="1"/>
+						<item type="special" for="itemBackButton" row="1" col="2"/>
+					</item>
+					<item type="label" for="borrowings" align="left"/>
+					<item type="line" expand="true">
+						<item type="box" width="64"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="64"/>
+					</item>
+				</item>
+				<item type="tab" value="tagpanel" title="PanelTags">
+					<item type="line">
+						<item type="value" for="favourite" />
+					</item>
+					<item expand="true" for="tags" type="value" />
+				</item>
+			</item>
+			<item type="line" homogeneous="true">
+				<item type="value" for="web" expand="true"/>
+				<item type="special" for="deleteButton" expand="true"/>
+			</item>
+		</panel>
+		
+		<panel name="readonly" label="PanelReadOnly" editable="false">
+			<item type="table" rows="2" cols="3">
+				<item type="value" for="name" style="header" row="0" col="0" colspan="3" expand="true"/>
+				<item type="box" row="1" col="0" width="150" expand="false" style="page"/>
+				<item type="value" for="platform" style="subheader" row="1" col="1" expand="true"/>
+				<item type="box" row="1" col="2" width="150" expand="false" style="box">
+					<item type="formatted" name="fullrating" value="%rating%/10" style="box" nomargin="true"/>						
+					<item type="value" for="editor" style="box" nomargin="true"/>
+					<item type="value" for="homepage" style="box" nomargin="true"/>
+				</item>
+			</item>
+			<item type="line">
+				<item type="box" width="150" style="page">
+					<item type="value" for="boxpic" width="140"/>
+				</item>
+				<item type="box" expand="true">
+					<item type="table" rows="7" cols="2" expand="true">
+						<item type="label" for="category" row="0" col="0"/>
+						<item type="value" for="category" flat="true" row="0" col="1" expand="true"/>
+						<item type="label" for="developer" row="1" col="0"/>
+						<item type="value" for="developer" row="1" col="1" expand="true"/>
+						<item type="label" for="released" row="2" col="0"/>
+						<item type="value" for="released" row="2" col="1" expand="true"/>
+						<item type="label" for="license" row="3" col="0"/>
+						<item type="value" for="license" row="3" col="1" expand="true"/>						
+						<item type="label" for="numberOfCopies" row="4" col="0"/>
+						<item type="value" for="numberOfCopies" row="4" col="1" expand="true"/>
+						<item type="label" for="price" row="5" col="0"/>
+						<item type="value" for="price" row="5" col="1" expand="true"/>							
+						<item type="label" for="location" row="6" col="0"/>
+						<item type="value" for="location" row="6" col="1" expand="true"/>
+					</item>
+				</item>
+			</item>		
+			<item type="value" for="description" height="6em"/>			
+			<item type="expander" title="PanelLending">
+				<item type="table" rows="4" cols="2" expand="true">
+					<item type="label" for="borrower" row="0" col="0"/>
+					<item type="value" for="borrower" row="0" col="1" expand="true"/>
+					<item type="label" for="lendDate" row="1" col="0"/>
+					<item type="value" for="lendDate" row="1" col="1" expand="true"/>
+					<item type="line" row="2" col="0" colspan="2" height="12" expand="true"/>
+					<item type="line"  row="3" col="0" colspan="2" expand="true">
+						<item type="box" width="50" style="page"/>
+						<item type="value" for="borrowings" expand="true"/>
+						<item type="box" width="50" style="page"/>
+					</item>
+				</item>
+			</item>
+			<item type="expander" title="PanelTags">
+				<item expand="true" for="tags" type="value" />
+				<item type="value" for="favourite" values="favouriteYesno" collapse="true"/>
+			</item>
+			<item type="table" rows="1" cols="2" expand="true">
+				<item type="value" for="screenshot1" row="0" col="0" width="200" height="150" expand="true"/>
+				<item type="value" for="screenshot2" row="0" col="1" width="200" height="150" expand="true"/>
+			</item>			
+		</panel>
+	</panels>
+
+</collection>
