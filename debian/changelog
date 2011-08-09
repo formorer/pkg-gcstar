@@ -1,3 +1,12 @@
+gcstar (1.6.2-1) unstable; urgency=low
+
+  * [0a00985] Imported Upstream version 1.6.2
+    (Closes: #636168)
+    - Fix imdb plugin (Closes: #630729) 
+  * [2968bd2] Add missing build-targets to rules file
+
+ -- Alexander Wirt <formorer@debian.org>  Tue, 09 Aug 2011 08:44:08 +0200
+
 gcstar (1.6.1-1) unstable; urgency=low
 
   * [9c36c7f] Unset verbose in rules file
