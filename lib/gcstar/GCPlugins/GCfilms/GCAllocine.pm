@@ -383,7 +383,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
                 {
                     my $rating = $1;
                     $rating =~ s/,/\./g;
-                    $self->{curInfo}->{ratingpress} = ($rating / 4) * 10;
+                    $self->{curInfo}->{ratingpress} = $rating * 2;
                 }
             }
             elsif ($self->{insideActor} == 1)

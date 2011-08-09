@@ -2,7 +2,7 @@ package GCPlugins::GCbooks::GCAmazon;
 
 ###################################################
 #
-#  Copyright 2005-2010 Christian Jodar
+#  Copyright 2005-2009 Tian
 #
 #  This file is part of GCstar.
 #
@@ -23,249 +23,191 @@ package GCPlugins::GCbooks::GCAmazon;
 ###################################################
 
 use strict;
+use utf8;
 
-use GCPlugins::GCbooks::GCbooksAmazonCommon;
+use GCPlugins::GCbooks::GCbooksCommon;
 
 {
     package GCPlugins::GCbooks::GCPluginAmazon;
+    
+    use base qw(GCPlugins::GCbooks::GCbooksPluginsBase);
+    use XML::Simple;
+    use LWP::Simple qw($ua);
+    use Encode;
+    use HTML::Entities;
+    use GCUtils;
 
-    use base qw(GCPlugins::GCbooks::GCbooksAmazonPluginsBase);
-
-    sub start
+    sub parse
     {
-        my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
-	
-        $self->{inside}->{$tagname}++;
-
-        if ($self->{parsingEnded})
-        {
-            if ($self->{itemIdx} < 0)
-            {
-                if ($self->{loadedUrl} !~ m|^http://s1\.amazon|)
-                {
-                    $self->{itemIdx} = 0;
-                    $self->{itemsList}[0]->{url} = $self->{loadedUrl};
-                }
-                else
-                {
-                    if (($tagname eq 'a') && ($attr->{href} =~ m|exec/obidos/ASIN| ))
-                    {
-                        $self->{itemIdx} = 0;
-                        $self->{itemsList}[0]->{url} = $attr->{href};
-                    }
-                }
-            }
-            return;
-        }
+        my ($self, $page) = @_;
+        return if $page =~ /^<!DOCTYPE html/;
+        my $xml;
+        my $xs = XML::Simple->new;
 
         if ($self->{parsingList})
         {
-            $self->{otherEditions} = 1 if ($tagname eq 'div') && ($attr->{class} eq 'otherEditions');
-            return if $self->{otherEditions};
-            if ($tagname eq 'input')
+            $xml = $xs->XMLin($page, ForceArray => ['Item','Author'], KeyAttr => []);
+            my $book;
+            foreach $book ( @{ $xml -> {'Items'} -> {'Item'} })
             {
-                $self->{beginParsing} = 1
-                    if $attr->{src} =~ /go-button-search/;
-            }
-            elsif ($tagname eq 'select')
-            {
-                $self->{parsingEnded} = 1
-                    if $attr->{name} eq 'quantity';
-            }
-            return if ! $self->{beginParsing};
-
-            if ($tagname eq 'srtitle')
-            {
-                $self->{isTitle} = 1;
-            }
-            elsif ($tagname eq 'format')
-            {
-                $self->{isFormat} = 1 ;
-            }
-            elsif ($tagname eq 'publication')
-            {
-                $self->{isPublication} = 1;
-            }
-            if ($tagname eq 'a')
-            {
-                my $urlId;
-                if ($urlId = $self->isItemUrl($attr->{href}))
+                $self->{itemIdx}++;
+                my $url = $self->baseAWSUrl."&Operation=ItemLookup&ResponseGroup=Large,EditorialReview&ItemId=".$book->{ASIN};
+                
+                $self->{itemsList}[$self->{itemIdx}]->{url} = $url;
+                $self->{itemsList}[$self->{itemIdx}]->{title} = $book->{ItemAttributes}->{'Title'};
+                for my $author (@{$book->{ItemAttributes}->{'Author'}})
                 {
-                    $self->{isTitle} = 2 if $self->{isTitle} eq '1';
-                    return if $self->{alreadyRetrieved}->{$urlId};
-                    $self->{alreadyRetrieved}->{$urlId} = 1;
-                    $self->{currentRetrieved} = $urlId;
-                    my $url = $attr->{href}; 
-                    $self->{itemIdx}++;
-                    $self->{itemsList}[$self->{itemIdx}]->{url} = $url;
+                    $self->{itemsList}[$self->{itemIdx}]->{authors} .= ", "
+                        if $self->{itemsList}[$self->{itemIdx}]->{authors};
+                    $self->{itemsList}[$self->{itemIdx}]->{authors} .= $author;
                 }
+                $self->{itemsList}[$self->{itemIdx}]->{publication} = $book->{ItemAttributes}->{'PublicationDate'};
+                $self->{itemsList}[$self->{itemIdx}]->{format} = $book->{ItemAttributes}->{'Binding'};
+                $self->{itemsList}[$self->{itemIdx}]->{edition} = $book->{ItemAttributes}->{'Edition'};
             }
         }
         else
         {
-            if (($tagname eq "img") && (!$self->{curInfo}->{cover}))
+            $xml = $xs->XMLin($page, ForceArray => ['Author','EditorialReview','Language'], KeyAttr => []);   
+            $self->{curInfo}->{title} = $xml->{Items}->{Item}->{ItemAttributes}->{Title};
+            for my $author (@{$xml->{Items}->{Item}->{ItemAttributes}->{Author}})
             {
-                $self->{curInfo}->{cover} = $self->extractImage($attr);
-            }
-            elsif (($tagname eq 'div') && ($attr->{class} eq 'content'))
-            {
-                $self->{insideContent} = 1;
-            }
-        }
-    }
-
-    sub end
-    {
-        my ($self, $tagname) = @_;
-        $self->{inside}->{$tagname}--;
-
-        $self->{insideContent} = $self->{otherEditions} = 0 if $tagname eq 'div';
-        $self->{isAuthor} = $self->{nextIsAuthor} eq 1 if $tagname eq 'a';   
-    }
-
-    sub text
-    {
-        my ($self, $origtext) = @_;
-
-        return if GCPlugins::GCstar::GCPluginAmazonCommon::text(@_);
-        return if ($self->{parsingEnded});
-
-        if ($self->{parsingList})
-        {
-            if (
-                   ($self->{inside}->{title})
-                && (
-                       !(
-                            ($origtext !~ /Amazon.com.? Books Search Results/)
-                         || ($origtext !~ /Amazon.com:/)
-                        )
-                     || ($origtext =~ /Books:/)
-                     || ($origtext =~ /Sell your item/)
-                    )
-                        
-               )
-            
-            {
-                $self->{parsingEnded} = 1;
+                push @{$self->{curInfo}->{authors}}, [$author];
             }
             
-            return if ! $self->{beginParsing};
+            my $htmlDescription;
+            if ($xml->{Items}->{Item}->{EditorialReviews}->{EditorialReview}[0]->{Content})
+            {
+                $htmlDescription = $xml->{Items}->{Item}->{EditorialReviews}->{EditorialReview}[0]->{Content};
+            }
+            else
+            {
+                # Unfortunately the api doesn't always return the product description, which is due to
+                # copyright concerns or something. In this case, grab the product html and parse it for
+                # the description.
+                my $response = $ua->get($xml->{Items}->{Item}->{DetailPageURL});
+                my $result;
+                eval {
+                    $result = $response->decoded_content;
+                };
+                
+                # Replace some bad characters. TODO - will probably need to extend this for de/jp plugins
+                $result =~ s|\x{92}|'|gi;
+                $result =~ s|&#146;|'|gi;
+                $result =~ s|&#149;|*|gi;
+                $result =~ s|&#156;|oe|gi;
+                $result =~ s|&#133;|...|gi;
+                $result =~ s|\x{85}|...|gi;
+                $result =~ s|\x{8C}|OE|gi;
+                $result =~ s|\x{9C}|oe|gi;
+                $result =~ s|&#252;|ü|g;
+                $result =~ s|&#223;|ß|g;
+                $result =~ s|&#246;|ö|g;
+                $result =~ s|&#220;|Ü|g;
+                $result =~ s|&#228;|ä|g;  
+		        $result =~ s/&#132;/&#187;/gm;
+		        $result =~ s/&#147;/&#171;/gm;                              
+                
+                # Chop out the product description
+                $result =~ /<div class="productDescriptionWrapper">(.*?)<(\/)*?div/s;
+                $htmlDescription = $1;
+                
+                # Decode
+                decode_entities($htmlDescription);
+                $htmlDescription = decode('ISO-8859-1', $htmlDescription);
+            }
+            
+            # Replace some html with line breaks, strip out the rest
+            $htmlDescription =~ s/<br>/\n/ig;
+            $htmlDescription =~ s/<p>/\n\n/ig;
+            $htmlDescription =~ s/<(.*?)>//gi;            
+            $htmlDescription =~ s/^\s*//;
+            $htmlDescription =~ s/\s*$//;         
+            $htmlDescription =~ s/ {1,}/ /g;   
+            $self->{curInfo}->{description} = $htmlDescription;
+            
+            $self->{curInfo}->{publisher} = $xml->{Items}->{Item}->{ItemAttributes}->{Publisher}
+                if (!ref($xml->{Items}->{Item}->{ItemAttributes}->{Publisher}));
+            $self->{curInfo}->{publication} = $xml->{Items}->{Item}->{ItemAttributes}->{PublicationDate}
+                if (!ref($xml->{Items}->{Item}->{ItemAttributes}->{PublicationDate}));
+            $self->{curInfo}->{language} = $xml->{Items}->{Item}->{ItemAttributes}->{Languages}->{Language}[0]->{Name}
+                if (ref($xml->{Items}->{Item}->{ItemAttributes}->{Languages}->{Language}));
+            $self->{curInfo}->{pages} = $xml->{Items}->{Item}->{ItemAttributes}->{NumberOfPages}
+                if (!ref($xml->{Items}->{Item}->{ItemAttributes}->{NumberOfPages}));
+            $self->{curInfo}->{isbn} = $xml->{Items}->{Item}->{ItemAttributes}->{EAN}
+                if (!ref($xml->{Items}->{Item}->{ItemAttributes}->{EAN}));
+            $self->{curInfo}->{format} = $xml->{Items}->{Item}->{ItemAttributes}->{Binding}
+                if (!ref($xml->{Items}->{Item}->{ItemAttributes}->{Binding}));
+            $self->{curInfo}->{edition} = $xml->{Items}->{Item}->{ItemAttributes}->{Edition}
+                if (!ref($xml->{Items}->{Item}->{ItemAttributes}->{Edition}));
+            $self->{curInfo}->{web} = $xml->{Items}->{Item}->{DetailPageURL};
 
-            if ($self->{isTitle})
+            # Genre handling via Amazon's browsenodes. Stupidly complicated way of doing things, IMO
+            # Loop through all the nodes:
+            for my $node (@{$xml->{Items}->{Item}->{BrowseNodes}->{BrowseNode}})
             {
-                $self->{itemsList}[$self->{itemIdx}]->{title} = $origtext;
-                $self->{isTitle} = 0;
-                $self->{nextIsAuthor} = 1;
-                return;
-            }
-            elsif ($self->{isAuthor})
-            {
-                $origtext =~ s/^\s*//;
-                $origtext =~ s/\s*$//;    
-                $origtext =~ s/by //;
-                $self->{itemsList}[$self->{itemIdx}]->{authors} = $origtext
-                    if ! $self->{itemsList}[$self->{itemIdx}]->{authors};
-                $self->{nextIsAuthor} = 0;
-                $self->{isAuthor} = 0;
-            }
-            elsif ($self->{isPublication})
-            {
-                $self->{itemsList}[$self->{itemIdx}]->{publication} = $origtext;
-                $self->{isPublication} = 0;
-            }
-            elsif ($self->{isFormat})
-            {
-                $self->{itemsList}[$self->{itemIdx}]->{format} = $origtext;
-                $self->{isFormat} = 0;
-            }
-        }
-       	else
-        {
-            $origtext =~ s/^\s*//;
-            $origtext =~ s/\s*$//;
-            if ($self->{inside}->{title})
-            {
-                $origtext =~ m/Amazon.com\s*:\s*(.*?):\s*([^:]*)(:\s*Books)?\s*$/;
-                $self->{curInfo}->{title} = $1;
-                $self->{curInfo}->{authors} = $2;
-            }
-            elsif ($self->{insideDesc})
-            {
-                $self->{curInfo}->{description} = $origtext;
-                $self->{insideDesc} = 0;
-            }
-            elsif ($self->{insidePublisher})
-            {
-                $origtext =~ /^\s*(.*?)\(([^(]*?)\)$/;
-                $self->{curInfo}->{publication} = $2;
-                my @array = split /;\s*/, $1;
-                $self->{curInfo}->{publisher} = $array[0];
-                $self->{curInfo}->{edition} = $array[1];
-                $self->{insidePublisher} = 0;
-                $self->{curInfo}->{publication} =~ s|([A-Za-z]*) ([0-9]*), ([0-9]*)|$2.'/'.$self->{monthNumber}->{$1}.'/'.$3|e;
-            }
-            elsif ($self->{insideLanguage})
-            {
-                $self->{curInfo}->{language} = $origtext;
-                $self->{insideLanguage} = 0;
-            }
-            elsif ($self->{insideIsbn10})
-            {
-                $self->{curInfo}->{isbn} = $origtext unless $self->{haveIsbn13};
-                $self->{insideIsbn10} = 0;
-            }
-            elsif ($self->{insideIsbn13})
-            {
-                $self->{curInfo}->{isbn} = $origtext;
-                $self->{insideIsbn13} = 0;
-                $self->{haveIsbn13} = 1;
-            }
-            elsif ($self->{insidePages})
-            {
-                $self->{curInfo}->{pages} = $origtext;
-                $self->{insidePages} = 0;
-            }
-            elsif ($self->{insideSeries})
-            {
-                $self->{curInfo}->{serie} = $origtext;
-                $self->{insideSeries} = 0;
-            }
-            elsif ($origtext eq "in")
-            {
-                $self->{insideSeries} = 1;
-            }            
-            elsif ($origtext eq 'Product Details')
-            {
-                $self->{insideDetails} = 1;
-            }
-            elsif (($origtext eq ">") && !($self->{curInfo}->{genre}))
-            {
-                $self->{insideGenre} = 1;
-            }
-            elsif ($self->{insideGenre} eq 1)
-            {
-                $self->{curInfo}->{genre} = $origtext;
-                $self->{insideGenre} = 0;
-            }
-            elsif ($self->{inside}->{b})
-            {
-                $self->{insideDesc} = 1 if ($origtext eq 'Book Description' 
-                                        || $origtext =~ /^Amazon.com(?! (Sales|Delivers|Home))/)
-                                        && ($self->{insideContent});
-                $self->{insidePublisher} = 1 if $origtext =~ /Publisher:/;
-				$self->{insideLanguage} = 1 if $origtext =~ /Language:/;
-                $self->{insideIsbn10} = 1 if $origtext =~ /ISBN(-10)?:/;
-                $self->{insideIsbn13} = 1 if $origtext =~ /ISBN-13:/;
-				if ($self->{insideDetails})
+                my $genre = '';
+                my $ancestor = $node;
+                
+                # Push the lowest node to the temporary genre list
+                my @genre_list = ($node->{Name});
+                
+                # Start stepping down through the current node to find it's children
+                while ($ancestor->{Ancestors}->{BrowseNode})
                 {
-                    $origtext =~ s/:$//;
-                    $self->{curInfo}->{format} = $origtext;
-                    $self->{insidePages} = 1;
-                    $self->{insideDetails} = 0;
+                    $ancestor = $ancestor->{Ancestors}->{BrowseNode};
+                    if (($ancestor->{Name} eq 'Specialty Stores') ||
+                        ($ancestor->{Name} eq 'Refinements') || 
+                        ($ancestor->{Name} eq 'Self Service') || 
+                        ($ancestor->{Name} eq 'Specialty Boutique'))
+                    {
+                        # Some categories we definetly want to ignore, since they are full of rubbish tags
+                        $genre = 'ignore';
+                        last;
+                    }
+                    elsif ($ancestor->{Name} =~ m/A\-Z/) 
+                    {
+                        # Clear out the current genres from the node, will be full of rubbish like "Authors A-K"
+                        # Keep looping afterwards though, since there could be valid tags below the author
+                        # specific ones
+                        undef(@genre_list);
+                    }
+                    elsif ($ancestor->{Name} eq 'Subjects')
+                    {
+                        # Don't go deeper than a Subjects node
+                        last;
+                    }
+                    else
+                    {
+                        # Add the current node to the temporary list, if it's not already included in either list
+                        push @genre_list, $ancestor->{Name}
+                            if ((!GCUtils::inArrayTest($ancestor->{Name}, @genre_list)) && 
+                                (!GCUtils::inArrayTest($ancestor->{Name}, @{$self->{curInfo}->{genre}})));
+                    }
                 }
-            }        
+                
+                if ($genre ne 'ignore')
+                {               
+                    # Add temporary list to item info
+                    push @{$self->{curInfo}->{genre}}, [$_] foreach @genre_list;
+                }
+            }   
+            
+            # Let's sort the list for good measure
+            @{$self->{curInfo}->{genre}} = sort @{$self->{curInfo}->{genre}};
+            
+
+            # Fetch either the big original pic, or just the small thumbnail pic
+            if ($self->{bigPics})
+            {
+                $self->{curInfo}->{cover} = $xml->{Items}->{Item}->{LargeImage}->{URL};
+            }
+            else
+            {
+                $self->{curInfo}->{cover} = $xml->{Items}->{Item}->{SmallImage}->{URL};
+            }
         }
-    } 
+    }
 
     sub new
     {
@@ -274,74 +216,84 @@ use GCPlugins::GCbooks::GCbooksAmazonCommon;
         my $self  = $class->SUPER::new();
         bless ($self, $class);
 
-        $self->{monthNumber} = {
-            January => '01',
-            February => '02',
-            March => '03',
-            April => '04',
-            May => '05',
-            June => '06',
-            July => '07',
-            August => '08',
-            September => '09',
-            October => '10',
-            November => '11',
-            December => '12'
-        };
-
         $self->{hasField} = {
             title => 1,
             authors => 1,
             publication => 1,
             format => 1,
-            edition => 0,
+            edition => 1,
         };
 
-        $self->{isBook} = 0;
-        $self->{curName} = undef;
-        $self->{curUrl} = undef;
-
-        $self->{suffix} = 'com';
-
         return $self;
+    }
+    
+    sub getItemUrl
+    {
+        my ($self, $url) = @_;
+        if (!$url)
+        {
+            # If we're not passed a url, return a hint so that gcstar knows what type
+            # of addresses this plugin handles
+            $url = "http://".$self->baseWWWamazonUrl();
+        }
+        elsif ($url !~ m/sowacs.appspot.com/)
+        {        
+            # Convert amazon url to aws url
+            $url =~ /\/dp\/(\w*)[\/|%3F]/;
+            my $asinid = $1;
+            $url = $self->baseAWSUrl."&Operation=ItemLookup&ResponseGroup=Large,EditorialReview&ItemId=".$asinid;
+        }
+        return $url;
     }
 
     sub preProcess
     {
         my ($self, $html) = @_;
 
-        $html = $self->SUPER::preProcess($html);
-        $html =~ s/&nbsp;/ /gi;
-        $html =~ s/&#146;/'/gm;
-        $self->{parsingEnded} = 0;
-        if ($self->{parsingList})
-        {
-            $self->{otherEditions} = 0;
-            $html =~ s|<span class="binding">(.*?)</span> - (.*?[0-9]{4})\)</span>|<format>$1</format><publication>$2</publication>|gsm;
-            $self->{parsingEnded} = 1
-                if $html !~ /<title>/;
-        }
-        else
-        {
-            $html =~ s/(<i>|<\/i>)//gim;
-            $html =~ s/<p>/\n/gim;
-            $html =~ s|</p>|\n|gim;
-            $html =~ s/(<ul>|<\/ul>)/\n/gim;
-            $html =~ s/<li>([^<])/- $1/gim;
-            $html =~ s|([^>])</li>|$1\n|gim;
-            $html =~ s|<br ?/?>|\n|gi;
-            $self->{insideDesc} = 0;
-            $self->{insidePublisher} = 0;
-            $self->{insideLanguage} = 0;
-            $self->{insideSerie} = 0;
-            $self->{insidePages} = 0;
-            $self->{insideIsbn10} = 0;
-            $self->{insideIsbn13} = 0;
-        }
-        
-        $self->{alreadyRetrieved} = {};
-        $self->{beginParsing} = 0;
         return $html;
+    }
+    
+    sub decodeEntitiesWanted
+    {
+        return 0;
+    }
+
+    sub getSearchUrl
+    {
+		my ($self, $word) = @_;		
+        use Switch;
+
+        my $key;
+        switch ($self->{searchField}) {        
+            case "authors" { $key = 'Author'; }
+            case "title" { $key = 'Title'; }
+            case "isbn" { $key = 'Keywords';
+                          $word =~ s/\D//g; }
+        }                        
+		return $self->baseAWSUrl."&Operation=ItemSearch&$key=$word&SearchIndex=Books&ResponseGroup=Medium";
+    }
+    
+    sub baseAWSUrl
+    {	
+        my $self = shift;
+		return "http://sowacs.appspot.com/AWS/%5Bamazon\@gcstar.org%5D".$self->baseAmazonUrl()."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=AKIAJJ5TJWI62A5OOTQQ";
+    }
+    
+    sub baseAmazonUrl
+    {
+		return "ecs.amazonaws.com";    
+    }
+    
+    sub baseWWWamazonUrl
+    {   
+		return "www.amazon.com";    
+    }    
+    
+    sub changeUrl
+    {
+        my ($self, $url) = @_;
+        # Make sure the url is for the api, not the main movie page
+        return $self->getItemUrl($url);
     }
 
     sub getName
@@ -349,10 +301,53 @@ use GCPlugins::GCbooks::GCbooksAmazonCommon;
         return "Amazon (US)";
     }
     
+    sub getAuthor
+    {
+        return 'Zombiepig';
+    }
+    
     sub getLang
     {
         return 'EN';
     }
+
+    sub getCharset
+    {
+        my $self = shift;
+    
+        return "UTF-8";
+    }
+    
+    sub getSearchCharset
+    {
+        my $self = shift;
+        
+        # Need urls to be double character encoded
+        return "utf8";
+    }
+
+    sub convertCharset
+    {
+        my ($self, $value) = @_;
+        return $value;
+    }
+
+    sub getNotConverted
+    {
+        my $self = shift;
+        return [];
+    }
+
+    sub isPreferred
+    {
+        return 1;
+    }
+    
+    sub getSearchFieldsArray
+    {
+        return ['title', 'authors', 'isbn'];
+    }
+
 }
 
 1;

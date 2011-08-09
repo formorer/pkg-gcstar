@@ -108,7 +108,7 @@ name="GCfilms">
 				group="info"
 				imported="true"/>
 		<field value="country"
-				type="short text"
+				type="single list"
 				label="Country"
 				init=""
 				group="info"
@@ -324,19 +324,20 @@ name="GCfilms">
 					<item type="line">
 						<item type="value" for="image" width="130" height="170"/>
 						<item type="box" width="6"/>
-						<item type="table" rows="5" cols="2">
+						<item type="table" rows="4" cols="2">
 							<item type="label" for="date" row="0" col="0"/>
 							<item type="value" for="date" row="0" col="1"/>
 							<item type="label" for="director" row="1" col="0"/>
 							<item type="value" for="director" row="1" col="1"/>
 							<item type="label" for="time" row="2" col="0"/>
 							<item type="value" for="time" row="2" col="1"/>
-							<item type="label" for="country" row="3" col="0"/>
-							<item type="value" for="country" row="3" col="1"/>
-							<item type="label" for="age" row="4" col="0"/>
-							<item type="value" for="age" row="4" col="1"/>
+							<item type="label" for="age" row="3" col="0"/>
+							<item type="value" for="age" row="3" col="1"/>
 						</item>
 					</item>
+					<item type="expander" title="Country" collapsed="%country%">
+				        <item type="value" for="country"/>
+			        </item>
 					<item type="expander" title="Genre" collapsed="%genre%">
 						<item type="value" for="genre"/>
 					</item>

@@ -139,6 +139,16 @@ use utf8;
             {
                 $response = $ua->get($url);
             }
+            
+			#UnclePetros 03/07/2011:
+            #code to handle correctly 302 response messages
+            my $label1 = $response->code;
+            if($response->code == '302'){
+            	my $location = $response->header("location");
+            	$response = $ua->get($location);
+            	$self->{loadedUrl} = $location;
+            }
+            
             eval {
                 $result = $response->decoded_content;
             };
@@ -374,6 +384,13 @@ use utf8;
         # Most plugins only need to search once, so default to one pass
         return 1;
     }
+    
+    # Returns undef if it doesn't support search using barcode scanner
+    sub getEanField
+    {
+        return undef;
+    }
+    
 }
 
 1;

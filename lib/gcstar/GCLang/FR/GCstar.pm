@@ -121,7 +121,7 @@ le <b>bouton situé en dessous de sa fiche</b>.',
             'MenuExport' => '_Exporter',
             'MenuAddItem' => '_Ajouter {lowercaseI1}', # Accepts model codes
     
-        'MenuEdit'  => '_Edition',
+        'MenuEdit'  => '_Édition',
             'MenuDuplicate' => '_Dupliquer {lowercaseD1}', # Accepts model codes
             'MenuDuplicatePlural' => '_Dupliquer {lowercaseDX}', # Accepts model codes
             'MenuEditSelectAllItems' => 'Selectionner tous {lowercaseDX}', # Accepts model codes
@@ -146,14 +146,14 @@ le <b>bouton situé en dessous de sa fiche</b>.',
     
         'MenuBookmarks' => 'Mes _collections',
             'MenuBookmarksAdd' => '_Ajouter la collection courante',
-            'MenuBookmarksEdit' => '_Editer les collections sauvegardées',
+            'MenuBookmarksEdit' => '_Éditer les collections sauvegardées',
 
         'MenuHelp' => '_Aide',
             'MenuHelpContent' => '_Contenu',
             'MenuAllPlugins' => 'Voir les _modules',
-            'MenuBugReport' => 'Signaler un _dysfonctionnement',
-            'MenuAbout' => 'A _propos de GCstar',
-    
+            'MenuBugReport' => 'Signaler    un _dysfonctionnement',
+            'MenuAbout' => 'À _propos de GCstar',
+
         'MenuNewWindow' => 'Afficher {lowercaseD1} dans une nouvelle fenêtre', # Accepts model codes
         'MenuNewWindowPlural' => 'Afficher {lowercaseDX} dans une nouvelle fenêtre', # Accepts model codes
 
@@ -161,7 +161,7 @@ le <b>bouton situé en dessous de sa fiche</b>.',
         'ContextCollapseAll' => 'Tout réduire',
         'ContextChooseImage' => 'Changer l\'_image',
         'ContextOpenWith' => '_Envoyer à',
-        'ContextImageEditor' => 'Editeur d\'images',
+        'ContextImageEditor' => 'Éditeur d\'images',
         'ContextImgFront' => 'Recto',
         'ContextImgBack' => 'Verso',
         'ContextChooseFile' => 'Sélectionner un fichier',
@@ -210,10 +210,10 @@ le <b>bouton situé en dessous de sa fiche</b>.',
         'RandomNextTip'=> 'Proposition suivante',
         'RandomOkTip'=> 'Accepter cet élément',
         
-        'AboutTitle' => 'A propos de GCstar',
+        'AboutTitle' => 'À propos de GCstar',
         'AboutDesc' => 'Gestionnaire de collections personnelles',
         'AboutVersion' => 'Version',
-        'AboutTeam' => 'Equipe',
+        'AboutTeam' => 'Équipe',
         'AboutWho' => 'Christian Jodar (Tian) : Gestionnaire du projet, Programmeur
 Nyall Dawson (Zombiepig) : Programmeur
 TPF : Programmeur
@@ -404,7 +404,7 @@ Logo et webdesign par le Spektre',
         'ImagesOptionsFgTooltip'=> 'Changer la couleur de la sélection',
         'ImagesOptionsResizeImgList' => 'Changer dynamiquement le nombre de colonnes',
         'ImagesOptionsSizeLabel' => 'Taille',
-        'ImagesOptionsSizeList' => {0 => 'Minuscule', 1 => 'Petit', 2 => 'Moyen', 3 => 'Grand', 4 => 'Enorme'},
+        'ImagesOptionsSizeList' => {0 => 'Minuscule', 1 => 'Petit', 2 => 'Moyen', 3 => 'Grand', 4 => 'Énorme'},
         'ImagesOptionsSizeTooltip' => 'Sélectionnez la taille pour les images',
 
         'DetailedOptionsTitle' => 'Réglages pour la liste détaillée',
@@ -585,7 +585,7 @@ Ils peuvent être ajoutés dans l\'onglet Filtres des réglages de la collection
         'MultiSiteEmptyError' => 'Vous avez une liste de sites vide',
         'MultiSiteClear' => 'Vider la liste',
         
-        'DisplayOptionsTitle' => 'Eléments à afficher',
+        'DisplayOptionsTitle' => 'Éléments à afficher',
         'DisplayOptionsAll' => 'Tout sélectionner',
         'DisplayOptionsSearch' => 'Bouton recherche',
         

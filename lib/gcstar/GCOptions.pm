@@ -656,6 +656,8 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                   ($currentUseOverlays != $self->{options}->useOverlays)
                   ||
                   ($currentGroupBy ne $self->{model}->{preferences}->groupBy)
+                  ||
+                  ($currentSecondarySort ne $self->{model}->{preferences}->secondarySort)
                 )
              )
              ||
@@ -1429,6 +1431,7 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->{mlbg} = $self->{parent}->{mlbg};
         $self->{mlfg} = $self->{parent}->{mlfg};
         $self->{groupByOption}->setValue($self->{parent}->{groupBy});
+        $self->{secondarySortOption}->setValue($self->{parent}->{secondarySort});        
     }
     
     sub saveValues
@@ -1444,6 +1447,7 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->{parent}->{listBgPicture} = (($self->{listBgPicture}->get_active) ? 1 : 0);
         $self->{parent}->{useOverlays} = (($self->{useOverlays}->get_active) ? 1 : 0);
         $self->{parent}->{groupBy} =  $self->{groupByOption}->getValue;
+        $self->{parent}->{secondarySort} =  $self->{secondarySortOption}->getValue;        
     }
     
     sub show
@@ -1498,7 +1502,7 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                                        $parent->{lang}->{ImagesOptionsTitle},
                                       );
 
-        my $tableLayout = new Gtk2::Table(12,4);
+        my $tableLayout = new Gtk2::Table(13,4);
         $tableLayout->set_row_spacings($GCUtils::halfMargin);
         $tableLayout->set_col_spacings($GCUtils::margin);
         $tableLayout->set_border_width($GCUtils::margin);
@@ -1557,6 +1561,10 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->{groupItems} = new GCLabel($parent->{lang}->{DetailedOptionsGroupItems});
         $self->{groupByOption} = new GCFieldSelector(0, undef, 1);
         $self->{groupByOption}->setModel($parent->{parent}->{model});
+        
+        $self->{secondarySort} = new GCLabel($parent->{lang}->{DetailedOptionsSecondarySort});
+        $self->{secondarySortOption} = new GCFieldSelector(0, undef, 1);
+        $self->{secondarySortOption}->setModel($parent->{parent}->{model});
 
         my $imagesDisplayGroupLabel = new GCHeaderLabel($parent->{lang}->{OptionsImagesDisplayGroup});
         $tableLayout->attach($imagesDisplayGroupLabel, 0, 4, 0, 1, 'fill', 'fill', 0, 0);
@@ -1567,17 +1575,19 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $tableLayout->attach($self->{imgSizeOption}, 3, 4, 3, 4, 'fill', 'fill', 0, 0);
         $tableLayout->attach($self->{groupItems}, 2, 3, 4, 5, 'fill', 'fill', 0, 0);
         $tableLayout->attach($self->{groupByOption}, 3, 4, 4, 5, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{secondarySort}, 2, 3, 5, 6, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{secondarySortOption}, 3, 4, 5, 6, 'fill', 'fill', 0, 0);        
 
         my $imagesStyleGroupLabel = new GCHeaderLabel($parent->{lang}->{OptionsImagesStyleGroup});
-        $tableLayout->attach($imagesStyleGroupLabel, 0, 4, 6, 7, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{useOverlays}, 2, 4, 7, 8, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{listBgPicture}, 2, 4, 8, 9, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{labelStyle}, 2, 3, 9, 10, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{optionStyle}, 3, 4, 9, 10, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{labelBg}, 2, 3, 10, 11, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{buttonBg}, 3, 4, 10, 11, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{labelFg}, 2, 3, 11, 12, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{buttonFg}, 3, 4, 11, 12, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($imagesStyleGroupLabel, 0, 4, 7, 8, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{useOverlays}, 2, 4, 8, 9, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{listBgPicture}, 2, 4, 9, 10, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{labelStyle}, 2, 3, 10, 11, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{optionStyle}, 3, 4, 10, 11, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{labelBg}, 2, 3, 11, 12, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{buttonBg}, 3, 4, 11, 12, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{labelFg}, 2, 3, 12, 13, 'fill', 'fill', 0, 0);
+        $tableLayout->attach($self->{buttonFg}, 3, 4, 12, 13, 'fill', 'fill', 0, 0);
 
         $tableLayout->show_all;
 

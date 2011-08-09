@@ -98,7 +98,6 @@ use GCPlugins::GCPluginsBase;
     sub getSearchUrl
     {
         my ($self, $word) = @_;
-        #return 'file:///home/tian/Developpement/GCstar/gcstar/bin/tmp.movies.us.html';
         return "http://www.amazon.".$self->{suffix}."/gp/search/?redirect=true&search-alias=".$self->{searchType}."&keywords=$word";
     }
     

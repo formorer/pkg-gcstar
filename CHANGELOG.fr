@@ -1,3 +1,49 @@
+1.6.2
+
+	* Nouvelles fonctionnalités
+		- Nouvelle option pour trier les éléments en mode image
+	* Changements pour l'exportation, l'importation, la récupération Internet
+	  et l'extraction
+        - Les modules Amazon pour les livres utilisent le "Amazon Web Service"
+          pour les rendre plus fiables.
+		- Nouveau module pour importer en masse avec un lecteur de code-barres.
+		  Il peut être utilisé avec GCstar Scanner pour Android, ou n'importe
+		  quel lecteur qui se comporterait comme un clavier.
+	* Changements dans les collections
+		- Collections de films : Le pays est à présent une liste pour permettre
+		  d'indiquer plusieurs pays.
+	* Nouveaux modules pour récupérer des informations depuis des sites web
+		- Livres:
+			Douban (ZH) écrit par BW.
+		- Movies:
+			Douban (ZH) écrit par BW.
+		- Music:
+			Douban (ZH) écrit par BW.
+    * Corrections de problèmes
+    	- Le focus est donné au titre lors de l'ajout d'un élément.
+		- Bonne gestion des caractères spéciaux dans les noms de fichiers
+		  sous Windows.
+		- Correction du tri par nombre lors du groupement en mode image.
+		- Il n'était pas possible d'effacer un élément dans une collection
+		  s'il était unique.
+		- Problème avec la mise en cache des images corrigé.
+		- Bonne gestion du code de retour HTTP 302
+		- Suppression de l'utilisation de Switch.pm qui est obsolète.
+        - Problèmes corrigés dans certains modules de recherche :
+        	Alapage
+        	Allocine
+        	Bedetheque
+        	Bol
+        	Comic Book DB
+        	CSFD.cz
+        	IMDb
+            jeuxvideo.com
+            jeuxvideo.fr
+            Moby Games
+        	The Movie DB
+
+-------------------------------------------------------------------
+
 1.6.1
 
 	* Nouvelles fonctionnalités

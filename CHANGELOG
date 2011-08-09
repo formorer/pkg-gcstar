@@ -1,3 +1,45 @@
+1.6.2
+
+	* New features
+		- Option added for sorting items while in image views
+	* Export/Import/Fetch/Extract changes
+        - Amazon book plugins now use the Amazon Web Service, for more reliable
+          plugin operation
+		- New plugin for batch importing with a barcode scanner. It can be used
+		  with GCstar Scanner for Android or any barcode scanner acting like a
+		  keyboard.
+	* Default collections changes
+		- Film collection: Country field is now a list box, allowing multiple countries
+	* New plugins to fetch information from websites
+		- Books:
+			Douban (ZH) provided by BW.
+		- Movies:
+			Douban (ZH) provided by BW.
+		- Music:
+			Douban (ZH) provided by BW.
+    * Bugs fixed
+        - Set focus to the title field automatically after adding an item  
+        - Correctly handle foreign characters in external filenames under Windows
+        - Correctly sort numeric fields used for grouping in image lists
+        - It was not possible to delete a unique item in image mode
+        - Fixed bug with image caching
+        - HTTP return code 302 managed correctly
+        - Removed use of Switch.pm as it is deprecated
+        - Bug fixed in some website plugins:
+        	Alapage
+        	Allocine
+        	Bedetheque
+        	Bol
+        	Comic Book DB
+        	CSFD.cz
+        	IMDb
+            jeuxvideo.com
+            jeuxvideo.fr
+            Moby Games
+        	The Movie DB
+
+-------------------------------------------------------------------
+
 1.6.1
 
 	* New features

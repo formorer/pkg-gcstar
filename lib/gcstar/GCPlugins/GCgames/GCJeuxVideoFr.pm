@@ -2,7 +2,7 @@ package GCPlugins::GCgames::GCJeuxVideoFr;
 
 ###################################################
 #
-#  Copyright 2005-2010 Tian
+#  Copyright 2005-2011 Tian
 #
 #  This file is part of GCstar.
 #
@@ -39,126 +39,119 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{inside}->{$tagname}++;
         if ($self->{parsingList})
         {
-            if ($tagname eq 'tr')
+            if ($tagname eq 'div')
             {
                 $self->{isGame} = 1
-                    if $attr->{class} =~ /listel[1-2]/;
+                    if $attr->{class} eq "jeuDesc";
             }
             if ($self->{isGame})
             {
-                if ($tagname eq 'img')
+                if ($tagname eq 'a')
                 {
-                    if ($attr->{src} =~ m|/style/img/supv.*?([a-z0-9]*)\.gif|)
-                    {
-                        $self->{itemIdx}++;
-                        $self->{itemsList}[$self->{itemIdx}]->{platform} = uc $1;
-                        $self->{itemsList}[$self->{itemIdx}]->{platform} =~ s|REV|WII|;
-                    }
-                }
-                elsif (($tagname eq 'a') && ($self->{isName}))
-                {
+                    $self->{itemIdx}++;
                     $self->{itemsList}[$self->{itemIdx}]->{url} = $attr->{href};
                     $self->{itemsList}[$self->{itemIdx}]->{name} = $attr->{title};
-                    $self->{isName} = 0;
                 }
-                elsif ($tagname eq 'td')
+                elsif ( ($tagname eq 'span') & ($attr->{class} eq "bleu2"))
                 {
-                    $self->{isName} = 1 if $attr->{class} eq 'titre';
-                    $self->{isDate} = 1 if $attr->{class} eq 'datesortie';
-                    $self->{isGenre} = 1 if $attr->{class} eq 'genre';
+                    $self->{isPlatform} = 1;
+                }
+                elsif ( ($tagname eq 'span') & ($attr->{class} eq "bleu6"))
+                {
+                    $self->{isGenre} = 1;
+                }
+                elsif ( ($tagname eq 'p') & ($attr->{class} eq "jeuNote"))
+                {
+                    $self->{isGame} = 0;
+                    $self->{isEnd} = 1;
                 }
             }
         }
         elsif ($self->{parsingTips})
         {
-            if (
-                (($tagname eq 'h2') && ($attr->{class} eq 'simple'))
-                ||
-                (($tagname eq 'div') && ($attr->{class} eq 'desc'))
-               )
-            {
-                $self->{isTip} = 1;
-            }
-            
         }
         else
         {
-           if ($attr->{id} eq 'fiche_technique_jeu')
+            if ( ($tagname eq 'input') && ($attr->{id} eq 'titreJeu'))
             {
-                $self->{isInfo} = 1;
-                $self->{is} = '';
+                $self->{curInfo}->{name} = $attr->{value};
+                $self->{curInfo}->{platform} = $self->{url_plateforme};
 
-                my $html = $self->loadPage( 'http://www.jeuxvideo.fr/fiche/fiche_v2_ajax.php', ["id" => "$self->{id_plateforme}", "type" => "fiche", "tab_limit" => "captures:2|", "page" => "0"] );
+                my $html = $self->loadPage( $self->{url_screenshot} );
 
-                my $found = index($html,"\$\('#x_pochette'\).attr\(\"src\",\"");
+                my $found = index($html,"div class=\"image_slideshow\">");
                 if ( $found >= 0 )
                 {
-                    $self->{curInfo}->{boxpic} = substr($html, $found +length('$(\'#x_pochette\').attr("src","'),length($html)- $found -length('$(\'#x_pochette\').attr("src","'));
-                    $self->{curInfo}->{boxpic} = substr($self->{curInfo}->{boxpic}, 0, index($self->{curInfo}->{boxpic}, "\""));
-                    $found = index($self->{curInfo}->{boxpic},"http");
-                    if ( $found < 0)
-                    {
-                        $self->{curInfo}->{boxpic} = '';
-                    }
-                }
-
-                $found = index($html,"\$\('.txt_supp'\).html\(\"");
-                if ( $found >= 0 )
-                {
-                    $self->{curInfo}->{platform} = substr($html, $found +length('$(\'.txt_supp\').html("'),length($html)- $found -length('$(\'.txt_supp\').html("'));
-                    $self->{curInfo}->{platform} = substr($self->{curInfo}->{platform}, 0, index($self->{curInfo}->{platform}, "\""));
-                }
-
-                $found = index($html,"\$\('#capt0'\).attr\('href','");
-                if ( $found >= 0 )
-                {
-                    $self->{curInfo}->{screenshot1} = substr($html, $found +length('$(\'#capt0\').attr(\'href\',\''),length($html)- $found -length('$(\'#capt0\').attr(\'href\',\''));
-                    $self->{curInfo}->{screenshot1} = substr($self->{curInfo}->{screenshot1}, 0, index($self->{curInfo}->{screenshot1}, "'"));
-                }
-
-                $found = index($html,"\$\('#capt1'\).attr\('href','");
-                if ( $found >= 0 )
-                {
-                    $self->{curInfo}->{screenshot2} = substr($html, $found +length('$(\'#capt1\').attr(\'href\',\''),length($html)- $found -length('$(\'#capt1\').attr(\'href\',\''));
-                    $self->{curInfo}->{screenshot2} = substr($self->{curInfo}->{screenshot2}, 0, index($self->{curInfo}->{screenshot2}, "'"));
-                }
-
-                $found = index($html,"\$\('#wid_sortie').append(\"");
-                if ( $found >= 0 )
-                {
-                    $self->{curInfo}->{released} = substr($html, $found +length('$(\'#wid_sortie\').append("'),length($html)- $found -length('$(\'#wid_sortie\').append("'));
-
-                    $found = index($self->{curInfo}->{released},"/style/img/flag_fr_mini.gif");
+                    $self->{curInfo}->{screenshot1} = substr($html, $found +length('div class="image_slideshow">'),length($html)- $found -length('div class="image_slideshow">'));
+                    $found = index($self->{curInfo}->{screenshot1},"<a href=\"");
                     if ( $found >= 0 )
                     {
-                        $self->{curInfo}->{released} = substr($self->{curInfo}->{released}, $found +length('/style/img/flag_fr_mini.gif'),length($self->{curInfo}->{released})- $found -length('/style/img/flag_fr_mini.gif'));
-                        $found = index($self->{curInfo}->{released},"/>");
+                        $self->{curInfo}->{screenshot1} = substr($self->{curInfo}->{screenshot1}, $found +length('<a href="'),length($self->{curInfo}->{screenshot1})- $found -length('<a href="'));
+                        $self->{curInfo}->{screenshot1} = substr($self->{curInfo}->{screenshot1}, 0,index($self->{curInfo}->{screenshot1},"\""));
+                        $found = index($html,"\"imageNumberTotal\"");
                         if ( $found >= 0 )
                         {
-                            $self->{curInfo}->{released} = substr($self->{curInfo}->{released}, $found +length('/>'),length($self->{curInfo}->{released})- $found -length('/>'));
-                            $self->{curInfo}->{released} = substr($self->{curInfo}->{released}, 0, index($self->{curInfo}->{released}, "<"));
-                            # Enleve les blancs en debut de chaine
-                            $self->{curInfo}->{released} =~ s/^\s+//;
-                            # Enleve les blancs en fin de chaine
-                            $self->{curInfo}->{released} =~ s/\s+$//;
+                            $self->{curInfo}->{screenshot2} = substr($html, $found +length('"imageNumberTotal"'),length($html)- $found -length('"imageNumberTotal"'));
+                            $found = index($self->{curInfo}->{screenshot2},"href=\"");
+                            if ( $found >= 0 )
+                            {
+                                $self->{curInfo}->{screenshot2} = substr($self->{curInfo}->{screenshot2}, $found +length('href="'),length($self->{curInfo}->{screenshot2})- $found -length('href="'));
+                                $self->{curInfo}->{screenshot2} = 'http://www.jeuxvideo.fr/' . substr($self->{curInfo}->{screenshot2}, 0,index($self->{curInfo}->{screenshot2},"\""));
+
+                                $html = $self->loadPage( $self->{curInfo}->{screenshot2} );
+                                $found = index($html,"div class=\"image_slideshow\">");
+                                if ( $found >= 0 )
+                                {
+                                    $self->{curInfo}->{screenshot2} = substr($html, $found +length('div class="image_slideshow">'),length($html)- $found -length('div class="image_slideshow">'));
+                                    $found = index($self->{curInfo}->{screenshot2},"<a href=\"");
+                                    if ( $found >= 0 )
+                                    {
+                                        $self->{curInfo}->{screenshot2} = substr($self->{curInfo}->{screenshot2}, $found +length('<a href="'),length($self->{curInfo}->{screenshot2})- $found -length('<a href="'));
+                                        $self->{curInfo}->{screenshot2} = substr($self->{curInfo}->{screenshot2}, 0,index($self->{curInfo}->{screenshot2},"\""));
+                                    }
+                                }
+                            }
                         }
                     }
-                    else
-                    {
-                        $self->{curInfo}->{released} = '';
-                    }
                 }
-
-                $self->{url_plateforme} = '';
-                $self->{id_plateforme} = 0;
             }
-            elsif (($self->{isInfo} eq '1') && ($tagname eq 'th'))
+            elsif (($tagname eq 'div') && ($attr->{class} eq 'clearer spacer10'))
+            {
+                $self->{isInfo} = 0;
+                $self->{is} = '';
+            }
+            elsif (($tagname eq 'div') && ($attr->{class} eq 'listing_apropos'))
+            {
+                $self->{isInfo} = 1;
+            }
+            elsif (($self->{isInfo} eq '1') && ($tagname eq 'span') && ($attr->{class} eq 'strong'))
             {
                 $self->{isInfo} = 2;
             }
-            elsif ($attr->{class} eq 'titre_page')
+            elsif (($self->{is}) && ($tagname eq 'span') && ($attr->{class} eq 'noir'))
             {
-                $self->{is} = 'name';
+                $self->{isInfo} = 3;
+            }
+            elsif (($self->{is})  && ($tagname eq 'div') && ($attr->{class} eq 'clearer'))
+            {
+                $self->{isInfo} = 1;
+                $self->{is} = '';
+            }
+            elsif (($tagname eq 'span') && ($attr->{class} eq 'note-jeux orange1') && ($attr->{property} eq 'v:rating'))
+            {
+                $self->{isNote} = 1;
+            }
+            elsif (($tagname eq 'div') && ($attr->{class} eq 'contentCommentaire'))
+            {
+                $self->{isDesc} = 1;
+            }
+            elsif (($self->{isDesc})  && ($tagname eq 'div') && ($attr->{class} eq 'clearer'))
+            {
+                $self->{isDesc} = 0;
+            }
+            elsif ( ($tagname eq 'img') && ($attr->{class} eq 'imgJeu') && !($attr->{src} =~ /blank/i))
+            {
+                $self->{curInfo}->{boxpic} = $attr->{src};
             }
         }
     }
@@ -170,8 +163,9 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{inside}->{$tagname}--;
         if ($self->{parsingList})
         {
-            $self->{isGame} = 0
-                if ($tagname eq 'tr');
+        }
+        elsif ($self->{parsingTips})
+        {
         }
     }
 
@@ -186,50 +180,134 @@ use GCPlugins::GCgames::GCgamesCommon;
             # Enleve les blancs en fin de chaine
             $origtext =~ s/\s+$//;
 
-            if ($self->{isDate})
+            if ($self->{isGenre})
             {
-                $self->{itemsList}[$self->{itemIdx}]->{released} = $origtext;
-                $self->{isDate} = 0;
+                if ($self->{itemsList}[$self->{itemIdx}]->{genre} eq '')
+                {
+                   $self->{itemsList}[$self->{itemIdx}]->{genre} = $origtext;
+                   $self->{isGenre} = 0;
+                }
+                else
+                {
+                   $self->{itemsList}[$self->{itemIdx}]->{genre} = $self->{itemsList}[$self->{itemIdx}]->{genre} . ' - ' . $origtext;
+                   $self->{isGenre} = 0;
+                }
             }
-            elsif ($self->{isGenre})
+            elsif ($self->{isPlatform})
             {
-                $self->{itemsList}[$self->{itemIdx}]->{genre} = $origtext;
-                $self->{isGenre} = 0;
+                $origtext =~ s/\|//gi;
+                if ($self->{itemsList}[$self->{itemIdx}]->{platform} eq '')
+                {
+                    $self->{itemsList}[$self->{itemIdx}]->{platform} = $origtext;
+                }
+                else
+                {
+                    $self->{itemsList}[$self->{itemIdx}]->{platform} .= ', ';
+                    $self->{itemsList}[$self->{itemIdx}]->{platform} .= $origtext;
+                }
+                $self->{isPlatform} = 0;
+            }
+            elsif ($self->{isEnd})
+            {
+                my @array = split(/,/,$self->{itemsList}[$self->{itemIdx}]->{platform});
+                my $element;
+
+                my $SaveName = $self->{itemsList}[$self->{itemIdx}]->{name};
+                my $SaveUrl = $self->{itemsList}[$self->{itemIdx}]->{url};
+                my $SaveGenre = $self->{itemsList}[$self->{itemIdx}]->{genre};
+                $self->{itemIdx}--;
+
+                foreach $element (@array)
+                {
+                   # Enleve les blancs en debut de chaine
+                   $element =~ s/^\s+//;
+                   # Enleve les blancs en fin de chaine
+                   $element =~ s/\s+$//;
+
+                   $self->{itemIdx}++;
+                   $self->{itemsList}[$self->{itemIdx}]->{name} = $SaveName;
+                   $self->{itemsList}[$self->{itemIdx}]->{url} = $SaveUrl . 'tpfplatformtpf' . $element;
+                   $self->{itemsList}[$self->{itemIdx}]->{platform} = $element;
+                   $self->{itemsList}[$self->{itemIdx}]->{genre} = $SaveGenre;
+                }
+                $self->{isEnd} = 0;
             }
         }
         elsif ($self->{parsingTips})
         {
-            if ($self->{isTip})
-            {
-                $self->{curInfo}->{secrets} .= "\n\n" if $self->{curInfo}->{secrets};
-                $self->{curInfo}->{secrets} .= $origtext;
-                $self->{isTip} = 0;
-            }
         }
         else
         {
             if ($self->{isInfo} eq 2)
             {
-                $self->{is} = 'genre' if $origtext =~ /Genre/;
-                $self->{is} = 'editor' if $origtext =~ /Editeur/;
-                $self->{is} = 'developer' if $origtext =~ /D.veloppeur/;
-                $self->{is} = 'players' if $origtext =~ /Type de jeu/;
-                $self->{isInfo} = 1;
+                $self->{is} = 'genre' if $origtext =~ /Genre :/;
+                $self->{is} = 'editor' if $origtext =~ /Editeur :/;
+                $self->{is} = 'developer' if $origtext =~ /D.veloppeur :/;
+                $self->{is} = 'players' if $origtext =~ /Nb joueurs :/;
+                $self->{is} = 'released' if $origtext =~ /Sortie :/;
+                $self->{is} = 'exclusive' if $origtext =~ /Plateformes :/;
             }
-            elsif (($self->{is}) && ($origtext))
+            elsif ($self->{isInfo} eq 3)
             {
-                $origtext =~ s/^\s*//;
+                # Enleve le caractere | qui separe les champs
+                $origtext =~ s/\|//gi;
+                # Enleve les blancs en debut de chaine
+                $origtext =~ s/^\s+//;
+                # Enleve les blancs en fin de chaine
+                $origtext =~ s/\s+$//;
                 if ($origtext)
                 {
                    if ($self->{is} eq 'players')
                    {
-                       $origtext =~ s/Exclusivement Solo/1/;
+                       $origtext =~ s/Exclusivement Solo/1/i;
                        $origtext =~ s/\s*joueurs?//i;
                    }
 
-                   $self->{curInfo}->{$self->{is}} = $origtext;
-                   $self->{is} = '';
+                   if ($self->{curInfo}->{$self->{is}} eq '')
+                   {
+                       if ($self->{is} eq 'exclusive')
+                       {
+                           $self->{curInfo}->{$self->{is}} = 'true';
+                           if ($origtext =~ /$self->{curInfo}->{platform}/i)
+                           {
+                               $self->{curInfo}->{platform} = $origtext;
+                           }
+                       }
+                       else
+                       {
+                           $self->{curInfo}->{$self->{is}} = $origtext;
+                       }
+                   }
+                   else
+                   {
+                       if ($self->{is} eq 'exclusive')
+                       {
+                           $self->{curInfo}->{$self->{is}} = 'false';
+                           if ($origtext =~ /$self->{curInfo}->{platform}/i)
+                           {
+                               $self->{curInfo}->{platform} = $origtext;
+                           }
+                       }
+                       else
+                       {
+                           $self->{curInfo}->{$self->{is}} = $self->{curInfo}->{$self->{is}} . ', ' . $origtext;
+                       }
+                   }
+
                 }
+            }
+            elsif ($self->{isNote} eq 1)
+            {
+                $self->{curInfo}->{ratingpress} = $origtext;
+                $self->{isNote} = 0;
+            }
+            elsif ($self->{isDesc} eq 1)
+            {
+                # Enleve les blancs en debut de chaine
+                $origtext =~ s/^\s+//;
+                # Enleve les blancs en fin de chaine
+                $origtext =~ s/\s+$//;
+                $self->{curInfo}->{description} .= $origtext;
             }
         }
     } 
@@ -238,9 +316,7 @@ use GCPlugins::GCgames::GCgamesCommon;
     {
         my $self = shift;
         
-        my $url = $self->{curInfo}->{$self->{urlField}};
-        $url =~ s/fiche-/astuce-/;
-        return $url;
+        return $self->{url_tips};
     }
 
     sub new
@@ -253,48 +329,24 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{hasField} = {
             name => 1,
             platform => 1,
-            released => 1,
+            released => 0,
             genre => 1
         };
 
-        $self->{isName} = 0;
         $self->{isGame} = 0;
-        $self->{isDate} = 0;
+        $self->{isPlatform} = 0;
         $self->{isGenre} = 0;
+        $self->{isEnd} = 0;
         $self->{isInfo} = 0;
+        $self->{isNote} = 0;
+        $self->{isDesc} = 0;
         $self->{isTip} = 0;
         $self->{url_plateforme} = '';
-        $self->{id_plateforme} = 0;
+        $self->{url_screenshot} = '';
+        $self->{url_tips} = '';
         $self->{is} = '';
 
-        $self->{key} = {
-                        b => 'Bas',
-                        h => 'Haut',
-                        g => 'Gauche',
-                        d => 'Droite'
-                       };
-
         return $self;
-    }
-
-    sub toKey
-    {
-        my ($self, $value) = @_;
-        
-        if (length($value) <= 2)
-        {
-            $value = substr($value, 0, 1);
-        }
-        elsif ($value =~ /_/)
-        {
-            $value =~ s/(.)_(.)/$self->{key}->{$1}.'-'.$self->{key}->{$2}/ge;
-        }
-        else
-        {
-            $value = ucfirst $value;            
-        }
-        
-        return $value;
     }
 
     sub preProcess
@@ -303,20 +355,15 @@ use GCPlugins::GCgames::GCgamesCommon;
 
         if ($self->{parsingList})
         {
-            $html =~ s|<br />|, |;
         }
         elsif ($self->{parsingTips})
         {
-            $html =~ s|<b>(.*?)</b>|$1|gi;
-            $html =~ s|<img src='http://www\.jeuxvideo\.fr/style/img/man/bt_([a-z_]*)\.gif' align='absmiddle'>|$self->toKey($1)|ge;
-            $html =~ s|\x{92}|'|gi;
-            $html =~ s|&#146;|'|gi;
-            $html =~ s|&#149;|*|gi;
-            $html =~ s|&#156;|oe|gi;
-            $html =~ s|&#133;|...|gi;
-            $html =~ s|\x{85}|...|gi;
-            $html =~ s|\x{8C}|OE|gi;
-            $html =~ s|\x{9C}|oe|gi;
+        }
+        else
+        {
+            $html =~ s|<br />|\n|gi;
+            $html =~ s|<b>||gi;
+            $html =~ s|</b>||gi;
         }
 
         return $html;
@@ -326,52 +373,22 @@ use GCPlugins::GCgames::GCgamesCommon;
     {
 		my ($self, $word) = @_;
 	
-        return 'http://www.jeuxvideo.fr/encyclopedie-jeux-video-ds-gba-gc-pc-ps2-psp-xbox-xbox360-ps3-rev-iphone---g0g-0-0-0.html?recherche='.$word;
+        return 'http://www.jeuxvideo.fr/r/'.$word.'/';
     }
     
     sub getItemUrl
     {
-		my ($self, $url) = @_;
+        my ($self, $url) = @_;
 		
-                my $found = index($url,"#");
-                if ( $found >= 0 )
-                {
-                    $self->{url_plateforme} = substr($url, $found +length('#'),length($url)- $found -length('#'));
-                }
+        my $found = index($url,"tpfplatformtpf");
+        if ( $found >= 0 )
+        {
+            $self->{url_plateforme} = substr($url, $found +length('tpfplatformtpf'),length($url)- $found -length('tpfplatformtpf'));
+            $url = substr($url, 0,$found);
+        }
 
-                my $html = $self->loadPage( 'http://www.jeuxvideo.fr' . $url );
-                if ( $self->{url_plateforme} eq '' )
-                {
-                    $found = index($html,"var top_pf = \"");
-                    if ( $found >= 0 )
-                    {
-                        $self->{url_plateforme} = substr($html, $found +length('var top_pf = "'),length($html)- $found -length('var top_pf = "'));
-                        $self->{url_plateforme} = substr($self->{url_plateforme}, 0, index($self->{url_plateforme},"\""));
-                        $self->{url_plateforme} =~ s|pf_||;
-                    }
-                }
-
-                $found = index($html,"tab_pf['" . $self->{url_plateforme} . "']");
-                if ( $found >= 0 )
-                {
-                    $self->{id_plateforme} = substr($html, $found +length('tab_pf[\'' . $self->{url_plateforme} . '\']' ),length($html)- $found -length('tab_pf[\'' . $self->{url_plateforme} . '\']'));
-                    $self->{id_plateforme} = substr($self->{id_plateforme}, index($self->{id_plateforme},"=") + 1 , index($self->{id_plateforme},";") - 2 );
-                }
-                else
-                {
-                    $found = index($html,"plateforme au chargement");
-                    if ( $found >= 0 )
-                    {
-                        $self->{id_plateforme} = substr($html, $found +length('plateforme au chargement' ),length($html)- $found -length('plateforme au chargement'));
-                        $found = index($self->{id_plateforme},"id_defaut:'");
-                        if ( $found >= 0 )
-                        {
-                            $self->{id_plateforme} = substr($self->{id_plateforme}, $found +length('id_defaut:\'' ),length($self->{id_plateforme})- $found -length('id_defaut:\''));
-                            $self->{id_plateforme} = substr($self->{id_plateforme}, 0, index($self->{id_plateforme}, "'"));
-                        }
-                    }
-                }
-
+        $self->{url_screenshot} = 'http://www.jeuxvideo.fr' . $url . 'image-photo/';
+        $self->{url_tips} = 'http://www.jeuxvideo.fr' . $url . 'astuce-code/';
 
         return 'http://www.jeuxvideo.fr' . $url;
     }
@@ -397,6 +414,12 @@ use GCPlugins::GCgames::GCgamesCommon;
     
         return "ISO-8859-1";
     }
+
+    sub isPreferred
+    {
+        return 1;
+    }
+
 }
 
 1;

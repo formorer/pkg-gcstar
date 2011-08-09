@@ -17,6 +17,7 @@ name="GCbooks">
 			<search>
 				<field>isbn</field>
 				<field>title</field>
+				<field>authors</field>
 			</search>
 			<results>
 				<field>title</field>

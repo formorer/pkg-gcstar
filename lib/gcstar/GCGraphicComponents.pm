@@ -226,6 +226,11 @@ sub createWidget
         $somethingChanged = 1;
     }
 
+    sub setHeight
+    {
+        my ($self, $height) = @_;
+    }
+
     sub resetChanged
     {
         my $self = shift;

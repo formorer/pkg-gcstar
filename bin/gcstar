@@ -33,7 +33,7 @@ if ($ENV{GCS_PROFILING} > 0)
     eval '$initTime = [Time::HiRes::gettimeofday()]';
 }
 
-my $VERSION = '1.6.1';
+my $VERSION = '1.6.2';
 
 my $MULTI_PROCESS = ((!exists $ENV{GCS_PROFILING}) || ($ENV{GCS_PROFILING} == 0));
 

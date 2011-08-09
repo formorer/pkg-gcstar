@@ -79,13 +79,14 @@ use GCPlugins::GCbooks::GCbooksCommon;
                 	$self->{itemsList}[$self->{itemIdx}]->{title} = $self->{title};
                 	$self->{itemsList}[$self->{itemIdx}]->{authors} = $self->{author};
                 
-                	$self->{isAnalyse} = 1 ;
-                	$self->{bookStep} = 0 ;
+                	$self->{isFormat} = 1 ;
+                	#$self->{bookStep} = 0 ;
             	}
             }
             elsif (
-            		(($tagname ne 'h4') || ( ($tagname eq 'h4') && ($self->{bookStep} != 2) )) &&
-            	    (($tagname ne 'p') || ( ($tagname eq 'h4') && ($self->{bookStep} != 3) ))
+            		(($tagname ne 'h3') || ( ($tagname eq 'h3') && ($self->{bookStep} != 2) )) &&
+            	    (($tagname ne 'p') || ( ($tagname eq 'p') && ($self->{bookStep} != 3) ))  &&
+            	    (($tagname ne 'span') || ( ($tagname eq 'span') && ($self->{bookStep} != 4) ))
             	  )
             {	
             	$self->{isTitle} = 0;
@@ -113,7 +114,7 @@ use GCPlugins::GCbooks::GCbooksCommon;
                 $self->{curInfo}->{cover} = "http://www.bol.it" . $attr->{src};
                 $self->{bookStep} = 1;
             }
-            elsif (($tagname eq 'h2') && ($self->{bookStep} == 1))
+            elsif (($tagname eq 'h1') && ($self->{bookStep} == 1))
             {
                 $self->{curInfo}->{title} = "http://www.bol.it" . $attr->{src};
                 $self->{isTitle} = 1;
@@ -205,30 +206,28 @@ use GCPlugins::GCbooks::GCbooksCommon;
                 $self->{author} = $origtext;
                 $self->{isAuthor} = 0;
             }
-            elsif ($self->{isAnalyse})
+            elsif ($self->{isFormat})
             {
-                my @array = split(/\|/,$origtext);
+            	my @array = split(/\|/,$origtext);
 
                 $self->{itemsList}[$self->{itemIdx}]->{format} = $array[0];
                 $self->{itemsList}[$self->{itemIdx}]->{format} =~ s/^\s+//;
-
-                $self->{itemsList}[$self->{itemIdx}]->{publication} = $array[0];
-                if ($array[3] ne '')
-                {
-                   $self->{itemsList}[$self->{itemIdx}]->{publication} = $array[3];
-                   $self->{itemsList}[$self->{itemIdx}]->{publication} =~ s/^\s+//;
-                   $self->{itemsList}[$self->{itemIdx}]->{edition} = $array[2];
-                   $self->{itemsList}[$self->{itemIdx}]->{edition} =~ s/^\s+//;
-                }
-                else
-                {
-                   $self->{itemsList}[$self->{itemIdx}]->{publication} = $array[2];
-                   $self->{itemsList}[$self->{itemIdx}]->{publication} =~ s/^\s+//;
-                   $self->{itemsList}[$self->{itemIdx}]->{edition} = $array[1];
-                   $self->{itemsList}[$self->{itemIdx}]->{edition} =~ s/^\s+//;
-                }
-
-                $self->{isAnalyse} = 0 ;
+                $self->{isFormat} = 0;
+                $self->{isPublisher} = 1;
+            }
+            elsif ($self->{isPublisher})
+            {
+            	$self->{itemsList}[$self->{itemIdx}]->{edition} = $origtext;
+            	$self->{isPublisher} = 0;
+            	$self->{isPublication} = 1;
+            }
+            elsif ($self->{isPublication})
+            {
+            	my @array = split(/\|/,$origtext);
+            	
+            	$self->{itemsList}[$self->{itemIdx}]->{publication} = $array[1];
+                $self->{itemsList}[$self->{itemIdx}]->{publication} =~ s/^\s+//;
+                $self->{isPublication} = 0;
             }
         }
        	else
@@ -404,6 +403,7 @@ use GCPlugins::GCbooks::GCbooksCommon;
         if ($self->{parsingList})
         {
             $html =~ s|<br><i>|<i>|gi;
+            #$html =~ s/[\n\r\t]//g;
         }
         else
         {
@@ -468,7 +468,7 @@ use GCPlugins::GCbooks::GCbooksCommon;
 
     sub getAuthor
     {
-        return 'TPF';
+        return 'TPF, UnclePetros';
     }
     
     sub getLang

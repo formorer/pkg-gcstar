@@ -81,7 +81,7 @@ name="GCcomics">
 				min="0"
 				max="9999"
 				group="main"
-				imported="true"/>
+				imported="true"/>				
 		<field value="title"
 				type="short text"
 				label="Title"
@@ -253,30 +253,29 @@ name="GCcomics">
 		<panel name="form" label="PanelForm" editable="true">
 			<item type="line">
 				<item type="value" for="id" width="5" nomargin="true" />
-				<item type="value" for="name" expand="true" nomargin="true" />
+				<item type="label" for="series" nomargin="true" />
+				<item type="value" for="series" expand="true" nomargin="true" />
+				<item type="label" for="volume" nomargin="true" />
+				<item type="value" for="volume" nomargin="true" />					
 				<item type="special" for="searchButton" nomargin="true" />
 				<item type="special" for="refreshButton" nomargin="true" />
+			
 			</item>
 			<item type="notebook" expand="true">
 				<item type="tab" value="info" title="General">
 					<item type="line">
 						<item type="value" for="image" width="130" height="170"/>
-						<item type="box" width="6"/>
-						<item type="table" rows="6" cols="4" expand="true">
-							<item type="label" for="series" row="0" col="0"/>
-							<item type="value" for="series" row="0" col="1" expand="true"/>
-							<item type="label" for="volume" row="0" col="2"/>
-							<item type="value" for="volume" row="0" col="3"/>
-							<item type="label" for="title" row="1" col="0"/>
-							<item type="value" for="title" row="1" col="1" colspan="3"/>
-							<item type="label" for="writer" row="2" col="0"/>
-							<item type="value" for="writer" row="2" col="1" colspan="3"/>
-							<item type="label" for="illustrator" row="3" col="0"/>
-							<item type="value" for="illustrator" row="3" col="1" colspan="3"/>
-							<item type="label" for="colourist" row="4" col="0"/>
-							<item type="value" for="colourist" row="4" col="1" colspan="3"/>
-							<item type="label" for="publisher" row="5" col="0"/>
-							<item type="value" for="publisher" row="5" col="1" colspan="3"/>
+						<item type="table" rows="5" cols="4" expand="true">
+							<item type="label" for="title" row="0" col="0"/>
+							<item type="value" for="title" row="0" col="1" colspan="3"/>
+							<item type="label" for="writer" row="1" col="0"/>
+							<item type="value" for="writer" row="1" col="1" colspan="3"/>
+							<item type="label" for="illustrator" row="2" col="0"/>
+							<item type="value" for="illustrator" row="2" col="1" colspan="3"/>
+							<item type="label" for="colourist" row="3" col="0"/>
+							<item type="value" for="colourist" row="3" col="1" colspan="3"/>
+							<item type="label" for="publisher" row="4" col="0"/>
+							<item type="value" for="publisher" row="4" col="1" colspan="3"/>
 						</item>
 					</item>
 					<item type="table" rows="1" cols="2" expand="true">

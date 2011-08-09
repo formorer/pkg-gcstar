@@ -89,7 +89,7 @@ use GCPlugins::GCgames::GCgamesCommon;
     sub start
     {
         my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
-	
+
         $self->{inside}->{$tagname}++;
         if ($self->{parsingList})
         {
@@ -367,11 +367,16 @@ use GCPlugins::GCgames::GCgamesCommon;
             }
             elsif ($self->{isDate})
             {
-                $self->{itemsList}[$self->{itemIdx}]->{released} = $origtext;
-                if (! $self->{itemsList}[$self->{itemIdx}]->{platform})
-                {
-                    $self->{previous} =~ s/[\s\(]*$//g;
-                    $self->{itemsList}[$self->{itemIdx}]->{platform} = $self->{previous};
+                # <em> tags enclose both dates and the 'a.k.a.' text, so make sure we
+                # ignore the aka ones
+                if ($origtext !~ /^a\.k\.a\./)
+                {          
+                    $self->{itemsList}[$self->{itemIdx}]->{released} = $origtext;
+                    if (! $self->{itemsList}[$self->{itemIdx}]->{platform})
+                    {
+                        $self->{previous} =~ s/[\s\(]*$//g;
+                        $self->{itemsList}[$self->{itemIdx}]->{platform} = $self->{previous};
+                    }
                 }
                 $self->{isDate} = 0;
             }

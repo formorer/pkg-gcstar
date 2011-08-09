@@ -49,6 +49,11 @@ use GCPlugins::GCstar::GCAmazonCommon;
     {
         return ['title'];
     }
+
+    sub getEanField
+    {
+        return 'title';
+    }
 }
 
 1;

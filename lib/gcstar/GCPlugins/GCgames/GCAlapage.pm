@@ -2,7 +2,7 @@
 
 ###################################################
 #
-#  Copyright 2005-2010 Christian Jodar
+#  Copyright 2005-2011 Christian Jodar
 #
 #  This file is part of GCstar.
 #
@@ -40,23 +40,18 @@ use GCPlugins::GCgames::GCgamesCommon;
 
         if ($self->{parsingList})
         {
-            if (($tagname eq 'div') && ($attr->{class} eq 'infos_produit'))
-            {
-                $self->{isGame} = 1 ;
-                $self->{isUrl} = 1 ;
-            }
-            elsif ($tagname eq 'div')
-            {
-                $self->{isGame} = 0 ;
-            }
-            elsif (($tagname eq 'a') && ($self->{isUrl}) && ($self->{isGame}))
+            if (($tagname eq 'div') && ($attr->{class} eq 'infosProduit'))
             {
                 $self->{itemIdx}++;
+                $self->{isGame} = 1 ;
+            }
+            elsif (($tagname eq 'a') && ($self->{isGame}))
+            {
                 $self->{itemsList}[$self->{itemIdx}]->{url} = $attr->{href};
                 $self->{itemsList}[$self->{itemIdx}]->{name} = $attr->{title};
-                $self->{isUrl} = 0 ;
+                $self->{isGame} = 0 ;
             }
-            elsif (($tagname eq 'a') && ( index($attr->{href},"mot_consoles") >= 0) && ($self->{isGame}))
+            elsif (($tagname eq 'span') && ($attr->{class} eq 'liensAriane') && ($self->{isGame}) && ($self->{itemsList}[$self->{itemIdx}]->{platform} eq ''))
             {
                 $self->{isPlatform} = 1 ;
             }
@@ -67,55 +62,21 @@ use GCPlugins::GCgames::GCgamesCommon;
         else
         {
 
-            if ($tagname eq 'h2')
+            if (($tagname eq 'h1') && ($attr->{id} eq 'zm_name_description'))
             {
                 $self->{isName} = 1 ;
             }
-            elsif (($tagname eq 'tpfcommentaire') && ($self->{isDescription} eq 1))
-            {
-                $self->{isDescription} = 2 ;
-            }
-            elsif ($self->{isDate} eq 1)
-            {
-                $self->{isDate} = 2 ;
-            }
-            elsif (($tagname eq 'a') && ( index($attr->{href},"mot_consoles") >= 0))
-            {
-                $self->{isPlatform} = 1 ;
-            }
-            elsif (($tagname eq 'a') && ($attr->{class} eq 'thickbox tooltip') && ($self->{curInfo}->{boxpic} eq ''))
-            {
-                   my $html = $self->loadPage( "http://www.alapage.com" . $attr->{href}, 0, 1 );
-                   my $found = index($html,"\"laplusgrande\"");
-                   if ( $found >= 0 )
-                   {
-                      my $found2 = index($html,"&m=v");
-                      $html = substr($html, $found +length('"laplusgrande"'),length($html)- $found -length('"laplusgrande"'));
-
-                         my @array = split(/"/,$html);
-                         $self->{curInfo}->{boxpic} = "http://www.alapage.com" . $array[1];
-                         if ( $found2 >= 0 )
-                         {
-                            $self->{curInfo}->{backpic} = $self->{curInfo}->{boxpic};
-                            $self->{curInfo}->{backpic} =~ s|&m=r|&m=v|gi;
-                         }
-                   }
-            }
-            elsif (($tagname eq 'a') && ( index($attr->{href},"mot_hierarchie") >= 0))
-            {
-                $self->{isGenre} = 1 ;
-            }
-            elsif (($tagname eq 'a') && ( index($attr->{href},"mot_editeur") >= 0) && ($attr->{class} eq 'greytxt'))
-            {
-                $self->{isEditor} = 1 ;
-            }
-            elsif ($tagname eq 'tpfdateparution')
-            {
-                $self->{isDate} = 1 ;
-            }
-            elsif (($tagname eq 'div') && ($attr->{class} eq 'edito FP_commentaire'))
+            elsif (($tagname eq 'div') && ($attr->{id} eq 'zm_description_long'))
             {
                 $self->{isDescription} = 1 ;
+            }
+            elsif (($tagname eq 'span') && ($attr->{rel} eq 'images nocount') && ($self->{bigPics}))
+            {
+                $self->{curInfo}->{boxpic} = $attr->{href_img} ;
+            }
+            elsif (($tagname eq 'img') && ($attr->{id} eq 'zm_main_image') && !($self->{bigPics}))
+            {
+                $self->{curInfo}->{boxpic} = $attr->{src} ;
             }
         }
     }
@@ -140,18 +101,11 @@ use GCPlugins::GCgames::GCgamesCommon;
                 # Enleve les blancs en fin de chaine
                 $origtext =~ s/\s+$//;
 
-                $origtext =~ s/SONY //;
-                $origtext =~ s/PC COMPATIBLES/PC/;
+                $origtext =~ s/Sony //i;
+                $origtext =~ s/Jeux PC/PC/i;
 
-                if (($self->{itemsList}[$self->{itemIdx}]->{platform} eq '') && ($origtext ne ''))
-                {
-                   $self->{itemsList}[$self->{itemIdx}]->{platform} = $origtext;
-                }
-                elsif ($origtext ne '')
-                {
-                   $self->{itemsList}[$self->{itemIdx}]->{platform} .= ', ';
-                   $self->{itemsList}[$self->{itemIdx}]->{platform} .= $origtext;
-                }
+                $self->{itemsList}[$self->{itemIdx}]->{platform} = $origtext;
+                $self->{Save_plateforme} = $self->{itemsList}[$self->{itemIdx}]->{platform};
                 $self->{isPlatform} = 0;
 
             }
@@ -166,6 +120,7 @@ use GCPlugins::GCgames::GCgamesCommon;
             if ($self->{isName})
             {
                 $self->{curInfo}->{name} = $origtext;
+                $self->{curInfo}->{platform} = $self->{Save_plateforme};
                 $self->{isName} = 0 ;
 
                 if ($self->{ean} ne '')
@@ -174,58 +129,11 @@ use GCPlugins::GCgames::GCgamesCommon;
                 }
 
             }
-            elsif ($self->{isGenre})
+            elsif ($self->{isDescription} eq 1)
             {
-                # On enleve le premier element qui est le nom de la console
-                my ($dummy, @array) = split(/\//,$origtext);
-                my $element;
-                foreach $element (@array)
-                {
-                   $element =~ s/^\s+//;
-                   $self->{curInfo}->{genre} .= $element;
-                   $self->{curInfo}->{genre} .= ",";
-                }
-
-                # Pour certains jeux le champs plteforme n est pas renseigne donc je le recupere d ici
-                if (($self->{curInfo}->{platform} eq '') && ($dummy ne ''))
-                {
-                   $self->{curInfo}->{platform} = $dummy;
-                   $self->{curInfo}->{platform} =~ s/JEUX //;
-                   $self->{curInfo}->{platform} =~ s/SONY //;
-                   $self->{curInfo}->{platform} =~ s/PC COMPATIBLES/PC/;
-                }
-
-                $self->{isGenre} = 0;
-            }
-            elsif ($self->{isEditor})
-            {
-                $self->{curInfo}->{editor} = $origtext;
-                $self->{isEditor} = 0 ;
-            }
-            elsif ($self->{isPlatform})
-            {
-                $origtext =~ s/SONY //;
-                $origtext =~ s/PC COMPATIBLES/PC/;
-
-                if (($self->{curInfo}->{platform} eq '') && ($origtext ne ''))
-                {
-                   $self->{curInfo}->{platform} = $origtext;
-                }
-                elsif ($origtext ne '')
-                {
-                   $self->{curInfo}->{platform} .= ', ';
-                   $self->{curInfo}->{platform} .= $origtext;
-                }
-                $self->{isPlatform} = 0;
-            }
-            elsif ($self->{isDate} eq 2)
-            {
-                $self->{curInfo}->{released} = $origtext;
-                $self->{isDate} = 0 ;
-            }
-            elsif ($self->{isDescription} eq 2)
-            {
-                $self->{curInfo}->{description} .= $origtext;
+                # Enleve les blancs dans le texte
+                $origtext =~ s/  / /g;
+                $self->{curInfo}->{description} = $origtext;
                 $self->{isDescription} = 0 ;
             }
 
@@ -250,16 +158,14 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{hasField} = {
             name => 1,
             platform => 1,
+            released => 0,
             genre => 0
         };
 
         $self->{isName} = 0;
         $self->{isGame} = 0;
-        $self->{isUrl} = 0;
         $self->{isPlatform} = 0;
-        $self->{isEditor} = 0;
-        $self->{isDate} = 0;
-        $self->{isGenre} = 0;
+        $self->{Save_plateforme} = '';
         $self->{isDescription} = 0;
         $self->{ean} = '';
 
@@ -275,28 +181,9 @@ use GCPlugins::GCgames::GCgamesCommon;
         }
         else
         {
-            my $found = index($html,"<!--DEBUT ARTICLE-->");
-            if ( $found >= 0 )
-            {
-               $html = substr($html, $found +length('<!--DEBUT ARTICLE-->'),length($html)- $found -length('<!--DEBUT ARTICLE-->'));
-            }
-            {
-                no utf8;
-               $found = index($html,"<TD width=\"100%\" class=\"tx14grisbold\">&nbsp;D�posez votre avis</TD>");
-            }
-            if ( $found >= 0 )
-            {
-               $html = substr($html, 0, $found);
-            }
-            $html =~ s/> ISBN : </><tpfisbn><\/tpfisbn></gi;
-            $html =~ s/>Date de Parution : <\//><tpfdateparution><\/tpfdateparution></gi;
-            $html =~ s/>Date de parution :<\//><tpfdateparution><\/tpfdateparution></gi;
-            $html =~ s|</h3>|</h3><tpfcommentaire>|gi;
-            $html =~ s|<li>|\n* |gi;
-            $html =~ s|<br>|\n|gi;
-            $html =~ s|<br />|\n|gi;
-            # Erreur sur la page d Alapage sur "HITS COLLECTION 2006"
-            $html =~ s|<br<|\n|gi;
+            $html =~ s|<br>||gi;
+            $html =~ s|<br />||gi;
+
             $html =~ s|<b>||gi;
             $html =~ s|</b>||gi;
             $html =~ s|<i>||gi;
@@ -328,14 +215,14 @@ use GCPlugins::GCgames::GCgamesCommon;
             $self->{ean} = '';
         }
 
-        return 'http://www.alapage.com/mx/?tp=L&type=52&requete='.$word;
+        return 'http://search.alapage.com/search?a=8584451-0-0&s='.$word;
     }
     
     sub getItemUrl
     {
 	my ($self, $url) = @_;
 
-        return "http://www.alapage.com" . $url;
+        return $url;
     }
 
     sub getName
@@ -369,7 +256,7 @@ use GCPlugins::GCgames::GCgamesCommon;
     {
         return '.jpg';
     }
+
 }
 
 1;
-

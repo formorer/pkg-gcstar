@@ -28,13 +28,14 @@ use utf8;
 use GCPlugins::GCcomics::GCcomicsCommon;
 
 {
+
     package GCPlugins::GCcomics::GCPlugincomicbookdb;
 
     use LWP::Simple qw($ua);
     use HTTP::Cookies;
 
     use base qw(GCPlugins::GCcomics::GCcomicsPluginsBase);
- 
+
     sub start
     {
         my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
@@ -46,12 +47,15 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             {
                 $self->{isAtResults} = 1;
             }
-            if (($tagname eq "a") && ($self->{isAtResults}) && !($attr->{href} =~ m/ebay\.com/))
+            if (   ($tagname eq "a")
+                && ($self->{isAtResults})
+                && !($attr->{href} =~ m/ebay\.com/))
             {
                 $self->{isCollection} = 1;
                 $self->{itemIdx}++;
 
-                $self->{itemsList}[$self->{itemIdx}]->{nextUrl} = "http://www.comicbookdb.com/".$attr->{href};
+                $self->{itemsList}[ $self->{itemIdx} ]->{nextUrl} =
+                  "http://www.comicbookdb.com/" . $attr->{href};
             }
         }
         else
@@ -60,17 +64,24 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             if ($self->{parsingList})
             {
 
-                if (($tagname eq "tbody") && ($self->{isResultsTable}) && ($self->{isSpecialIssue} == 1))
+                if (   ($tagname eq "tbody")
+                    && ($self->{isResultsTable})
+                    && ($self->{isSpecialIssue} == 1))
                 {
                     $self->{isSpecialIssue} = 2;
                 }
                 # Parsing issue list
                 if (($tagname eq "a") && ($self->{isResultsTable}))
                 {
-                    if ($attr->{href} =~ m/javascript/) 
+                    if ($attr->{href} =~ m/javascript/)
                     {
-                        # Multiple editions of the one issue, needs to be handled differently
+                        # Multiple editions of the one issue, need to be
+                        # handled differently
                         $self->{isSpecialIssue} = 1;
+                    }
+                    elsif ($attr->{href} =~ m/storyarc.php/)
+                    {
+                        # Prevent story arcs from populating lists
                     }
                     elsif ($self->{isSpecialIssue} == 1)
                     {
@@ -78,20 +89,22 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                         if ($self->{resultsTableColumn} == 1)
                         {
                             $self->{isSpecialIssueNo} = 1;
-                            $self->{isIssue} = 1;
+                            $self->{isIssue}          = 1;
                             $self->{itemIdx}++;
-                            $self->{itemsList}[$self->{itemIdx}]->{url} = "http://www.comicbookdb.com/".$attr->{href};
+                            $self->{itemsList}[ $self->{itemIdx} ]->{url} =
+                              "http://www.comicbookdb.com/" . $attr->{href};
                         }
                         elsif ($self->{resultsTableColumn} == 2)
                         {
-                            $self->{isTitle} = 1;
+                            $self->{isTitle}        = 1;
                             $self->{isSpecialTitle} = 1;
                         }
                     }
                     elsif ($self->{isSpecialIssue} == 2)
                     {
                         $self->{itemIdx}++;
-                        $self->{itemsList}[$self->{itemIdx}]->{url} = "http://www.comicbookdb.com/".$attr->{href};
+                        $self->{itemsList}[ $self->{itemIdx} ]->{url} =
+                          "http://www.comicbookdb.com/" . $attr->{href};
                         $self->{isTitle} = 1;
                     }
                     else
@@ -101,7 +114,8 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                         {
                             $self->{isIssue} = 1;
                             $self->{itemIdx}++;
-                            $self->{itemsList}[$self->{itemIdx}]->{url} = "http://www.comicbookdb.com/".$attr->{href};
+                            $self->{itemsList}[ $self->{itemIdx} ]->{url} =
+                              "http://www.comicbookdb.com/" . $attr->{href};
                         }
                         elsif ($self->{resultsTableColumn} == 2)
                         {
@@ -117,33 +131,43 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                 {
                     $self->{insideHeadline} = 1;
                 }
-                elsif (($tagname eq "a") && ($self->{insideHeadline})) 
+                elsif (($tagname eq "a")
+                    && ($self->{insideHeadline})
+                    && ($attr->{href} =~ m/title.php/))
                 {
                     $self->{insideName} = 1;
-                } 
-                elsif (($tagname eq "a") && ($self->{nextisWriters})) 
-                {
-                    $self->{insideWriters} = 1;
-                    $self->{insidePencillers} = 0;
-                    $self->{insideColorists} = 0;
                 }
-                elsif (($tagname eq "a") && ($self->{nextisPencillers})) 
+                elsif (($tagname eq "a")
+                    && ($self->{insideHeadline})
+                    && ($attr->{href} =~ m/issue_number.php/))
                 {
-                    $self->{insideWriters} = 0;
+                    $self->{insideNumber} = 1;
+                }
+                elsif (($tagname eq "a") && ($self->{nextisWriters}))
+                {
+                    $self->{insideWriters}    = 1;
+                    $self->{insidePencillers} = 0;
+                    $self->{insideColorists}  = 0;
+                }
+                elsif (($tagname eq "a") && ($self->{nextisPencillers}))
+                {
+                    $self->{insideWriters}    = 0;
                     $self->{insidePencillers} = 1;
-                    $self->{insideColorists} = 0;
+                    $self->{insideColorists}  = 0;
                 }
-                elsif (($tagname eq "a") && ($self->{nextisColorists})) 
+                elsif (($tagname eq "a") && ($self->{nextisColorists}))
                 {
-                    $self->{insideWriters} = 0;
+                    $self->{insideWriters}    = 0;
                     $self->{insidePencillers} = 0;
-                    $self->{insideColorists} = 1;
+                    $self->{insideColorists}  = 1;
                 }
                 elsif (($tagname eq "a") && ($attr->{href} =~ /imprint.php/))
                 {
                     $self->{insidePublisher} = 1;
                 }
-                elsif (($tagname eq "a") && ($attr->{href} =~ /publisher.php/) && (!$self->{curInfo}->{publisher}))
+                elsif (($tagname eq "a")
+                    && ($attr->{href} =~ /publisher.php/)
+                    && (!$self->{curInfo}->{publisher}))
                 {
                     $self->{insidePublisher} = 1;
                 }
@@ -155,13 +179,18 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                 {
                     $self->{insideSubHeadline} = 1;
                 }
-                elsif (($tagname eq "a") && ($attr->{href} =~ /^graphics\/comic_graphics\// ))
+                elsif (($tagname eq "a")
+                    && ($attr->{href} =~ /^graphics\/comic_graphics\//))
                 {
-                    $self->{curInfo}->{image} = "http://www.comicbookdb.com/".$attr->{href};
+                    $self->{curInfo}->{image} =
+                      "http://www.comicbookdb.com/" . $attr->{href};
                 }
-                elsif (($tagname eq "img") && ($attr->{src} =~ /^graphics\/comic_graphics\// ) && (!$self->{curInfo}->{image}))
+                elsif (($tagname eq "img")
+                    && ($attr->{src} =~ /^graphics\/comic_graphics\//)
+                    && (!$self->{curInfo}->{image}))
                 {
-                    $self->{curInfo}->{image} = "http://www.comicbookdb.com/".$attr->{src};
+                    $self->{curInfo}->{image} =
+                      "http://www.comicbookdb.com/" . $attr->{src};
                 }
 
             }
@@ -170,38 +199,43 @@ use GCPlugins::GCcomics::GCcomicsCommon;
 
     sub end
     {
-        my ($self, $tagname) = @_;	
+        my ($self, $tagname) = @_;
         $self->{inside}->{$tagname}--;
 
-        if (($self->{isAtResults}) && ($tagname eq "td"))
+        if ($self->{isResultsTable})
         {
-            $self->{isAtResults} = 0;
+            if ($tagname eq "table")
+            {
+                $self->{isResultsTable} = 0;
+            }
+            elsif ($tagname eq "tr")
+            {
+                $self->{resultsTableColumn} = 0;
+            }
         }
-        if (($self->{isResultsTable}) && ($tagname eq "table"))
-        {
-            $self->{isResultsTable} = 0;
-        }
-        if (($self->{isResultsTable}) && ($tagname eq "tr"))
-        {
-            $self->{resultsTableColumn} = 0;
-        }
+
         if ($tagname eq "tbody")
         {
             $self->{isSpecialIssue} = 0;
         }
-        if ($tagname eq "span")
+        elsif ($tagname eq "span")
         {
-            $self->{insideHeadline} = 0;
+            $self->{insideHeadline}    = 0;
             $self->{insideSubHeadline} = 0;
+            $self->{insideNumber}      = 0;
         }
-        if ($tagname eq "a")
+        elsif ($tagname eq "td")
         {
-            $self->{nextisWriters} = 0;
+            $self->{isAtResults}      = 0;
+            $self->{nextisWriters}    = 0;
             $self->{nextisPencillers} = 0;
-            $self->{nextisColorists} = 0;
-            $self->{insideWriters} = 0;
+            $self->{nextisColorists}  = 0;
+            $self->{insideWriters}    = 0;
             $self->{insidePencillers} = 0;
-            $self->{insideColorists} = 0;
+            $self->{insideColorists}  = 0;
+        }
+        elsif ($tagname eq "a")
+        {
             $self->{insidePublisher} = 0;
             $self->{insideCoverDate} = 0;
         }
@@ -214,12 +248,12 @@ use GCPlugins::GCcomics::GCcomicsCommon;
         return if ($origtext eq " ");
 
         return if ($self->{parsingEnded});
-        
+
         if ($self->{parsingList})
         {
             if ($self->{isCollection})
             {
-                $self->{itemsList}[$self->{itemIdx}]->{series} = $origtext;
+                $self->{itemsList}[ $self->{itemIdx} ]->{series} = $origtext;
                 $self->{isCollection} = 0;
             }
             if ($origtext eq "Cover Date")
@@ -228,30 +262,32 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             }
             if ($self->{isIssue})
             {
-                $self->{itemsList}[$self->{itemIdx}]->{volume} = $origtext;
+                $self->{itemsList}[ $self->{itemIdx} ]->{volume} = $origtext;
                 $self->{isIssue} = 0;
             }
             if ($self->{isSpecialIssueNo})
             {
-                $self->{specialIssueNo} = $origtext;
+                $self->{specialIssueNo}   = $origtext;
                 $self->{isSpecialIssueNo} = 0;
             }
             if ($self->{isTitle})
             {
                 if ($self->{isSpecialIssue} == 2)
                 {
-                    $self->{itemsList}[$self->{itemIdx}]->{volume} = $self->{specialIssueNo};
-                    $self->{itemsList}[$self->{itemIdx}]->{title} = $self->{specialTitle}.$origtext;
+                    $self->{itemsList}[ $self->{itemIdx} ]->{volume} =
+                      $self->{specialIssueNo};
+                    $self->{itemsList}[ $self->{itemIdx} ]->{title} =
+                      $self->{specialTitle} . $origtext;
                 }
                 else
                 {
-                    $self->{itemsList}[$self->{itemIdx}]->{title} = $origtext;
+                    $self->{itemsList}[ $self->{itemIdx} ]->{title} = $origtext;
                 }
                 $self->{isTitle} = 0;
             }
             if ($self->{isSpecialTitle})
             {
-                $self->{specialTitle} = $origtext;
+                $self->{specialTitle}   = $origtext;
                 $self->{isSpecialTitle} = 0;
             }
         }
@@ -260,16 +296,32 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             if ($self->{insideName})
             {
                 $self->{curInfo}->{series} = $origtext;
-                $self->{curInfo}->{series} =~ s/(\s\([0-9]*\))$//;
+                #$self->{curInfo}->{series} =~ s/(\s\([0-9]*\))$//;
                 $self->{insideName} = 0;
+            }
+            elsif (($self->{insideNumber}) && ($origtext =~ /^\s*#(\d+)/))
+            {
+                # volume where #XX is in <A HREF... tag, '-' is not
+                $self->{curInfo}->{volume} = $1;
+                $self->{insideNumber} = 0;
             }
             elsif (($self->{insideHeadline}) && ($origtext =~ /-\s#(\d+)/))
             {
+                # volume where #XX isn't in <A HREF... tag
                 $self->{curInfo}->{volume} = $1;
+                $self->{insideNumber} = 0;
             }
             elsif (($self->{insideHeadline}) && ($origtext =~ /vol\. (\d+)/))
             {
                 $self->{curInfo}->{volume} = $1;
+                $self->{insideNumber} = 0;
+            }
+            elsif (($self->{insideHeadline}) && ($origtext =~ /-\s*Annual\s*(\d+)/))
+            {
+                # Annual volume where #XX isn't in <A HREF... tag
+                $self->{curInfo}->{volume} = $1;
+                $self->{curInfo}->{series} .= " Annual";
+                $self->{insideNumber} = 0;
             }
             elsif (($self->{insideSubHeadline}) && ($origtext =~ /\"(.*)\"/))
             {
@@ -282,35 +334,73 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             }
             elsif ($origtext eq "Writer(s):")
             {
-                $self->{nextisWriters} = 1;
+                $self->{nextisWriters}    = 1;
                 $self->{nextisPencillers} = 0;
-                $self->{nextisColorists} = 0;
+                $self->{nextisColorists}  = 0;
             }
             elsif ($origtext eq "Penciller(s):")
             {
-                $self->{nextisWriters} = 0;
+                $self->{nextisWriters}    = 0;
                 $self->{nextisPencillers} = 1;
-                $self->{nextisColorists} = 0;
+                $self->{nextisColorists}  = 0;
             }
             elsif ($origtext eq "Colorist(s):")
             {
-                $self->{nextisWriters} = 0;
+                $self->{nextisWriters}    = 0;
                 $self->{nextisPencillers} = 0;
-                $self->{nextisColorists} = 1;
+                $self->{nextisColorists}  = 1;
+            }
+            elsif (($origtext eq "Letterer(s):")
+                || ($origtext eq "Inker(s):")
+                || ($origtext eq "Editor(s):")
+                || ($origtext eq "Cover Artist(s):")
+                || ($origtext eq "Characters:")
+                || ($origtext eq "Groups:"))
+            {
+                $self->{nextisWriters}    = 0;
+                $self->{nextisPencillers} = 0;
+                $self->{nextisColorists}  = 0;
             }
             elsif ($self->{insideWriters})
             {
-                $self->{curInfo}->{writer} = $origtext;
+                if ($self->{curInfo}->{writer} eq "")
+                {
+                    $self->{curInfo}->{writer} = $origtext;
+                }
+                elsif ((index $self->{curInfo}->{writer}, $origtext) == -1)
+                {
+                    $self->{curInfo}->{writer} .= ", ";
+                    $self->{curInfo}->{writer} .= $origtext;
+                }
+
                 $self->{insideWriters} = 0;
             }
             elsif ($self->{insidePencillers})
             {
-                $self->{curInfo}->{illustrator} = $origtext;
+                if ($self->{curInfo}->{illustrator} eq "")
+                {
+                    $self->{curInfo}->{illustrator} = $origtext;
+                }
+                elsif ((index $self->{curInfo}->{illustrator}, $origtext) == -1)
+                {
+                    $self->{curInfo}->{illustrator} .= ", ";
+                    $self->{curInfo}->{illustrator} .= $origtext;
+                }
+
                 $self->{insidePencillers} = 0;
             }
             elsif ($self->{insideColorists})
             {
-                $self->{curInfo}->{colourist} = $origtext;
+                if ($self->{curInfo}->{colourist} eq "")
+                {
+                    $self->{curInfo}->{colourist} = $origtext;
+                }
+                elsif ((index $self->{curInfo}->{colourist}, $origtext) == -1)
+                {
+                    $self->{curInfo}->{colourist} .= ", ";
+                    $self->{curInfo}->{colourist} .= $origtext;
+                }
+
                 $self->{insideColorists} = 0;
             }
             elsif ($origtext eq "Synopsis: ")
@@ -332,8 +422,9 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                 $self->{curInfo}->{printdate} = $origtext;
                 $self->{curInfo}->{printdate} =~ s/^(\s)*//;
 
-                # Translate date string to date 
-                $self->{curInfo}->{printdate} = GCUtils::strToTime($self->{curInfo}->{printdate}, "%B %Y");
+                # Translate date string to date
+                $self->{curInfo}->{printdate} =
+                  GCUtils::strToTime($self->{curInfo}->{printdate}, "%B %Y");
                 $self->{curInfo}->{publishdate} = $self->{curInfo}->{printdate};
             }
         }
@@ -347,13 +438,13 @@ use GCPlugins::GCcomics::GCcomicsCommon;
 
         $self->{ua}->cookie_jar(HTTP::Cookies->new);
 
-        bless ($self, $class);
-   
-        $self->{isResultsTable} = 0;
-        $self->{itemIdx} = 0;
+        bless($self, $class);
+
+        $self->{isResultsTable}     = 0;
+        $self->{itemIdx}            = 0;
         $self->{resultsTableColumn} = 0;
-        $self->{curName} = undef;
-        $self->{curUrl} = undef;
+        $self->{curName}            = undef;
+        $self->{curUrl}             = undef;
 
         return $self;
     }
@@ -364,14 +455,12 @@ use GCPlugins::GCcomics::GCcomicsCommon;
 
         if ($self->{pass} == 1)
         {
-            $self->{hasField} = {
-                series => 1,
-            };
+            $self->{hasField} = {series => 1,};
         }
         else
         {
             $self->{hasField} = {
-                title => 1,
+                title  => 1,
                 volume => 1,
             };
         }
@@ -380,28 +469,32 @@ use GCPlugins::GCcomics::GCcomicsCommon;
     sub preProcess
     {
         my ($self, $html) = @_;
-        
+
         $self->{parsingEnded} = 0;
-             
+
         return $html;
     }
 
     sub getSearchUrl
     {
         my ($self, $word) = @_;
- 
-        # Grab the home page first, or the pages fetched are blank (who knows why... must be something funky with the website)
+
+        $word =~ s/\+%28\d{4}%29$//;    # strip year from end of $word (title)
+
+        # Grab the home page first, or the pages fetched are blank
+        # (who knows why... must be something funky with the website)
         my $response = $ua->get('http://www.comicbookdb.com/');
 
-        return "http://www.comicbookdb.com/search.php?form_search=$word&form_searchtype=Title";
+        return
+          "http://www.comicbookdb.com/search.php?form_search=$word&form_searchtype=Title";
     }
-    
+
     sub getItemUrl
     {
-		my ($self, $url) = @_;
-		return $url if $url =~ /^http:/;
-		
-		return "http://www.comicbookdb.com".$url;
+        my ($self, $url) = @_;
+        return $url if $url =~ /^http:/;
+
+        return "http://www.comicbookdb.com" . $url;
     }
 
     sub getNumberPasses
@@ -413,12 +506,12 @@ use GCPlugins::GCcomics::GCcomicsCommon;
     {
         return "Comic Book DB";
     }
-    
+
     sub getAuthor
     {
         return 'Zombiepig';
     }
-    
+
     sub getLang
     {
         return 'EN';

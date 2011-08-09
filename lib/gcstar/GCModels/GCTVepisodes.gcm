@@ -17,7 +17,7 @@ name="GCTVepisodes">
 
 		<fields>
 			<id>id</id>
-			<title>name</title>
+			<title>title</title>
 			<cover>image</cover>
 			<url>webPage</url>
 			<play>videofile</play>
@@ -87,6 +87,11 @@ name="GCTVepisodes">
 				init=""
 				group="main"
 				imported="false"/>
+		<field value="title"
+				group="main"
+				init="%series% - S%season%E%episode%"
+				label="title"
+				type="formatted" />		
 		<field value="name"
 				type="short text"
 				label="Name"
