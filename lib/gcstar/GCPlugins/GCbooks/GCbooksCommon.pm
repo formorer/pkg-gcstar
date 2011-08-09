@@ -46,6 +46,15 @@ use GCPlugins::GCPluginsBase;
     {
         return ['title'];
     }
+    
+    sub getEanField
+    {
+        my $self = shift;
+        my $fields = $self->getSearchFieldsArray;
+        return 'isbn'
+            if $fields->[0] eq 'isbn';
+        return undef;
+    }
 
 }
 

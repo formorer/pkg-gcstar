@@ -76,6 +76,7 @@ use Gtk2;
     use IO::Handle;
     use Storable qw(store_fd fd_retrieve);
     use File::Temp qw(tempdir);
+    use Encode;
 
     sub showMe
     {
@@ -1204,6 +1205,7 @@ use Gtk2;
                 }
                 $self->{panel}->$field($info->{$field});
             }
+            $self->{panel}->selectTitle;
             my $title = $info->{$self->{model}->{commonFields}->{title}};
             my $imagePrefix = $self->{imagePrefix};
             foreach my $pic(@picFields)
@@ -2609,6 +2611,9 @@ use Gtk2;
         {
            if ($^O =~ /win32/i)
             {
+                # Encode filename to work with foreign characters
+				$file = Encode::encode("iso-8859-1", $file);
+
                 if ($withParams)
                 {
                     $command = $file;
@@ -2648,6 +2653,10 @@ use Gtk2;
                 if ($file !~ /^(http|ftp)/)
                 {
                     my $dialog;
+
+                    # Encode filename to work with foreign characters under Win32
+    				$file = Encode::encode("iso-8859-1", $file) if ($^O =~ /win32/i);
+
                     while (! -e $file)
                     {
                         if (!$dialog)

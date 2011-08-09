@@ -36,7 +36,6 @@ use GCImport::GCImportBase;
     use base qw(GCImport::GCImportBaseClass);
     
     use XML::Simple;    	
-    use Switch;  
 
     sub new
     {
@@ -111,13 +110,13 @@ use GCImport::GCImportBase;
 		}
 		
 		#Based on the Dutch ratings!
-		switch ($film->{ParentalRating}->{Value}){
-			case 1 {$item->{age} = 1}
-			case 2 {$item->{age} = 2}
-			case 3 {$item->{age} = 5}
-			case 4 {$item->{age} = 12}
-			case [5..7] {$item->{age} = 16}
-		}
+		
+		$item->{age} = 
+		   ($film->{ParentalRating}->{Value} == 1) ? 1
+		 : ($film->{ParentalRating}->{Value} == 2) ? 2
+		 : ($film->{ParentalRating}->{Value} == 3) ? 5
+		 : ($film->{ParentalRating}->{Value} == 4) ? 12
+		 :                                           16;
 	
 		if ($film->{DataProvider} eq 'IMDB.com'){
 			$item->{webPage} = 'http://www.imdb.com/title/'.$film->{DataProviderId};

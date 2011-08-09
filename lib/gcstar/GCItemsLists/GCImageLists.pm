@@ -51,6 +51,10 @@ my $timeOutBetweenEnhancements = 50;
         $self->{coverField} = $parent->{model}->{commonFields}->{cover};
         $self->{titleField} = $parent->{model}->{commonFields}->{title};
         $self->{borrowerField} = $parent->{model}->{commonFields}->{borrower}->{name};
+        # Sort field
+        $self->{sortField} = $self->{preferences}->secondarySort
+                                  || $self->{titleField};
+        $self->{fileIdx} = "";
         $self->{selectedIndexes} = {};
         $self->{previousSelectedDisplayed} = 0;
         $self->{displayedToItemsArray} = {};
@@ -148,7 +152,7 @@ my $timeOutBetweenEnhancements = 50;
                 sub compare
                 {
                     return (
-                            GCUtils::gccmp ($a->{title}, $b->{title})
+                            GCUtils::gccmp ($a->{sortValue}, $b->{sortValue})
                            );
                 }
                 if ($self->{currentOrder} == 1)
@@ -355,6 +359,12 @@ my $timeOutBetweenEnhancements = 50;
         # Load in the original source image
         my $origPixbuf = Gtk2::Gdk::Pixbuf->new_from_file($srcImage);
         
+        my $idField = $self->{parent}->{model}->{commonFields}->{id};
+        my $titleField = $self->{parent}->{model}->{commonFields}->{title};
+        my $gcsautoid = $self->{parent}->{items}->{itemArray}->[$self->{fileIdx}]->{$idField};
+        my $title = $self->{parent}->{items}->{itemArray}->[$self->{fileIdx}]->{$titleField};
+        $title =~ s/[^a-zA-Z0-9]*//g;
+        
         # Make sure destination directory exists
         if ( ! -e $self->{imagesDir})
         {
@@ -370,7 +380,7 @@ my $timeOutBetweenEnhancements = 50;
             my $imgHeight;
             my $overlay;
             
-            my $cacheFilename = $self->{imagesDir}.basename($srcImage).".cache.".$size;
+            my $cacheFilename = $self->{imagesDir}.$gcsautoid.".".$title.".cache.".$size;
             $cacheFilename .= ".overlay"
                 if $useOverlays;
 
@@ -464,18 +474,25 @@ my $timeOutBetweenEnhancements = 50;
     
     sub createPixbuf
     {
-        my ($self, $displayedImage, $borrower, $favourite, $forceEnhancement) = @_;
+        my ($self, $displayedImage, $borrower, $favourite, $fileIdx, $isReplace, $forceEnhancement) = @_;
         my $pixbuf = undef;
+        
+        my $idField = $self->{parent}->{model}->{commonFields}->{id};
+        my $titleField = $self->{parent}->{model}->{commonFields}->{title};
+        my $gcsautoid = $self->{parent}->{items}->{itemArray}->[$fileIdx]->{$idField};
+        my $title = $self->{parent}->{items}->{itemArray}->[$fileIdx]->{$titleField};
+        $title =~ s/[^a-zA-Z0-9]*//g;
+        $self->{fileIdx} = $fileIdx;
         
         # Item has a picture assigned
         if ($displayedImage)
         {
-            my $cacheFilename =$self->{imagesDir}.basename($displayedImage).".cache.".$self->{parent}->{options}->listImgSize;
+            my $cacheFilename =$self->{imagesDir}.$gcsautoid.".".$title.".cache.".$self->{parent}->{options}->listImgSize;
             $cacheFilename .= ".overlay"
                 if $self->{style}->{useOverlays};
           
             # Does cached image file exist? 
-            if (!(-e $cacheFilename))
+            if (!(-e $cacheFilename) || $isReplace)
             {
                 # Need to generate the cached images, if original picture exists
                 $self->createImageCache($displayedImage, $self->{style}->{useOverlays})
@@ -491,12 +508,12 @@ my $timeOutBetweenEnhancements = 50;
         # No picture assigned or using assigned picture failed, so use collection default
         if ($@ || !$pixbuf)
         {
-            my $cacheFilename = $self->{imagesDir}.basename($self->{parent}->{defaultImage}).".cache.".$self->{parent}->{options}->listImgSize;
+            my $cacheFilename = $self->{imagesDir}.$gcsautoid.".".$title.".cache.".$self->{parent}->{options}->listImgSize;
                         $cacheFilename .= ".overlay"
                 if $self->{style}->{useOverlays};
 
             # Does cached image file exist? 
-            if (!(-e $cacheFilename))
+            if (!(-e $cacheFilename) || $isReplace)
             {
                 # Need to generate the cached images
                 $self->createImageCache($self->{parent}->{defaultImage}, $self->{style}->{useOverlays})
@@ -776,7 +793,7 @@ my $timeOutBetweenEnhancements = 50;
                                                         $self->{parent}->{options}->file,
                                                         $self->{collectionDir});
 
-        my $pixbuf = $self->createPixbuf($displayedImage, $info->{borrower}, $info->{favourite});
+        my $pixbuf = $self->createPixbuf($displayedImage, $info->{borrower}, $info->{favourite}, $info->{idx}, 0);
 
         #$self->{tooltips}->set_tip($eventBox, $info->{title}, '');
 
@@ -818,9 +835,10 @@ my $timeOutBetweenEnhancements = 50;
     
     sub findPlace
     {
-        my ($self, $item, $title) = @_;
-        my $refTitle = $title || $item->{title};
-        $refTitle = uc($refTitle);
+        my ($self, $item, $sortvalue) = @_;
+        my $refSortValue = $sortvalue || $item->{sortValue};
+        $refSortValue = uc($refSortValue);
+
         # First search where it should be inserted
         my $place = 0;
         my $itemsIdx = 0;
@@ -828,12 +846,12 @@ my $timeOutBetweenEnhancements = 50;
         {
             foreach my $followingItem(@{$self->{itemsArray}})
             {
-                my $testTitle = uc($followingItem->{title});
-                my $cmp = ($testTitle gt $refTitle);
-                $itemsIdx++ if ! $cmp;
+                my $testSortValue = uc($followingItem->{sortValue});
+                my $cmp = GCUtils::gccmp ($testSortValue, $refSortValue);
+                $itemsIdx++ if ! ($cmp > 0);
                 
                 next if !$followingItem->{displayed};
-                last if $cmp;
+                last if ($cmp > 0);
                 $place++;
             }
         }
@@ -841,12 +859,11 @@ my $timeOutBetweenEnhancements = 50;
         {
             foreach my $followingItem(@{$self->{itemsArray}})
             {
-                my $cmp = (uc($followingItem->{title})
-                           lt
-                           $refTitle);
-                $itemsIdx++ if ! $cmp;
+                my $testSortValue = uc($followingItem->{sortValue});
+                my $cmp = GCUtils::gccmp ($refSortValue, $testSortValue);                           
+                $itemsIdx++ if ! ($cmp > 0);
                 next if !$followingItem->{displayed};
-                last if $cmp;
+                last if ($cmp > 0);
                 $place++;
             }
         }
@@ -857,11 +874,15 @@ my $timeOutBetweenEnhancements = 50;
     sub addItem
     {
         my ($self, $info, $immediate, $idx, $keepConversionTables) = @_;
+        
         my $item = {
                      idx => $idx,
                      title => $self->{parent}->transformTitle($info->{$self->{titleField}}),
                      picture => $info->{$self->{coverField}},
                      borrower => $info->{$self->{borrowerField}},
+                     sortValue => $self->{sortField} eq $self->{titleField}
+                                                                            ? $self->{parent}->transformTitle($info->{$self->{titleField}})
+                                                                            : $info->{$self->{sortField}},
                      favourite => $info->{favourite},
                      displayed => 1,
                    };
@@ -1220,7 +1241,8 @@ my $timeOutBetweenEnhancements = 50;
         my ($self, $idx, $justFromView) = @_;
         $self->{count}--;
         $self->{displayedNumber}--;
-        $self->{header}->hide if $self->{displayedNumber} <= 0;
+        # Fix to remove header only when items are grouped
+        $self->{header}->hide if $self->{container}->{groupItems} && $self->{displayedNumber} <= 0;
         my $displayed = $self->{idxToDisplayed}->{$idx};
         my $itemLine = int $displayed / $self->{columns};
         #my $itemCol = $displayed % $self->{columns};
@@ -1263,7 +1285,11 @@ my $timeOutBetweenEnhancements = 50;
         $self->{idxToDisplayed} = {};
         my ($k,$v);
         $self->{idxToDisplayed}->{$v} = $k while (($k,$v) = each %{$self->{displayedToIdx}});
-
+		
+        # Fix to remove items from "displayed" list on delete
+        my $numDisplayed = scalar(keys %{$self->{container}->{displayed}});
+        delete $self->{container}->{displayed}->{$numDisplayed-1};		
+		
         $self->{number}--;
         return $next;
     }
@@ -1465,14 +1491,16 @@ my $timeOutBetweenEnhancements = 50;
         $new->{$self->{borrowerField}} = 'none' if $new->{$self->{borrowerField}} eq '';
         my $previousDisplayed = $self->{idxToDisplayed}->{$idx};
         my $newDisplayed = $previousDisplayed;
-        if ($new->{$self->{titleField}} ne $previous->{$self->{titleField}})
+        if ($new->{$self->{sortField}} ne $previous->{$self->{sortField}})
         {
             # Adjust title
             my $newTitle = $self->{parent}->transformTitle($new->{$self->{titleField}});
+            my $newSort = $self->{sortField} eq $self->{titleField} ? $newTitle : $new->{$self->{sortField}};
+
             $self->{boxes}->[$previousDisplayed]->{info}->{title} = $newTitle;
             $self->{tooltips}->set_tip($self->{boxes}->[$previousDisplayed], $newTitle, '');
             my $newItemsArrayIdx;
-            ($newDisplayed, $newItemsArrayIdx) = $self->findPlace(undef, $newTitle);
+            ($newDisplayed, $newItemsArrayIdx) = $self->findPlace(undef, $newSort);
             # We adjust the index as we'll remove an item
             $newDisplayed-- if $newDisplayed > $previousDisplayed;
             if ($previousDisplayed != $newDisplayed)
@@ -1522,7 +1550,7 @@ my $timeOutBetweenEnhancements = 50;
                                                             undef,
                                                             $self->{parent}->{options}->file);
 
-            my $pixbuf = $self->createPixbuf($displayedImage, $borrower, $favourite);
+            my $pixbuf = $self->createPixbuf($displayedImage, $borrower, $favourite, $idx, 1);
             $self->{previousPixbufs}->{$idx} = $pixbuf->copy;
             $boxes[$newDisplayed]->child->set_from_pixbuf($pixbuf);
             $forceSelect = 1;
@@ -2031,11 +2059,11 @@ my $timeOutBetweenEnhancements = 50;
         # We sort it
         if ($self->{currentOrder} == 0)
         {
-            @tmpList = reverse sort @tmpList;
+            @tmpList = reverse sort {GCUtils::gccmp($a, $b)} @tmpList;
         }
         else
         {
-            @tmpList = sort @tmpList;
+            @tmpList = sort {GCUtils::gccmp($a, $b)} @tmpList;
         }
         
         # And now we find back its position
@@ -2216,14 +2244,15 @@ my $timeOutBetweenEnhancements = 50;
             }
             # Now the internal lists are ordered, we need to order them
             my @tmpList = @{$self->{orderedLists}};
-            # We sort the list
+
+            # We sort the list, using gccmp to handle sorting of numeric values
             if ($self->{currentOrder} == 0)
             {
-                @tmpList = reverse sort @{$self->{orderedLists}};
+                @tmpList = reverse sort {GCUtils::gccmp($a, $b)} @{$self->{orderedLists}};
             }
             else
             {
-                @tmpList = sort @{$self->{orderedLists}};
+                @tmpList = sort {GCUtils::gccmp($a, $b)} @{$self->{orderedLists}};
             }
             
             # Clear the current view

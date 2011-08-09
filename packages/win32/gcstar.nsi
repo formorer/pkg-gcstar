@@ -3,7 +3,7 @@
 
 ; Helper defines
 !define PRODUCT_NAME "GCstar"
-!define PRODUCT_VERSION "1.6.1"
+!define PRODUCT_VERSION "1.6.2"
 !define PRODUCT_PUBLISHER "Tian"
 !define PRODUCT_WEB_SITE "http://www.gcstar.org/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}"

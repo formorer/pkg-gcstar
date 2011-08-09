@@ -85,6 +85,11 @@ use strict;
         return $code;
     }
     
+    sub hideFileSelection
+    {
+        return 0;
+    }
+    
     sub new
     {
         my ($proto) = @_;
@@ -119,8 +124,12 @@ use GCDialogs;
             $self->{order}->hide;
             $self->{orderLabel}->hide;
         }
-        # TODO : Hide File selection when not wanted
-        #$self->{fileVbox}->hide if ! $self->{module}->wantsFileSelection;
+
+        if ($self->{module}->hideFileSelection)
+        {
+            $self->{file}->hide;
+            $self->{labelFile}->hide;
+        }
         
         $self->resize(1,1);
         my $ok = 0;

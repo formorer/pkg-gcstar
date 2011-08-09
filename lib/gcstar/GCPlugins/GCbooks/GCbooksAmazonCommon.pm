@@ -56,6 +56,10 @@ use GCPlugins::GCstar::GCAmazonCommon;
         return ['isbn', 'title'];
     }
 
+    sub getEanField
+    {
+        return 'isbn';
+    }
 }
 
 1;

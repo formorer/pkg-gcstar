@@ -67,8 +67,8 @@
         Exclusive => 'Exclusive',
         Resolutions => 'Display resolutions',
         InstallationSize => 'Size',
-        Region => 'Region',
-        SerialNumber => 'Serial Number',        
+        Region => 'Περιοχή',
+        SerialNumber => 'Σειριακός αριθμός',
 
         General => 'Γενικά',
         Details => 'Λεπτομέρειες',

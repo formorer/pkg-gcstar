@@ -30,20 +30,26 @@
 
     our @EXPORT = qw(%lang);
 
-    our %lang = (    
-        CollectionDescription => 'Συλλογή Τηλεοπτικών σειρών',
-        Items => 'Σειρά',
+    our %lang = (
+    
+        CollectionDescription => 'Συλλογή τηλεοπτικών σειρών',
+        Items => {  0 => 'Σειρά',
+                    1 => 'Σειρά',
+                    X => 'Σειρές',
+                    lowercase1 => 'σειρά',
+                    lowercaseX => 'σειρές'
+                    },
         NewItem => 'Νέα σειρά',
         Name => 'Όνομα',
         Season => 'Σεζόν',
         Part => 'Μέρος',
-        Episodes => 'Επεισόδιο',
+        Episodes => 'Επισόδεια',
         FirstAired => 'Πρώτη προβολή',
-        Time => 'Διάρκεια επεισοδίου',
+        Time => 'Διάρκεια',
         Producer => 'Παραγωγός',
         Music => 'Μουσική',
      );
-     importTranslation('Films');
+     importTranslation('ταινίες');
 }
 
 1;

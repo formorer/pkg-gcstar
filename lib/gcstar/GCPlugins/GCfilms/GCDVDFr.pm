@@ -316,7 +316,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     {
         my ($self, $word) = @_;
     
-	$word = 'ean:'.$word
+        $word = 'ean:'.$word
 	    if $word =~ /^[\dX]{8}[\dX]*$/;
 
         return "http://www.dvdfr.com/api/search.php?title=$word";
@@ -357,6 +357,11 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     sub getExtra
     {
         return 'Edition';
+    }
+
+    sub getEanField
+    {
+        return 'title';
     }
 
     sub isPreferred

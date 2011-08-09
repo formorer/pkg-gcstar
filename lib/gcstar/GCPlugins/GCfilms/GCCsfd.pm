@@ -4,8 +4,8 @@ package GCPlugins::GCfilms::GCCsfd;
 
 ###################################################
 #
-#  Copyright 2005-2010 Christian Jodar
-#  Copyright 2007 Petr Gajdusek (Pajdus) <gajdusek.petr@centrum.cz>
+#  Copyright 2005-2009 Tian
+#  Copyright 2007,2011 Petr Gajdůšek <gajdusek.petr@centrum.cz>
 #
 #  This file is part of GCstar.
 #
@@ -25,23 +25,26 @@ package GCPlugins::GCfilms::GCCsfd;
 #
 ###################################################
 
-# I like the plugin fetch movie rating and user comments from
-# website too but these fields are not imported by gcstar (you need
-# to alter GCfilms.gcm.  Is it ok for plugin to set this fields
-# ($self->{curInfo}->{comment} and $self->{curInfo}->{rating}), that are
-# ingored by gcstar by default, or should i avoid this?
-
 use strict;
+#use warnings;
 use utf8;
 
 use GCPlugins::GCfilms::GCfilmsCommon;
 
 {
+
     # Replace SiteTemplate with your exporter name
     # It must be the same name as the one used for file and main package name
     package GCPlugins::GCfilms::GCPluginCsfd;
 
     use base qw(GCPlugins::GCfilms::GCfilmsPluginsBase);
+
+    # getSearchCharset
+    # Charset of search term
+    sub getSearchCharset
+    {
+        return 'UTF-8';
+    }
 
     # getSearchUrl
     # Used to get the URL that to be used to perform searches.
@@ -50,12 +53,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     sub getSearchUrl
     {
         my ($self, $word) = @_;
-        my $url;
-
-        # Your code here
-        $url = return "http://www.csfd.cz/search_pg.php?search=$word";
-
-        return $url;
+        return "http://www.csfd.cz/hledat/?q=$word";
     }
 
     # getItemUrl
@@ -66,22 +64,19 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     sub getItemUrl
     {
         my ($self, $url) = @_;
-        my $absUrl = "http://www.csfd.cz" . $url;
 
-        # Your code here
-
-        return $absUrl;
+        $url = "http://www.csfd.cz" . $url if ($url !~ /^http:/);
+        return $url;
     }
 
     # getCharset
     # Used to convert charset in web pages.
     # Returns the charset as specified in pages.
-    sub getCharset
-    {
-        my $self = shift;
-
-        return "WINDOWS-1250";
-    }
+    #sub getCharset {
+    #	my $self = shift;
+    #
+    #	return "UTF-8";
+    #}
 
     # getName
     # Used to display plugin name in GUI.
@@ -96,7 +91,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     # Returns the plugin author name.
     sub getAuthor
     {
-        return 'Pajdus';
+        return 'Petr Gajdůšek';
     }
 
     # getLang
@@ -120,7 +115,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     # Return 0 to hide column, 1 to show it.
     sub hasSearchDirector
     {
-        return 0;
+        return 1;
     }
 
     # hasSearchActors
@@ -128,7 +123,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     # Return 0 to hide column, 1 to show it.
     sub hasSearchActors
     {
-        return 0;
+        return 1;
     }
 
     # getExtra
@@ -137,7 +132,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     sub getExtra
     {
 
-        return '';
+        return 'Žánr';
     }
 
     # changeUrl
@@ -151,6 +146,110 @@ use GCPlugins::GCfilms::GCfilmsCommon;
         return $url;
     }
 
+	# preProcess
+	# Called before each page is processed. You can use it to do some substitutions.
+	# $html is the page content.
+	# Returns modified version of page content.
+    sub preProcess
+    {
+        my ($self, $html) = @_;
+        $self->{parsingEnded} = 0;
+        if ($self->{parsingList})
+        {
+            # Search results
+
+	        # Initial values for search results parsing
+	        # There are two movies list:
+	        # First with detailed info (title, genre, origin country, year, directors, actors)
+	        # Second with brief list of other movies (title, year)
+
+            # We are in brief list containing other movies without details
+            $self->{insideOtherMovies} = 0;
+            # Movie link; movie's details follow if not in brief list
+            $self->{isMovie} = 0;
+
+            ## Details:
+
+            # Movie's details will follow: Genre, origin, actors, directors, year
+            $self->{insideDetails} = 0;
+            # In movie's details after paragraph with Genre, origin and date
+            $self->{wasDetailsInfo} = 0;
+            # In movie's details: directors and actors
+            $self->{directors}        = ();
+            $self->{directorsCounter} = 0;
+            $self->{actors}           = ();
+            $self->{actorsCounter}    = 0;
+            $self->{insideDirectors}  = 0;
+            $self->{insideActors}     = 0;
+
+            # Movie year
+            $self->{isYear} = 0;
+
+            ## Preprocess
+
+            # directors and actors
+            $html =~ s/\n\s*Režie:\s([^\n]*)/<div class="directors">$1<\/div>/g;
+            $html =~ s/\n\s*Hrají:\s([^\n].*)/<div class="actors">$1<\/div>/g;
+            # year
+            $html =~ s/<span class="film-year">\(([0-9]+)\)<\/span>/<span class="film-year">$1<\/span>/g;
+        }
+        else
+        {
+            # Movie page
+
+            # Initial values for search results parsing
+
+            # array containg other movie titles (not exported to GCStar)
+            $self->{titles} = ();
+            # in list containing other movie titles
+            $self->{isTitles} = 0;
+            # in the original title (title for same country as movie's origin)
+            $self->{isOrigTitle} = 0;
+            # original title (if not set during parsing it will be set to main title at the end)
+            $self->{origTitle}     = undef;
+            $self->{titlesCounter} = 0;
+
+            $self->{insideGenre} = 0;
+
+            $self->{awaitingSynopsis} = 0;
+            $self->{insideSynopsis}   = 0;
+
+            # inside details with country, date (year) and time (length)
+            $self->{insideInfo} = 0;
+
+            $self->{insideRating} = 0;
+
+            # User comments
+            # Each comment consists of commenter (user) and his comment
+
+            $self->{insideCommentAuthor} = 0;
+            $self->{awaitingComment}     = 0;
+            $self->{insideComment}       = 0;
+
+            # In directors and actors
+            $self->{insideDirectors}  = 0;
+            $self->{insideActors}     = 0;
+            $self->{directors}        = ();
+            $self->{directorsCounter} = 0;
+            $self->{actors}           = ();
+            $self->{actorsCounter}    = 0;
+
+            ## Preprocess
+
+            # removee <br /> and <br>
+            $html =~ s/<br( \/)?>/\n/g;
+            ## Synopsis
+            # remove list bullet
+            $html =~ s/<img src="http:\/\/img.csfd.cz\/sites\/web\/images\/common\/li.gif"[^>]*>//g;
+            # remove hyperlink to user profile
+            $html =~ s/(&nbsp;<span class="source[^\(]*\()<a[^>]*>([^<]*)<\/a>/$1uživatel $2/g;
+            # remove <span></span> around synopsis source
+            $html =~ s/&nbsp;<span class="source[^\(]*\(([^\)]*)\)<\/span>/\n-- $1/g;
+            $html =~ s/<div data-truncate="570">([^<]*)<\/div>/$1/g;
+        }
+        return $html;
+    }
+
     # In processing functions below, self->{parsingList} can be used.
     # If true, we are processing a search results page
     # If false, we are processing a movie information page.
@@ -158,8 +257,8 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     # $self->{inside}->{tagname} (with correct value for tagname) can be used to test
     # if we are in the corresponding tag.
 
-# You have a counter $self->{movieIdx} that have to be used when processing search results.
-# It is your responsability to increment it!
+	# You have a counter $self->{movieIdx} that have to be used when processing search results.
+	# It is your responsability to increment it!
 
     # When processing search results, you have to fill (if available) following fields:
     #
@@ -170,25 +269,25 @@ use GCPlugins::GCfilms::GCfilmsCommon;
     #  $self->{movieList}[$self->{movieIdx}]->{date}
     #  $self->{movieList}[$self->{movieIdx}]->{extra}
 
-# When processing a movie page, you need to fill the fields (if available) in $self->{curInfo}. They are:
-#
-#  $self->{curInfo}->{title}
-#  $self->{curInfo}->{director}
-#  $self->{curInfo}->{original}        (Original title)
-#  $self->{curInfo}->{actors}
-#  $self->{curInfo}->{genre}        (Comma separated list of movie type)
-#  $self->{curInfo}->{country}        (Movie Nationality or country)
-#  $self->{curInfo}->{date}
-#  $self->{curInfo}->{time}
-#  $self->{curInfo}->{synopsis}
-#  $self->{curInfo}->{image}
-#  $self->{curInfo}->{audio}
-#  $self->{curInfo}->{subt}
-#  $self->{curInfo}->{age}          0     : No information
-#                                   1     : Unrated
-#                                   2     : All audience
-#                                   5     : Parental Guidance
-#                                   >= 10 : Minimum age value
+	# When processing a movie page, you need to fill the fields (if available) in $self->{curInfo}. They are:
+	#
+	#  $self->{curInfo}->{title}
+	#  $self->{curInfo}->{director}
+	#  $self->{curInfo}->{original}        (Original title)
+	#  $self->{curInfo}->{actors}
+	#  $self->{curInfo}->{genre}        (Comma separated list of movie type)
+	#  $self->{curInfo}->{country}        (Movie Nationality or country)
+	#  $self->{curInfo}->{date}
+	#  $self->{curInfo}->{time}
+	#  $self->{curInfo}->{synopsis}
+	#  $self->{curInfo}->{image}
+	#  $self->{curInfo}->{audio}
+	#  $self->{curInfo}->{subt}
+	#  $self->{curInfo}->{age}          0     : No information
+	#                                   1     : Unrated
+	#                                   2     : All audience
+	#                                   5     : Parental Guidance
+	#                                   >= 10 : Minimum age value
 
     # start
     # Called each time a new HTML tag begins.
@@ -202,102 +301,111 @@ use GCPlugins::GCfilms::GCfilmsCommon;
         my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
         $self->{inside}->{$tagname}++;
 
+
+        if ($self->{parsingEnded})
+        {
+            return;
+        }
+
         if ($self->{parsingList})
         {
-            # Your code for processing search results here
-            if ($tagname eq "a")
+
+            # in brief list of other movies (without details)
+            if ($tagname eq "ul" and $attr->{class} eq "films others")
             {
-                if ($attr->{href} =~ m/\/film\/[0-9]+-.*/)
-                {
-                    $self->{isMovie} = 1;
-                    $self->{isInfo}  = 1;
-                    $self->{itemIdx}++;
-                    $self->{itemsList}[ $self->{itemIdx} ]->{url} = $attr->{href};
-                }
+                $self->{insideOtherMovies} = 1;
             }
-            elsif ($tagname eq "div")
+
+            # in link to movie page
+            if ($tagname eq "a" and $attr->{href} =~ m/\/film\/[0-9]+-.*/)
             {
-                if ($attr->{class} eq "year")
-                {
-                    $self->{isYear} = 1;
-                }
+                $self->{isMovie} = 1;
+                $self->{itemIdx}++;
+                $self->{itemsList}[ $self->{itemIdx} ]->{url} = $attr->{href};
+                $self->{insideDetails} = 1 if ($self->{insideOtherMovies} != 1);
+                $self->{wasDetailsInfo} = 0;
+            }
+
+            # directors and actors
+            if ($tagname eq "div")
+            {
+                $self->{insideDirectors} = 1 if ($attr->{class} eq "directors");
+                $self->{insideActors}    = 1 if ($attr->{class} eq "actors");
+            }
+
+            # year
+            if ($tagname eq "span")
+            {
+                $self->{isYear} = 1 if ($attr->{class} eq "film-year");
             }
         }
         else
         {
-            # Your code for processing movie information here
-            if ($tagname eq "span")
-            {
-                if ($attr->{class} eq "komentar_font")
-                {
-                    $self->{insideSynopsis} = 1;
-                }
-            }
-            elsif ($tagname eq "h1")
-            {
-#				if ($attr->{style} eq "font-size: 18px; font-weight: bold; color: rgb(0, 0, 0); font-family: Tahoma;")
-                if ($attr->{style} =~ m/Tahoma/)
-                {
-                    $self->{insideName} = 1;
-                }
-            }
-            elsif ($tagname eq "table")
-            {
-                if ($attr->{background} =~ m/http:\/\/img\.csfd\.cz\/posters\//)
-                {
-                    $self->{curInfo}->{image} = $attr->{background};
-                }
-            }
-            elsif ($tagname eq "div")
-            {
-                if ($attr->{class} eq "title")
-                {
-                    $self->{insideTitle} = 1;
-                }
-                if ($attr->{class} eq "genre")
-                {
 
-                    # we are after all language movie names, find the
-                    # original one, which is always second
-                    if ($self->{title_nm} < 1)
-                    {
-                        $self->{curInfo}->{original} = $self->{curInfo}->{title};
-                    }
-                    elsif ($self->{title_nm} < 2)
-                    {
-                        $self->{curInfo}->{original} = $self->{titles}[1];
-                    }
-                    else
-                    {
-                        $self->{curInfo}->{original} = $self->{titles}[2];
-                    }
-                    # genres
-                    $self->{insideGenre} = 1;
-                }
+            # Synopsis
+            if (    $tagname eq "div"
+                and $attr->{class} eq "content"
+                and $self->{awaitingSynopsis})
+            {
+                $self->{insideSynopsis}   = 1;
+                $self->{awaitingSynopsis} = 0;
+            }
 
-                $self->{insideInfo}     = 1 if ($attr->{class} eq "info");
-                $self->{insideDirector} = 1 if ($attr->{class} eq "director");
-                $self->{insideActor}    = 1 if ($attr->{class} eq "actor");
-            }
-            # optional
-            if ($tagname eq "td")
+            # Poster
+            if (    $tagname eq "img"
+                and $attr->{src} =~ /^http:\/\/img\.csfd\.cz\/posters\//)
             {
-                if ($attr->{style} =~ m/font-size:36px/)
-                {
-                    $self->{insideRating} = 1;
-                }
+                $self->{curInfo}->{image} = $attr->{src};
             }
-            elsif ($tagname eq "div")
+
+            # Original name and other names
+            if ($tagname eq "ul" and $attr->{class} eq "names")
             {
-                if ($attr->{class} eq "commenter")
-                {
-                    $self->{insideCommenter} = 1;
-                }
-                if ($attr->{class} eq "komentar_font")
-                {
-                    $self->{insideComment} = 1;
-                }
+                $self->{isTitles} = 1;
             }
+
+            if ($tagname eq "img" and $self->{isTitles})
+            {
+                $self->{isOrigTitle} = 1 if ($attr->{alt} !~ /název$/);
+                $self->{isSKTitle}   = 1 if ($attr->{alt} =~ /SK název$/);
+            }
+
+            # Genre
+            if ($tagname eq "p" and $attr->{class} eq "genre")
+            {
+                $self->{insideGenre} = 1;
+            }
+
+            # Directors and Actors
+            if ($tagname eq "div")
+            {
+                $self->{insideDirectors} = 1 if ($attr->{class} eq "directors");
+                $self->{insideActors}    = 1 if ($attr->{class} eq "actors");
+            }
+
+            # Info (country ,date, time = duration)
+            if ($tagname eq "p" and $attr->{class} eq "origin")
+            {
+                $self->{insideInfo} = 1;
+            }
+
+            # Rating
+            if ($tagname eq "h2" and $attr->{class} eq "average")
+            {
+                $self->{insideRating} = 1;
+            }
+
+            # Comments
+            if ($tagname eq "h5" and $attr->{class} eq "author")
+            {
+                $self->{insideCommentAuthor} = 1;
+            }
+            if ($self->{awaitingComment} and $tagname eq "p" and $attr->{class} eq "post")
+            {
+                $self->{awaitingComment} = 0;
+                $self->{insideComment}   = 1;
+            }
+
         }
     }
 
@@ -311,40 +419,80 @@ use GCPlugins::GCfilms::GCfilmsCommon;
 
         if ($self->{parsingList})
         {
-            # Your code for processing search results here
+
+            # movie details
+            $self->{insideDetails} = 0
+              if ($tagname eq "div")
+              and $self->{insideDetails};
+
+            # directors and actors
+            if ($tagname eq "div")
+            {
+                if ($self->{insideDirectors})
+                {
+                    $self->{insideDirectors} = 0;
+                    $self->{itemsList}[ $self->{itemIdx} ]->{director} =
+                      join(', ', @{$self->{directors}});
+		            $self->{directors}        = ();
+		            $self->{directorsCounter} = 0;
+                }
+                if ($self->{insideActors})
+                {
+                    $self->{insideActors} = 0;
+                    $self->{itemsList}[ $self->{itemIdx} ]->{actors} =
+                      join(', ', @{$self->{actors}});
+                    $self->{actors}           = ();
+                    $self->{actorsCounter}    = 0;
+                }
+            }
         }
         else
         {
-            # Your code for processing movie information here
-            if ($tagname eq "div")
+
+            # Synopsis
+            $self->{insideSynopsis} = 0 if ($tagname eq "div");
+
+            # Titles
+            if ($tagname eq "ul" and $self->{isTitles})
             {
-                if ($self->{insideDirector})
-                {
-                    $self->{curInfo}->{director} =~ s/&nbsp;/ /g;
-                    $self->{insideDirector} = 0;
-                }
-                if ($self->{insideActor})
-                {
-                    $self->{curInfo}->{actors} =~ s/&nbsp;/ /g;
-                    $self->{insideActor} = 0;
-                }
+                $self->{isTitles} = 0;
             }
-            elsif ($tagname eq "span")
+
+            if ( $tagname eq "body" )
             {
-                if ($self->{insideSynopsis})
-                {
-                    $self->{curInfo}->{synopsis} =~ s/[ \n\t]*(.*)/$1/g;
-                    $self->{insideSynopsis} = 0;
-                }
+            	$self->{curInfo}->{original} ||= $self->{curInfo}->{title};
+            } 
+
+            # Actors
+            if ($tagname eq "div" and $self->{insideActors})
+            {
+                $self->{curInfo}->{actors} = join(', ', @{$self->{actors}});
+                $self->{insideActors} = 0;
             }
-            # optional
-            if ($tagname eq "div")
+
+            # Directors
+            if ($tagname eq "div" and $self->{insideDirectors})
             {
-                if ($self->{insideComment})
-                {
-                    $self->{curInfo}->{comment} .= "\n\n";
-                    $self->{insideComment} = 0;
-                }
+                $self->{curInfo}->{director} = join(', ', @{$self->{directors}});
+                $self->{insideDirectors} = 0;
+            }
+
+            # Comment
+
+            $self->{insideCommentAuthor} = 0
+              if ($tagname eq "h5" and $self->{insideCommentAuthor});
+
+            if ($tagname eq "li" and $self->{isComment})
+            {
+                $self->{curInfo}->{comment} .= "\n";
+                $self->{isComment} = 0;
+            }
+
+            # Debug
+            if ($tagname eq "body" and $self->{debug})
+            {
+                use Data::Dumper;
+                print Dumper $self->{curInfo};
             }
         }
     }
@@ -357,81 +505,166 @@ use GCPlugins::GCfilms::GCfilmsCommon;
         my ($self, $origtext) = @_;
 
         return if length($origtext) < 2;
+        $origtext =~ s/^\s+|\s+$//g;
 
+        return if ($self->{parsingEnded});
+        
         if ($self->{parsingList})
         {
-            # Your code for processing search results here
+            if ($self->{inside}->{h1} && $origtext !~ m/Vyhledávání/i)
+            {
+                $self->{parsingEnded} = 1;
+                $self->{itemIdx} = 0;
+                $self->{itemsList}[0]->{url} = $self->{loadedUrl};
+            }
+
+            # Movie title
             if ($self->{isMovie})
             {
                 $self->{itemsList}[ $self->{itemIdx} ]->{"title"} = $origtext;
-                $self->{isMovie}                                  = 0;
-                $self->{isInfo}                                   = 1;
+                $self->{isMovie} = 0;
                 return;
             }
+
+            # Date (year)
             elsif ($self->{isYear})
             {
                 $self->{itemsList}[ $self->{itemIdx} ]->{"date"} = $origtext;
                 $self->{isYear} = 0;
             }
 
+            # Extra movie info: genre, origin, date
+            elsif ( $self->{inside}->{p}
+                and $self->{insideDetails}
+                and $self->{wasDetailsInfo} == 0)
+            {
+                my @tmp = split(', ', $origtext);
+                my $pos = $#tmp;
+                my ($year, $country, $genre) = (undef, undef, undef);
+                $year = $tmp[$pos] if ($tmp[$pos] =~ /^\d+$/);
+                $pos--;
+                $country = $tmp[$pos] if ($pos >= 0);
+                $pos--;
+                $genre = $tmp[$pos] if ($pos >= 0);
+
+                $self->{itemsList}[ $self->{itemIdx} ]->{date} = $year if (defined $year);
+                $self->{itemsList}[ $self->{itemIdx} ]->{country} = $country
+                  if (defined $country);
+                $self->{itemsList}[ $self->{itemIdx} ]->{extra} = $genre
+                  if (defined $genre);
+                $self->{wasDetailsInfo} = 1;
+            }
+
+            # Directors
+            elsif ($self->{inside}->{a} and $self->{insideDirectors})
+            {
+                push @{$self->{directors}}, $origtext;
+                $self->{directorsCounter}++;
+            }
+
+            # Actors
+            elsif ($self->{inside}->{a} and $self->{insideActors})
+            {
+                push @{$self->{actors}}, $origtext;
+                $self->{actorsCounter}++;
+            }
         }
         else
         {
-            # Your code for processing movie information here
-            if ($self->{insideName})
+
+            # Movie titles
+            if ($self->{inside}->{h1})
             {
-                $origtext =~ s/\n[ ]*(.*)/$1/;
-                $self->{curInfo}->{title} = $origtext if !$self->{curInfo}->{title};
-                $self->{insideName} = 0;
+                $self->{curInfo}->{title} = $origtext
+                  if !$self->{curInfo}->{title};
             }
-            elsif ($self->{insideTitle})
+            if ($self->{inside}->{h3} and $self->{isTitles})
             {
-                $self->{title_nm}++;
-                $self->{titles}[ $self->{title_nm} ] = $origtext;
-                $self->{insideTitle} = 0;
+                $self->{titlesCounter}++;
+                $self->{titles}[ $self->{titlesCounter} ] = $origtext;
+                if ($self->{isOrigTitle})
+                {
+                	$self->{curInfo}->{original} ||= $origtext; 
+                    $self->{isOrigTitle} = 0;
+                }
+                if ($self->{isSKTitle} and $self->{lang} eq "SK")
+                {
+                    $self->{curInfo}->{title} = $origtext;
+                    $self->{isSKTitle} = 0;
+                }                
             }
-            elsif ($self->{insideGenre})
+
+            # Genre
+            if ($self->{insideGenre})
             {
                 $origtext =~ s/ \/ /,/g;
-                $origtext =~ s/&nbsp;/ /g;
-                $origtext =~ s/[ ]*(.*)[ ]*/$1/;
                 $self->{curInfo}->{genre} = $origtext;
                 $self->{insideGenre} = 0;
             }
-            elsif ($self->{insideInfo})
+
+            # Extra movie info: country, date (year), time
+            if ($self->{insideInfo})
             {
-                ($self->{curInfo}->{country} = $origtext) =~ s/([^,]*).*/$1/;
-                ($self->{curInfo}->{date}    = $origtext) =~ s/[^,]*, ([0-9]+).*/$1/;
-                ($self->{curInfo}->{time}    = $origtext) =~ s/[^,]*,[^,]*, (.*)/$1/;
+                my ($country, $year, $time) = split(', ', $origtext);
+                $country =~ s/ \/ /,/g;
+
+                $self->{curInfo}->{country} = $country;
+                $self->{curInfo}->{date}    = $year;
+                $self->{curInfo}->{time}    = $time;
+
                 $self->{insideInfo} = 0;
             }
-            elsif ($self->{insideDirector})
+
+            # Directors and Actors
+            if ($self->{insideDirectorsOrActors})
             {
-                $self->{curInfo}->{director} .= $origtext;
+                $self->{insideDirectors} = 1 if ($origtext =~ /^Režie:/);
+                $self->{insideActors}    = 1 if ($origtext =~ /^Hrají:/);
             }
-            elsif ($self->{insideActor})
+            if ($self->{inside}->{a} and $self->{insideDirectors})
             {
-                $self->{curInfo}->{actors} .= $origtext;
+                push @{$self->{directors}}, $origtext;
+                $self->{directorsCounter}++;
             }
-            elsif ($self->{insideSynopsis})
+            if ($self->{inside}->{a} and $self->{insideActors})
             {
-                $self->{curInfo}->{synopsis} .= $origtext;
+                #push @{$self->{curInfo}->{actors}}, [$origtext]
+                #  if ($self->{actorsCounter} <
+                #    $GCPlugins::GCfilms::GCfilmsCommon::MAX_ACTORS);
+                #$self->{actorsCounter}++;
+                push @{$self->{actors}}, $origtext;
+                $self->{actorsCounter}++;
             }
-            # optional
-            elsif ($self->{insideRating})
+
+            # Synopsis
+            if ($self->{inside}->{h3})
             {
-                $origtext =~ s/[ ]*([0-9]+)%[ ]*/$1/;
-                $self->{curInfo}->{ratingpress} = int($origtext / 10 + .5);
+                $self->{awaitingSynopsis} = 1 if ($origtext eq "Obsah");
+            }
+            if ($self->{inside}->{li} and $self->{insideSynopsis})
+            {
+                $self->{curInfo}->{synopsis} .= $origtext . "\n\n\n";
+            }
+
+            # Rating
+            if ($self->{insideRating})
+            {
+                $origtext =~ s/([0-9]+)%/$1/;
+                $self->{curInfo}->{ratingpress} = int($origtext / 10 + .5)
+                  if ($origtext ne "");
                 $self->{insideRating} = 0;
             }
-            elsif ($self->{insideComment})
+
+            # Comments
+            if ($self->{inside}->{a} and $self->{insideCommentAuthor})
             {
-                $self->{curInfo}->{comment} .= $origtext;
+                $self->{curInfo}->{comment} .= $origtext . " napsal(a):\n";
+                $self->{awaitingComment} = 1;
             }
-            elsif ($self->{insideCommenter})
+            if ($self->{insideComment})
             {
-                $self->{curInfo}->{comment} .= $origtext . "\n";
-                $self->{insideCommenter} = 0;
+                $self->{curInfo}->{comment} .= $origtext . "\n\n";
+                $self->{insideComment} = 0;
             }
         }
     }
@@ -452,59 +685,19 @@ use GCPlugins::GCfilms::GCfilmsCommon;
         $self->{hasField} = {
             title    => 1,
             date     => 1,
-            director => 0,
-            actors   => 0,
+            director => 1,
+            actors   => 1,
+            country  => 1
         };
+        
+        $self->{lang} = "CS";
 
-        $self->{isInfo}   = 0;
-        $self->{isMovie}  = 0;
-        $self->{curName}  = undef;
-        $self->{curUrl}   = undef;
-        $self->{title_nm} = 0;
+        $self->{curName} = undef;
+        $self->{curUrl}  = undef;
+        
+        $self->{debug} = ($ENV{GCS_DEBUG_PLUGIN_PHASE} > 0);        
 
         return $self;
-    }
-
-    # preProcess
-    # Called before each page is processed. You can use it to do some substitutions.
-    # $html is the page content.
-    # Returns modified version of page content.
-    sub preProcess
-    {
-        my ($self, $html) = @_;
-
-        # Your code to modify $html here.
-        # search results
-        #<<< keep perltidy out of here
-        $html =~
-          s{(<a href="\/film\/[0-9]+-[^ ]*") style="font-size:12px">([^<]*)<\/a> \(([0-9]{4})\)<br>}
-           {$1>$2<\/a><div class="year">$3<\/div><br>\n}g;
-
-        ## information
-        # titles
-        $html =~
-          s{<table[^>]*>(?:<tbody>)?<tr><td[^>]*><img src=(?:"|')http:\/\/img\.csfd\.cz\/images\/flag_[0-9]+\.gif(?:"|')[^>]*><\/td><td>([^<]*)<\/td><\/tr>(?:<\/tbody>)?<\/table>}
-           {<div class="title">$1<\/div>\n}g;
-
-        # genre, info, directors, actors
-        # kvuli chybe v designu stranek je pposledni </div> jiz obsazen na strance
-        $html =~
-          s{[ ]*<(?:br|BR)>[ ]*<b>([^<]*)<[b|B][r|R]>([^<]*)<\/b><[b|B][r|R]><[b|B][r|R]><b>[^<]*<\/b>[ ]*(.*?)<[B|b][r|R]><b>[^<]*<\/b>[ ]*(.*?)<br>&nbsp;<br><\/td>[ ]*}
-           {<div class="genre">$1<\/div>\n<div class="info">$2<\/div>\n<div class="director">$3<\/div>\n<div class="actor">$4\n}g;
-
-        ## optional
-        ## comment author
-        # convert graphic stars to text stars
-        $html =~
-          s{(<img src="http:\/\/img.csfd.cz\/images\/new\/film\/star_red_white\.gif" alt="\*">)}
-           {\*}g;
-
-        $html =~
-          s{>&nbsp;<b>([^<]+)<\/b>&nbsp;&nbsp;([\*]*)}
-           {><div class="commenter">$1 $2<\/div>}g;
-
-        #>>>
-        return $html;
     }
 
 }

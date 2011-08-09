@@ -305,9 +305,6 @@ name="GCTVseries">
 		<panel name="form" label="PanelForm" editable="true">
 			<item type="line">
 				<item type="value" for="id" width="5" nomargin="true"/>
-				<item type="value" for="name" expand="true" nomargin="true"/>
-			</item>
-			<item type="line">
 				<item type="value" for="series" expand="true" nomargin="true"/>
 				<item type="label" for="season" width="5" nomargin="true"/>
 				<item type="value" for="season" nomargin="true"/>

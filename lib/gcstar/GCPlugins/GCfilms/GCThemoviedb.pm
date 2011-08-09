@@ -159,7 +159,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
 
             for my $country (@{$xml->{movies}->{movie}->{countries}->{country}})
             {
-                $self->{curInfo}->{country} .= $country->{name} . ', ';
+                push @{$self->{curInfo}->{country}}, $country->{name};
             }
             $self->{curInfo}->{country} =~ s/, $//;
             for my $person (@{$xml->{movies}->{movie}->{cast}->{person}})

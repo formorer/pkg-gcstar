@@ -64,6 +64,15 @@ $hasAboutDialog = 0 if $@;
         ($tmpWidget->get_children)[1]->set_label($label);        
     }
     
+    sub setCancelLabel
+    {
+        my ($self, $label) = @_;
+        my @buttons = $self->action_area->get_children;
+        my $tmpWidget = $buttons[1];
+        $tmpWidget = $tmpWidget->child while ! $tmpWidget->isa('Gtk2::HBox');
+        ($tmpWidget->get_children)[1]->set_label($label);        
+    }
+    
     sub new
     {
         my ($proto, $parent, $title, $okLabel, $extraAfter, @extraButtons) = @_;

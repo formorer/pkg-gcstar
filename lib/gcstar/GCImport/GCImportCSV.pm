@@ -81,7 +81,7 @@ use GCImport::GCImportBase;
             $charsets .= $_.',';
         }
 
-        my $pluginsList = $self->{model}->{parent}->{ModelsDialog}->{factory}->{lang}->{PluginDisabled}.',';
+        my $pluginsList = $self->{model}->{parent}->{lang}->{PluginDisabled}.',';
         foreach (@{$self->{model}->getPluginsNames})
         {
             my $plugin = $GCPlugins::pluginsMap{$self->{model}->getName}->{$_};
@@ -157,7 +157,8 @@ use GCImport::GCImportBase;
         my $plugin;
         my $titleField;
         my $pluginEnabled;
-        $pluginEnabled = 1 if ($self->{options}->{plugin} ne $self->{options}->{lang}->{PluginDisabled});
+        $pluginEnabled = 1 if $self->{options}->{plugin}
+                          && ($self->{options}->{plugin} ne $self->{options}->{lang}->{PluginDisabled});
         if ($pluginEnabled)
         {
             $plugin = $GCPlugins::pluginsMap{$self->{model}->getName}->{$self->{options}->{plugin}};
