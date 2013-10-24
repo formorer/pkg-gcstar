@@ -9,7 +9,7 @@ Homepage: http://www.gcstar.org/
 
 Package: gcstar
 Architecture: all
-Depends: libgtk2-perl, libwww-perl, libarchive-tar-perl, libxml-simple-perl, libxml-parser-perl, libarchive-zip-perl, libmp3-tag-perl, libogg-vorbis-header-pureperl-perl, ttf-liberation, ${misc:Depends}, ${perl:Depends}
+Depends: libgtk2-perl, libwww-perl, libarchive-tar-perl, libxml-simple-perl, libxml-parser-perl, libarchive-zip-perl, libmp3-tag-perl, libogg-vorbis-header-pureperl-perl, fonts-liberation, ${misc:Depends}, ${perl:Depends}
 Recommends: libgtk2-spell-perl, libnet-freedb-perl, libdatetime-format-strptime-perl, libmp3-info-perl
 Provides: gcfilms  
 Replaces: gcfilms 
