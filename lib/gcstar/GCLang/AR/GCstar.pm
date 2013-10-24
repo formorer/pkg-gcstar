@@ -31,7 +31,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
     
@@ -147,9 +147,15 @@
             'MenuNoFilter' => '_أي شيء',
     
         'MenuConfiguration' => '_إعدادات',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_المعلومات المعروضة',
             'MenuBorrowers' => '_إستعارة',
             'MenuToolbarConfiguration' => '_عناصر شريط الأدوات',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => 'نم_ط التحويل',
         
         'MenuBookmarks' => '_محفوظات',
@@ -228,8 +234,7 @@
 مبرمج: Adolfo González
 ',
         'AboutLicense' => 'المشروع تم تطويره و توزيعه وفق رخصة البرامج مفتوحة المصدر GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'دعم اللغة العربية: محمد بشير النعيمي 
 http://mbnoimi.net/
 mhdbnoimi@gmail.com
@@ -422,6 +427,7 @@ mbnoimi@gmail.com',
         'ImagesOptionsBgTooltip' => 'تغيير لون الخلفية',
         'ImagesOptionsFgTooltip'=> 'تغيير لون التحديد',
         'ImagesOptionsResizeImgList' => 'تغيير عدد الأعمدة بشكل تلقائي',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'حجم',
         'ImagesOptionsSizeList' => {0 => 'صغير جداً', 1 => 'صغير', 2 => 'متوسط', 3 => 'كبير', 4 => 'كبير جداً'},
         'ImagesOptionsSizeTooltip' => 'حدد حجم الصورة',
@@ -680,6 +686,7 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
 
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -138,9 +138,15 @@
             'MenuNoFilter' => '_Любой',
     
         'MenuConfiguration' => '_Настройки',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Отображаемая информация',
             'MenuBorrowers' => '_Должники',
             'MenuToolbarConfiguration' => '_Toolbar controls',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Преобразование жанров',
         
         'MenuBookmarks' => 'Моя _Коллекция',
@@ -218,8 +224,7 @@ TPF: Программист
 Adolfo González: Программист
 ',
         'AboutLicense' => 'Распространяется под лицензией GNU GPL
-Логотипы Copyright le Spektre
-http://le-spektre.org',
+Логотипы Copyright le Spektre',
         'AboutTranslation' => 'Русский перевод Андрей Гуселетов',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Логотипы и вэб-дизайн : le Spektre',
@@ -403,6 +408,7 @@ http://le-spektre.org',
         'ImagesOptionsBgTooltip' => 'Изменить цвет фона',
         'ImagesOptionsFgTooltip'=> 'Изменить цвет выделения',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Размер',
         'ImagesOptionsSizeList' => {0 => 'Очень маленькое', 1 => 'Маленькое', 2 => 'Среднее', 3 => 'Большое', 4 => 'Очень большое'},
         'ImagesOptionsSizeTooltip' => 'Выберите размер изображеня',
@@ -659,6 +665,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

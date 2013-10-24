@@ -2,7 +2,7 @@ package GCPlugins::GCcomics::GCcomicbookdb;
 
 ###################################################
 #
-#  Copyright 2005-2010 Christian Jodar
+#  Copyright 2005-2012 Christian Jodar
 #
 #  This file is part of GCstar.
 #
@@ -18,7 +18,7 @@ package GCPlugins::GCcomics::GCcomicbookdb;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -127,7 +127,8 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             else
             {
                 # Fetching item info
-                if (($tagname eq "span") && ($attr->{class} eq "test page_headline"))
+                if (   ($tagname eq "span")
+                    && ((index $attr->{class}, "page_headline") > -1))
                 {
                     $self->{insideHeadline} = 1;
                 }
@@ -175,7 +176,9 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                 {
                     $self->{insideCoverDate} = 1;
                 }
-                if (($tagname eq "span") && ($attr->{class} eq "test page_subheadline"))
+                if (   ($tagname eq "span")
+                    && ((index $attr->{class}, "test") > -1)
+                    && ((index $attr->{class}, "page_subheadline") > -1))
                 {
                     $self->{insideSubHeadline} = 1;
                 }
@@ -311,6 +314,22 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                 $self->{curInfo}->{volume} = $1;
                 $self->{insideNumber} = 0;
             }
+            elsif (($self->{insideHeadline}) && ($origtext =~ /-\s*TPB/))
+            {
+                # Trade paperback
+                $self->{curInfo}->{series} .= " TPB";
+
+                # Get volume number.  Default to 1.
+                if ($origtext =~ /vol\. (\d+)/)
+                {
+                    $self->{curInfo}->{volume} = $1;
+                }
+                else
+                {
+                    $self->{curInfo}->{volume} = 1;
+                }
+                $self->{insideNumber} = 0;
+            }
             elsif (($self->{insideHeadline}) && ($origtext =~ /vol\. (\d+)/))
             {
                 $self->{curInfo}->{volume} = $1;
@@ -326,6 +345,12 @@ use GCPlugins::GCcomics::GCcomicsCommon;
             elsif (($self->{insideSubHeadline}) && ($origtext =~ /\"(.*)\"/))
             {
                 $self->{curInfo}->{title} = $1;
+
+                # Get printing or other note if present
+                if ($origtext =~ /\((.*)\)/)
+                {
+                    $self->{curInfo}->{title} .= " (" . $1 . ")";
+                }
             }
             elsif ($self->{insidePublisher})
             {

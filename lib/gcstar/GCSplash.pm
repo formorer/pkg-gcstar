@@ -18,7 +18,7 @@ package GCSplash;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -27,6 +27,7 @@ use Gtk2;
 
 {
     package GCSplashWindow;
+    use GCUtils;
     use base "Gtk2::Window";
     
     sub new
@@ -49,6 +50,7 @@ use Gtk2;
         $self->set_skip_taskbar_hint(1);
 
         #$self->set_position('center-always');
+        $self->set_keep_above(1);
         
         $self->{title} = new Gtk2::Label;
         $self->{title}->set_markup('<span size="xx-large" weight="bold" color="#1c86ee">GCstar</span>');
@@ -176,7 +178,7 @@ use Gtk2;
             $self->setLabel($self->{parent}->{lang}->{SplashLoad}." <span color='#cdad00'>($current/".$self->{total}.')</span>');
             $self->{progress}->set_fraction(0.1 + (($current / $self->{total}) * 0.3));
         }
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setProgressForItemsDisplay
@@ -192,7 +194,7 @@ use Gtk2;
             $self->setLabel($self->{parent}->{lang}->{SplashDisplay}." <span color='#cdad00'>($current/".$self->{total}.')</span>');
             $self->{progress}->set_fraction(0.4 + (($current / $self->{total}) * 0.3));
         }
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setProgressForItemsSort
@@ -208,14 +210,14 @@ use Gtk2;
             $self->setLabel($self->{parent}->{lang}->{SplashSort}." <span color='#cdad00'>($current/".$self->{total}.')</span>');
             $self->{progress}->set_fraction(0.7 + (($current / $self->{total}) * 0.2));
         }
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setProgress
     {
         my ($self, $current) = @_;
         $self->{progress}->set_fraction($current);
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub destroyMe

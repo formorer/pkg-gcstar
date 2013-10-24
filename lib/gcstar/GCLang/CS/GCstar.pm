@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -137,9 +137,15 @@ K rozlišení, který server vlastní dané informace, můžete použít
             'MenuNoFilter' => '_Vše',
     
         'MenuConfiguration' => '_Nastavení',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Zobrazené informace',
             'MenuBorrowers' => '_Dlužníci',
             'MenuToolbarConfiguration' => '_Toolbar controls',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Konverze žánru',
         
         'MenuBookmarks' => 'Mé _Sbíky',
@@ -218,8 +224,7 @@ TPF: Programmer
 Adolfo González: Programmer
 ',
         'AboutLicense' => 'Distribuováno za podmínek GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Český překlad připravil Tomáš Klimek (Tomas.Klimek@gmail.com)',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo a webdesign od le Spektre',
@@ -403,6 +408,7 @@ Logo a webdesign od le Spektre',
         'ImagesOptionsBgTooltip' => 'Změna barvy pozadí',
         'ImagesOptionsFgTooltip'=> 'Změna barvy výběru',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Velikost obrázků',
         'ImagesOptionsSizeList' => {0 => 'Velmi malé', 1 => 'Malé', 2 => 'Středně velké', 3 => 'Velké', 4 => 'Velmi velké'},
         'ImagesOptionsSizeTooltip' => 'Výběr velikosti obrázků',
@@ -659,6 +665,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

@@ -2,7 +2,7 @@ package GCPlugins::GCgames::GCMobyGames;
 
 ###################################################
 #
-#  Copyright 2005-2010 Christian Jodar
+#  Copyright 2005-2011 Christian Jodar
 #
 #  This file is part of GCstar.
 #
@@ -18,7 +18,7 @@ package GCPlugins::GCgames::GCMobyGames;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -238,6 +238,7 @@ use GCPlugins::GCgames::GCgamesCommon;
             elsif ( ($tagname eq 'a') && ($self->{isName}) )
             {
                     $self->{is} = 'name';
+                    $self->{curInfo}->{exclusive} = 1;
                     $self->{isName} = 0;
             }
             elsif ( ($tagname eq 'a') && ($self->{isPlatform}) )
@@ -311,10 +312,10 @@ use GCPlugins::GCgames::GCgamesCommon;
 
                 $html = $self->loadPage($self->{curInfo}->{$self->{urlField}}.'/screenshots', 0, 1);
                 my $screen = 1;
-                while ($html =~ m|src="(http://www.mobygames.com/images/shots/thumbnail[^"]*?)"|g)
+                while ($html =~ m|src="(/images/shots/[^"]*?)"|g)
                 {
-                    $self->{curInfo}->{'screenshot'.$screen} = $1;
-                    $self->{curInfo}->{'screenshot'.$screen} =~ s|/thumbnail/|/original/|
+                    $self->{curInfo}->{'screenshot'.$screen} = 'http://www.mobygames.com' . $1;
+                    $self->{curInfo}->{'screenshot'.$screen} =~ s|/images/shots/s/|/images/shots/l/|
                         if $self->{bigPics};
                     $screen++;
                     last if $screen > 2;
@@ -435,6 +436,10 @@ use GCPlugins::GCgames::GCgamesCommon;
             {
                 $self->{isDeveloper} = 1
             }
+            elsif ( ($origtext eq 'Also For') || (($origtext eq 'Platforms')))
+            {
+                $self->{curInfo}->{exclusive} = 0;
+            }
             elsif ($origtext eq 'Released')
             {
                 $self->{isDate} = 1
@@ -453,7 +458,9 @@ use GCPlugins::GCgames::GCgamesCommon;
     sub getTipsUrl
     {
         my $self = shift;
-        return $self->{curInfo}->{$self->{urlField}}.'/hints';
+        my $url = $self->{curInfo}->{$self->{urlField}}.'/hints';
+        $url =~ s/##MobyGames//;
+        return $url;
     }
 
     sub new
@@ -471,6 +478,7 @@ use GCPlugins::GCgames::GCgamesCommon;
 
         $self->{isName} = 0;
         $self->{isGame} = 0;
+        $self->{isGameName} = 0;
         $self->{isPlatform} = 0;
         $self->{isEditor} = 0;
         $self->{isDeveloper} = 0;
@@ -478,7 +486,6 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{isGenre} = 0;
         $self->{isDescription} = 0;
         $self->{isBox} = 0;
-        $self->{isScreen} = 0;
         $self->{isSectionTips} = 0;
         $self->{isTip} = 0;
         $self->{isCode} = 0;

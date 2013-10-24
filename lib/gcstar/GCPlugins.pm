@@ -19,7 +19,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -43,10 +43,9 @@ sub loadPlugins
     {
         my $plugin = basename($_, '.pm')."\n";
         next if $plugin =~ /Common/;
-        eval "use GCPlugins::".$model."::$plugin";
         (my $class = $plugin) =~ s/^GC/GCPlugin/;
         my $obj;
-        eval "\$obj = new GCPlugins::".$model."::$class";
+        eval "use GCPlugins::".$model."::$plugin; \$obj = new GCPlugins::".$model."::$class;";
         die "Fatal error with plugin $plugin : $@" if $@;
         $pluginsMap{$model}->{$obj->getName} = $obj;
     }
@@ -612,20 +611,7 @@ sub loadAllPlugins
             {
                 push @data, $_ if $self->{model}->getPlugin($_)->getLang eq $langName;
             }
-            $self->setListData(\@data);
-        }
-
-        sub getUnusedLabel
-        {
-            my $self = shift;
-            
-            return $self->{parent}->{lang}->{MultiSiteUnused};
-        }
-        sub getUsedLabel
-        {
-            my $self = shift;
-            
-            return $self->{parent}->{lang}->{MultiSiteUsed};
+            $self->getDoubleList->setListData(\@data);
         }
 
         sub setModel
@@ -641,7 +627,10 @@ sub loadAllPlugins
             my $class = ref($proto) || $proto;
             my $self  = $class->SUPER::new(
                                     $parent,
-                                    $parent->{lang}->{MultiSiteTitle}
+                                    $parent->{lang}->{MultiSiteTitle},
+                                    0,
+                                    $parent->{lang}->{MultiSiteUnused},
+                                    $parent->{lang}->{MultiSiteUsed}
                                 );
             bless ($self, $class);
 
@@ -665,8 +654,8 @@ sub loadAllPlugins
                 $self->clearList;
             });            
             
-            $self->{vboxUnused}->pack_start($langButton, 0, 0, 0);
-            $self->{vboxUsed}->pack_start($clearButton, 0, 0, 0);
+            $self->getDoubleList->setDataHandler($self);
+            $self->getDoubleList->addBottomButtons($langButton,$clearButton);
             
             return $self;
         }
@@ -1393,6 +1382,8 @@ sub loadAllPlugins
             # It corresponds to a leave of the whole widget not from a single cell
             $self->hideTooltip if $event->detail eq 'ancestor';
         });
+        
+        $self->{multipleSelectionLabel}->set_markup('<i>'.$self->{parent}->{lang}->{ResultsInfo}.'</i>');
 
     }
 
@@ -1624,7 +1615,7 @@ sub loadAllPlugins
         {
             my ($name,$path,$suffix) = File::Basename::fileparse($location, "\.gif", "\.jpg", "\.jpeg", "\.png");
             $self->window->set_cursor(Gtk2::Gdk::Cursor->new('watch'));
-            Gtk2->main_iteration while (Gtk2->events_pending);
+            GCUtils::updateUI;
             (my $tmpFile = tmpnam) .= $suffix;
             GCUtils::downloadFile($location, $tmpFile, $self->{parent});
             $self->window->set_cursor(Gtk2::Gdk::Cursor->new('left_ptr'));

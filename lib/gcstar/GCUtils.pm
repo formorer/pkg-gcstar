@@ -18,12 +18,13 @@ package GCUtils;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
 use strict;
 use Exporter;
+use Cwd 'abs_path';
 use Gtk2;
 
 use base 'Exporter';
@@ -32,6 +33,18 @@ our @EXPORT_OK = qw(glob);
 our $margin = 12;
 our $halfMargin = $margin / 2;
 our $quarterMargin = $margin / 4;
+
+sub updateUI
+{
+    my $loopCount = 0;
+    my $nbEvent = Gtk2->events_pending;
+    while ($nbEvent && ($loopCount < 30))
+    {
+        Gtk2->main_iteration;
+        $loopCount++;
+        $nbEvent = Gtk2->events_pending;
+    }
+}
 
 sub printStack
 {
@@ -81,8 +94,9 @@ sub glob
 
 sub pathToUnix
 {
-    my $path = shift;
+    my ($path, $canonical) = @_;
     $path =~ s|\\|/|g if ($^O =~ /win32/i);
+    $path = abs_path($path) if $canonical;
     return $path;
 }
 
@@ -431,10 +445,19 @@ my $rc_style = Gtk2::RcStyle->new;
 
 sub setWidgetPixmap
 {
-    my ($widget, $image) = @_;
-    $rc_style->bg_pixmap_name('normal', $image);
-    $rc_style->bg_pixmap_name('insensitive', $image);
+    my ($widget, $imageFile) = @_;
+    $rc_style->bg_pixmap_name('normal', $imageFile);
+    $rc_style->bg_pixmap_name('insensitive', $imageFile);
     $widget->modify_style($rc_style);
+
+#    my $style = $widget->parent->get_style->copy;
+#    $style->bg_pixmap('normal', $image);
+#    $style->bg_pixmap('insensitive', $image);
+#    $style->bg_pixmap('active', $image);
+#    $style->bg_pixmap('prelight', $image);
+#    $style->bg_pixmap('selected', $image);
+#    $widget->parent->set_style($style);
+
 }
 
 use File::Basename;
@@ -568,6 +591,25 @@ sub gccmp
     return $result;
 }
 
+# Extended version of gccmp that also supports dates
+# Only useful for image mode as text mode handles that in a better way
+sub gccmpe
+{
+    my ($string1, $string2) = @_;
+    
+    my $test1 = $string1;
+    my $test2 = $string2;
+
+    if (($test1 =~ m|([0-9]{2})/([0-9]{2})/([0-9]{4})|)
+     && ($test2 =~ m|([0-9]{2})/([0-9]{2})/([0-9]{4})|))
+    {
+        return (GCPreProcess::reverseDate($test1) cmp GCPreProcess::reverseDate($test2));
+    }
+    else
+    {
+        return gccmp($test1, $test2);
+    }
+}
 
 our $hasTimeConversion;
 BEGIN {

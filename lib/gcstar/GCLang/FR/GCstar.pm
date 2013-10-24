@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -139,9 +139,15 @@ le <b>bouton situé en dessous de sa fiche</b>.',
             'MenuNoFilter' => '_Tous',
     
         'MenuConfiguration' => '_Configuration',
+            'MenuDisplayMenu' => '_Affichage',
+                'MenuDisplayFullScreen' => '_Plein écran',
+                'MenuDisplayMenuBar' => '_Menus',
+                'MenuDisplayToolBar' => 'Barre d\'_outils',
+                'MenuDisplayStatusBar' => 'Barre d\'é_tat',
             'MenuDisplayOptions' => '_Informations à afficher',
             'MenuBorrowers' => '_Emprunteurs',
             'MenuToolbarConfiguration' => '_Boutons de la barre d\'outils',
+            'MenuDefaultValues' => 'Valeurs par défaut lors de l\'ajout d{lowercaseDAX}', # Accepts model codes
             'MenuGenresConversion' => 'Conversions de _genres',
     
         'MenuBookmarks' => 'Mes _collections',
@@ -220,8 +226,7 @@ TPF : Programmeur
 Adolfo González : Programmeur
 ',
         'AboutLicense' => 'Distribué selon les termes de la GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Traduction française par Christian Jodar',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo et webdesign par le Spektre',
@@ -403,6 +408,7 @@ Logo et webdesign par le Spektre',
         'ImagesOptionsBgTooltip' => 'Changer la couleur de fond',
         'ImagesOptionsFgTooltip'=> 'Changer la couleur de la sélection',
         'ImagesOptionsResizeImgList' => 'Changer dynamiquement le nombre de colonnes',
+        'ImagesOptionsAnimateImgList' => 'Utiliser des animations',
         'ImagesOptionsSizeLabel' => 'Taille',
         'ImagesOptionsSizeList' => {0 => 'Minuscule', 1 => 'Petit', 2 => 'Moyen', 3 => 'Grand', 4 => 'Énorme'},
         'ImagesOptionsSizeTooltip' => 'Sélectionnez la taille pour les images',
@@ -474,7 +480,7 @@ Logo et webdesign par le Spektre',
         'PanelImageTitle' => 'Sélectionnez une image',
         'PanelImageNoImage' => 'Pas d\'image',
         'PanelSelectFileTitle' => 'Sélectionnez un fichier',
-        'PanelLaunch' => 'Launch',        
+        'PanelLaunch' => 'Démarrer',        
         'PanelRestoreDefault' => 'Rétablir défaut',
         'PanelRefresh' => 'Rafraîchir',
         'PanelRefreshTip' => 'Mettre à jour les informations depuis Internet',
@@ -660,6 +666,8 @@ Ils peuvent être ajoutés dans l\'onglet Filtres des réglages de la collection
         'StatsSave' => 'Sauvegarder les statistiques dans un fichier',
         'StatsAccumulate' => 'Accumuler les valeurs',
         'StatsShowAllDates' => 'Montrer toutes les dates',
+
+        'DefaultValuesTip' => 'Les valeurs définies dans cette fenêtre seront utilisées lors de l\'ajout d\'{lowercaseI1}',
     );
 }
 1;

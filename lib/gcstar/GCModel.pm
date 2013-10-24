@@ -18,7 +18,7 @@ package GCModel;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -76,6 +76,7 @@ our $linkNameSeparator = '##';
         $self->{options} = $self->{collection}->{options};
         $self->{commonFields} = $self->{collection}->{options}->{fields};
         $self->{resultsFields} = $self->{collection}->{options}->{fields}->{results}->{field};
+        $self->{summaryFields} = $self->{collection}->{options}->{fields}->{summary}->{field};
         $self->{defaultImage} = $ENV{GCS_SHARE_DIR}.'/logos/'.$self->{options}->{defaults}->{image};
         $self->{userFiltersDir} = $ENV{GCS_DATA_HOME}.'/Filters/'.$self->getName;
         $self->{random} = $self->{collection}->{random}->{filter};
@@ -92,7 +93,7 @@ our $linkNameSeparator = '##';
         $self->loadPreferences;
         #$self->checkMaster;
         $self->addDefaultFields;
-        $self->addDefaultValues;
+        $self->addPredefinedValues;
         $self->{searchFields} = 0;
         $self->checkLending;
         $self->checkTags;
@@ -119,6 +120,22 @@ our $linkNameSeparator = '##';
             }
         }
         return $self->{searchFields};
+    }
+
+    sub getSummaryFields
+    {
+        my $self = shift;
+        
+        if (!$self->{summaryFields})
+        {
+            $self->{summaryFields} = [];
+            for my $field (@{$self->{resultsFields}})
+            {
+                next if $field eq $self->{commonFields}->{title};
+                push @{$self->{summaryFields}}, $field;
+            }
+        }
+        return $self->{summaryFields};
     }
 
     sub isSearchField
@@ -284,8 +301,9 @@ our $linkNameSeparator = '##';
         if (! $self->{isInline})
         {
             $self->{configFile} = $ENV{GCS_CONFIG_HOME}.'/GCModels/'.$self->getName.'.conf';
-            $self->{preferences} = new GCOptionLoader($self->{configFile}, 0);
+            $self->{preferences} = new GCOptionLoader($self->{configFile}, 0, $self->{parent}->{options});
         }
+        $self->{defaultValuesFile} = $ENV{GCS_CONFIG_HOME}.'/GCModels/'.$self->getName.'.default.gcs';
     }
 
     sub setDefaults
@@ -330,6 +348,7 @@ our $linkNameSeparator = '##';
         my @fieldsNotNull;
         my @fieldsNotFormatted;
         my @fieldsImage;
+        my @fieldsDate;
         my @managedImages;
         my $name;
         foreach (@{$self->{fields}})
@@ -352,6 +371,10 @@ our $linkNameSeparator = '##';
                 push @fieldsImage, $name;
                 push @managedImages, $name if (exists $_->{imported}) && ($_->{imported} eq 'true');
             }
+            elsif ($_->{type} eq 'date')
+            {
+                push @fieldsDate, $name;
+            }
             push @fieldsNotNull, $name
                 if (exists $_->{notnull}) && ($_->{notnull} eq 'true');
             push @fieldsNotFormatted, $name
@@ -364,6 +387,7 @@ our $linkNameSeparator = '##';
         $self->{fieldsNotFormatted} = \@fieldsNotFormatted;
         $self->{managedImages} = \@managedImages;
         $self->{fieldsImage} = \@fieldsImage;
+        $self->{fieldsDate} = \@fieldsDate;
     }
 
     sub setFilters
@@ -517,7 +541,7 @@ our $linkNameSeparator = '##';
         }
     }
 
-    sub addDefaultValues
+    sub addPredefinedValues
     {
         my $self = shift;
         
@@ -1213,7 +1237,6 @@ our $linkNameSeparator = '##';
     sub getDisplayedValue
     {
         my ($self, $values, $value) = @_;
-        
         foreach (@{$self->{collection}->{options}->{'values'}->{$values}->{value}})
         {
             return $self->getDisplayedText($_->{displayed}) if $_->{content} eq $value;
@@ -1350,6 +1373,96 @@ our $linkNameSeparator = '##';
         return $info;
     }
 
+    # Required to use current class as a parameter of backend
+    sub preloadModel
+    {
+        my $self = shift;
+        return;
+    }
+    
+    # Required to use current class as a parameter of backend
+    sub setCurrentModel
+    {
+        my $self = shift;
+        return 1;
+    }
+    
+    # Required to use current class as a parameter of backend
+    sub transformPicturePath
+    {
+        my ($self, @args) = @_;
+        
+        # Force the use of absolute path
+        my $currentOption = $self->{parent}->{options}->useRelativePaths;
+        $self->{parent}->{options}->useRelativePaths(0);
+                
+        return $self->{parent}->transformPicturePath(@args);
+        
+        $self->{parent}->{options}->useRelativePaths($currentOption);
+    }
+    
+    sub getDefaultValuesBackend
+    {
+        my ($self) = @_;
+        $self->{defaultValuesBackend} = new GCBackend::GCBeXmlParser($self)
+            if !$self->{defaultValuesBackend};
+        $self->{defaultValuesBackend}->setParameters(file => $self->{defaultValuesFile},
+                                        version => $self->{parent}->{version});
+        return $self->{defaultValuesBackend}
+    }
+
+    sub getDefaultValues
+    {
+        my $self = shift;
+        if (! exists $self->{defaultValues})
+        {
+            # First get the default values as defined in the model
+            my $info = $self->getInitInfo;
+            
+            # Then try to load user ones
+            if ( -r $self->{defaultValuesFile})
+            {
+                my $backend = $self->getDefaultValuesBackend;
+                my $loaded = $backend->load;
+                # We only consider the first item
+                my $userValues = $loaded->{data}->[0];
+                # We store that for later use
+                $self->{defaultValuesInformation} = $loaded->{information};
+                
+                # Remove 'current' value for date, otherwise we'll store the current date
+                # as the default value
+                foreach ($self->{fieldsDate})
+                {
+                    delete $userValues->{$_}
+                        if $userValues->{$_} eq 'current';
+                }
+
+                # Merge init values with the loaded ones                
+                $info = {%{$info}, %{$userValues}};
+            }
+            
+            $self->{defaultValues} = $info;
+        }
+        return $self->{defaultValues};
+    }
+
+    sub setDefaultValues
+    {
+        my ($self, $info) = @_;
+        
+        $self->{defaultValues} = $info;
+        my $backend = $self->getDefaultValuesBackend;
+        
+        my $result = $backend->save([$info],
+                                    $self->{defaultValuesInformation},
+                                    undef,
+                                    1);
+        if ($result->{error})
+        {
+            return $result->{error};
+        }
+    }
+
 
     sub getFilterType
     {
@@ -1412,6 +1525,11 @@ our $linkNameSeparator = '##';
         my $self  = {parent => $parent, isPersonal => $isPersonal};
         bless $self, $class;
         $self->{isInline} = 0;
+
+        # backend expects the model to be in {model}
+        # so we store there a reference to ourselves
+        $self->{model} = $self;
+        
         $self->load($file);
         GCPlugins::loadPlugins($self->getName) if !$isPersonal && !$ENV{GCS_PROFILING};
         return $self;
@@ -1426,7 +1544,7 @@ our $linkNameSeparator = '##';
         $self->{isInline} = 1;
         $self->{xmlString} = $container->{inlineModel};
         $self->{defaultModifier} = $container->{defaultModifier};
-        $self->{preferences} = GCOptionLoader->newFromXmlString($container->{inlinePreferences});
+        $self->{preferences} = GCOptionLoader->newFromXmlString($container->{inlinePreferences}, 0, $self->{parent}->{options});
         $self->loadFromString;
         return $self;
     }
@@ -1438,7 +1556,7 @@ our $linkNameSeparator = '##';
         my $self  = {parent => $parent, isInline => 1, isPersonal => 1};
         bless $self, $class;
         $self->{xmlString} = '<collection><options/><groups/><fields lending="false" tags="false"/></collection>';
-        $self->{preferences} = GCOptionLoader->newFromXmlString('');
+        $self->{preferences} = GCOptionLoader->newFromXmlString('',0, $self->{parent}->{options});
         if ($container)
         {
             $self->{defaultModifier} = $container->{defaultModifier};
@@ -1881,7 +1999,7 @@ use Gtk2;
 
     use base 'GCModalDialog';
 
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
 
     sub setPersonalMode
     {

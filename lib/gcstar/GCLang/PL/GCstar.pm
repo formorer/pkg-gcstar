@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -138,9 +138,15 @@ można użyć <b>przycisku pod szczegółami</b>.',
             'MenuNoFilter' => 'Wszystkie',
     
         'MenuConfiguration' => 'Ustawienia',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => 'Wyświetlane informacje',
             'MenuBorrowers' => 'Dłużnicy',
             'MenuToolbarConfiguration' => 'Dos_tosuj pasek narzędzi',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => 'Konwersja gatunków',
             
         'MenuBookmarks' => 'Ulubione',
@@ -218,8 +224,7 @@ TPF: Programmer
 Adolfo González: Programmer
 ',
         'AboutLicense' => 'Rozpowszechniany na warunkach licencji GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Tłumaczenie: kepin & zomers, WG',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo i webmaster: le Spektre',
@@ -403,6 +408,7 @@ Logo i webmaster: le Spektre',
         'ImagesOptionsBgTooltip' => 'Zmień kolor tła',
         'ImagesOptionsFgTooltip'=> 'Zmień kolor zaznaczenia',
         'ImagesOptionsResizeImgList' => 'Automatycznie ustal liczbę kolumn',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Rozmiar',
         'ImagesOptionsSizeList' => {0 => 'Bardzo mały', 1 => 'Mały', 2 => 'Średni', 3 => 'Duży', 4 => 'Ogromny'},
         'ImagesOptionsSizeTooltip' => 'Wybierz rozmiar obrazka',
@@ -659,6 +665,8 @@ Dodaj kilka w zakładce Filtry okienka ustawień Zbioru.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 

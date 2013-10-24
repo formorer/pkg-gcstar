@@ -18,7 +18,7 @@ package GCPlugins::GCcomics::GCbedetheque;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -217,6 +217,9 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                 $self->{curInfo}->{image} = 'http://www.bedetheque.com/' . $attr->{href};
                 $self->{isCover} = 1;
             }
+            elsif ( ( $tagname eq "div") && ( $attr->{class} eq "titre" ) ) {
+                $self->{isVolume} = 1;
+            }
             elsif ( ( $tagname eq "ul") && ( $attr->{class} eq "infos" ) ) {
                 $self->{isResultsTable} = 1;
             }
@@ -314,7 +317,12 @@ use GCPlugins::GCcomics::GCcomicsCommon;
                     $self->{current_field} = "";
                 }
             }
-
+            elsif ( $self->{isVolume} )
+            {
+                $self->{curInfo}->{volume} = $origtext;
+                $self->{isVolume} = 0 ;
+            }
+            
             if ( $self->{isTitle} )
             {
                 $self->{curInfo}->{title} = $origtext;
@@ -386,3 +394,5 @@ use GCPlugins::GCcomics::GCcomicsCommon;
         }
     }
 }
+
+1;

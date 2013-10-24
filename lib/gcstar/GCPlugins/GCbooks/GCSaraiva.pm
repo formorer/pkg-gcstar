@@ -27,7 +27,7 @@ use GCPlugins::GCbooks::GCbooksCommon;
 
         if ($self->{parsingList})
         {
-            if (($tagname eq 'div') && ($attr->{class} eq 'hslice'))
+            if (($tagname eq 'div') && ($attr->{class} eq 'hsliceLista'))
             {
                 $self->{isResult} = 1;
                 $self->{linkCount} = 0;
@@ -258,11 +258,11 @@ use GCPlugins::GCbooks::GCbooksCommon;
 
         if ($self->{searchField} eq 'isbn')
         {
-            return "http://www.livrariasaraiva.com.br/pesquisaweb/pesquisaweb.dll/pesquisa?FILTRON1=G&ESTRUTN1=0301&ORDEMN2=E&PALAVRASN1=".$word;
+            return "http://www.livrariasaraiva.com.br/pesquisaweb/pesquisaweb.dll/pesquisa?ORDEMN2=E&ESTRUTN1=0301&PALAVRASN1=".$word;
         }
         else
         {
-            return "http://www.livrariasaraiva.com.br/pesquisaweb/pesquisaweb.dll/pesquisa?FILTRON1=X&ESTRUTN1=0301&ORDEMN2=E&PALAVRASN1=".$word;
+            return "http://www.livrariasaraiva.com.br/pesquisaweb/pesquisaweb.dll/pesquisa?ORDEMN2=E&ESTRUTN1=0301&PALAVRASN1=".$word;
         }
     }
     

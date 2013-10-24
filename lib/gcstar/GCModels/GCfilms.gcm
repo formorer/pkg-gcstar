@@ -26,6 +26,14 @@ name="GCfilms">
 				<field>country</field>
 				<field>format</field>
 			</results>
+			<summary>
+				<field>director</field>
+				<field>date</field>
+				<field>genre</field>
+				<field>format</field>
+				<field>borrower</field>
+				<field>tags</field>
+			</summary>
 		</fields>
 
 		<overlay>
@@ -435,8 +443,6 @@ name="GCfilms">
 					<item type="table" for="title" rows="7" cols="8">
 						<item type="label" for="original" row="0" col="0"/>
 						<item type="value" for="original" row="0" col="1" colspan="4"/>
-						<item type="label" for="country" row="0" col="6"/>
-						<item type="value" for="country" row="0" col="7" width="18" expand="true"/>
 						<item type="label" for="date" row="1" col="0"/>
 						<item type="value" for="date" row="1" col="1" width="18" expand="true"/>
 						<item type="label" for="time" row="1" col="3"/>
@@ -470,6 +476,9 @@ name="GCfilms">
 						<item type="value" for="trailer" row="6" col="1" colspan="4" expand="true"/>
 						<item type="label" for="added" row="6" col="6"/>
 						<item type="value" for="added" row="6" col="7"/>
+					</item>
+					<item type="expander" title="Country" collapsed="%country%">
+						<item type="value" for="country"/>
 					</item>
 					<item type="expander" title="Genre" collapsed="%genre%">
 						<item type="value" for="genre"/>

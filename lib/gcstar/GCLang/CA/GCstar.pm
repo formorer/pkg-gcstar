@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -138,9 +138,15 @@ podeu usar <b>el botó situat devall dels detalls de la pel·lícula</b>.',
             'MenuNoFilter' => '_Tot',
 
         'MenuConfiguration' => '_Configura',	
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Informació a mostrar',
             'MenuBorrowers' => '_Prestataris',	
             'MenuToolbarConfiguration' => '_Controls de la barra d\'eines',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Conversió de gèneres',
 
         'MenuBookmarks' => 'Les _meves Col·leccions',
@@ -219,8 +225,7 @@ TPF: Programació
 Adolfo González: Programació
 ',
         'AboutLicense' => 'Distribuït segons els termes de la GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Traducció: Ponç J. Llaneras',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo i disseny web per le Spektre',
@@ -404,6 +409,7 @@ Logo i disseny web per le Spektre',
         'ImagesOptionsBgTooltip' => 'Canvia el color de fons',
         'ImagesOptionsFgTooltip'=> 'Canvia el color de la selecció',
         'ImagesOptionsResizeImgList' => 'Canvia automàticament el nombre de columnes',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Mida',
         'ImagesOptionsSizeList' => {0 => 'Molt Petit', 1 => 'Petit', 2 => 'Mitjà', 3 => 'Gran', 4 => 'Molt Gran'},
         'ImagesOptionsSizeTooltip' => 'Trieu la mida de la imatge',
@@ -660,7 +666,9 @@ Afegiu-ne alguns a la pestanya de filtres de la configuració de col·lecció.',
         'StatsSave' => 'Desa la imatge de les estadístiques a un fitxer',
         'StatsShowAllDates' => 'Mostra totes les dates',
         'StatsSortByNumber' => 'Ordena pel nombre de {lowercaseX}',
-        'StatsWidth' => 'Amplada'
+        'StatsWidth' => 'Amplada',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

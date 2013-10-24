@@ -18,7 +18,7 @@ package GCMainWindow;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -40,7 +40,7 @@ use Gtk2;
     use GCDialogs;
     use GCPlugins;
     use GCModel;
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
     use GCMenu;
     use GCPanel;
     use GCUtils 'glob';
@@ -110,6 +110,7 @@ use Gtk2;
         $self->{options}->width($width);
         $self->{options}->height($height);
         $self->{options}->split($self->{pane}->get_position) if ($self->{pane});
+        $self->{options}->listPaneSplit($self->{listPane}->get_position) if ($self->{listPane});
 
         $self->{options}->save;
         $self->savePreferences;
@@ -183,10 +184,10 @@ use Gtk2;
         #$self->{panel}->changeState($self->{panel}, 0);
         $self->{menubar}->setCollectionLock(0);
         
-        my $info = $self->{model}->getInitInfo;
-        $self->addItem($info, 1);
+        my $info = $self->{model}->getDefaultValues;
+        $self->addItem($info, 1, undef, 1);
         
-        $self->displayInWindow(undef, 0, 1)
+        $self->displayInWindow(undef, 'item', 1)
             if $self->{panel}->isReadOnly && !$noDisplay;
     }
 
@@ -1185,7 +1186,7 @@ use Gtk2;
     
     sub addItem
     {
-        my ($self, $info, $newItem, $keepId) = @_;
+        my ($self, $info, $newItem, $keepId, $defaultValues) = @_;
 
         #$self->changeInfo($info);
         my $ignore = $self->{ignoreString};
@@ -1213,7 +1214,8 @@ use Gtk2;
                 if ($info->{$pic} && ($info->{$pic} ne $ignore))
                 {
                     $self->checkPictureToBeRemoved($self->{panel}->$pic);
-                    ($info->{$pic}, my $picture) = $self->downloadPicture($info->{$pic}, $title);
+                    ($info->{$pic}, my $picture) = $self->downloadPicture($info->{$pic}, $title)
+                        if !$defaultValues;
                     
                     # Only set the picture if one was returned. Otherwise the download was rejected, so stick with
                     # the existing picture
@@ -1306,14 +1308,13 @@ use Gtk2;
             my $filesize = -s $picture;
             if ($filesize < 1000)
             {
-               unlink $picture;
-               $picture = "";
+                unlink $picture;
+                $picture = "";
             }
         }
         else
         {
             copy $pictureUrl, $picture;
-            unlink $pictureUrl;
         }
         $self->{items}->markToBeAdded($picture)
             if ($picture);
@@ -1328,7 +1329,7 @@ use Gtk2;
         $path = GCUtils::getDisplayedImage($path, $path, $file);
         my $dir = undef;
         $dir = dirname($file) if $file;
-        return GCUtils::pathToUnix(File::Spec->rel2abs($path,$dir))
+        return GCUtils::pathToUnix(File::Spec->rel2abs($path,$dir), 1)
             if !$self->{options}->useRelativePaths;
         return GCUtils::pathToUnix(File::Spec->abs2rel($path,$dir));
     }
@@ -2014,14 +2015,14 @@ use Gtk2;
         my ($self, $message) = @_;
         $self->setStatus($message);
         $self->window->set_cursor(Gtk2::Gdk::Cursor->new('watch'));
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
     sub restoreCursor
     {
         my $self = shift;
         $self->restoreStatus;
         $self->window->set_cursor(Gtk2::Gdk::Cursor->new('left_ptr'));
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setFilter
@@ -2169,7 +2170,8 @@ use Gtk2;
                 # Actually Plugins, Export and Import don't need the parameter, but
                 # it has no impact and make the code more simple
                 $self->{$name.'Dialog'}->setModel($self->{model})
-                    if $name =~ /^(AdvancedSearch|Search|Options|QueryReplace|Plugins|Export|Import)$/;
+                    if $name =~ /^(AdvancedSearch|Search|Options|QueryReplace|Plugins|Export|Import)$/
+                    && $self->{model};
             }
         }
 
@@ -2185,7 +2187,6 @@ use Gtk2;
         my $formats = $self->{options}->formats;
         my $layout = $self->{model}->{preferences}->layout;
         my $panelStyle = $self->{options}->panelStyle;
-        my $status = $self->{options}->status;
         my $toolbar = $self->{options}->toolbar;
         my $toolbarPosition = $self->{options}->toolbarPosition;
         my $prevImages = $self->getImagesDir;
@@ -2243,8 +2244,8 @@ use Gtk2;
         $self->checkToolbarPosition
             if ($self->{options}->toolbarPosition ne $toolbarPosition) || ($self->{options}->toolbar ne $toolbar);
             
-        $self->checkDisplayed
-            if ($self->{options}->status ne $status) || !$self->{options}->toolbar;
+        $self->{menubar}->setDisplayToolbarState($self->{options}->toolbar == 0 ? 0 : 1)
+            if $self->{options}->toolbar != $toolbar;
 
         $self->checkPlugin;
         $self->checkView;
@@ -2360,10 +2361,12 @@ use Gtk2;
         my ($self, $modelUpdated) = @_;
 
         # Might need to recreate the Tonight window
-        $self->{remakeRandomWindow} = 1
-  	             if exists($self->{randomWindow});
-        $self->{remakeItemWindow} = 1
-  	             if exists($self->{itemWindow}); 
+        $self->{remakeItemWindow}->{random} = 1
+  	             if exists($self->{itemWindow}->{random});
+        $self->{remakeItemWindow}->{item} = 1
+  	             if exists($self->{itemWindow}->{item}); 
+        $self->{remakeItemWindow}->{defaultValues} = 1
+  	             if exists($self->{itemWindow}->{defaultValues}); 
   	             
         # Update strings to reflect model change
         $self->GCLang::updateModelSpecificStrings;
@@ -2601,9 +2604,9 @@ use Gtk2;
             $dialog->show;
             $dialog->destroy;
 
-            if ((exists $self->{itemWindow}) && ($self->{itemWindow}->visible))
+            if ((exists $self->{itemWindow}->{item}) && ($self->{itemWindow}->{item}->visible))
             {
-                $self->{itemWindow}->showMe;
+                $self->{itemWindow}->{item}->showMe;
             } 
             return;
         }
@@ -2780,38 +2783,28 @@ use Gtk2;
         }
     }
     
-    sub displayInWindow
+    sub getItemWindow
     {
-        my ($self, $idx, $random, $select) = @_;
+        my ($self, $type) = @_;
 
-        my $title = $self->{items}->getTitle($idx);
-
-        my $window;
         my $created = 0;
-        if ($random)
+        
+        if ((! exists $self->{itemWindow}->{$type}) || ($self->{remakeItemWindow}->{$type}))
         {
-            if ((! exists $self->{randomWindow}) || ($self->{remakeRandomWindow}))
-            {
-                $self->{randomWindow}->destroy
-  	                if exists $self->{randomWindow};
-                $self->{randomWindow} = new GCRandomItemWindow($self, $title);
-                $created = 1;
-                $self->{remakeRandomWindow} = 0;
-            }
-	        $window = $self->{randomWindow};
+            $self->{itemWindow}->{$type}->destroy
+                if exists $self->{itemWindow}->{$type};
+                
+            $self->{itemWindow}->{$type} = 
+                ($type eq 'item')          ? new GCItemWindow($self, "") :
+                ($type eq 'random')        ? new GCRandomItemWindow($self, "") :
+                ($type eq 'defaultValues') ? new GCDefaultValuesWindow($self, "") :
+                                             undef;
+  	        $created = 1;      
+  	        $self->{remakeItemWindow}->{$type} = 0
         }
-        else
-        {
-            if ((! exists $self->{itemWindow}) || ($self->{remakeItemWindow}))
-            {
-                $self->{itemWindow}->destroy
-  	                if exists $self->{itemWindow};
-                $self->{itemWindow} = new GCItemWindow($self, $title);
-                $created = 1;
-                $self->{remakeItemWindow} = 0;
-            }
-	        $window = $self->{itemWindow};
-        }
+
+        my $window = $self->{itemWindow}->{$type};
+
         if ($created && $self->{options}->exists('itemWindowWidth'))
         {
             $window->set_default_size(
@@ -2820,8 +2813,6 @@ use Gtk2;
             );
         }
 
-        $window->setTitle($title);
-
         if ($self->{previousWindowPosition})
         {
             $window->move($self->{previousWindowPosition}->{x},
@@ -2829,31 +2820,49 @@ use Gtk2;
         }
         $window->{panel}->setBorrowers;
         $window->{panel}->disableBorrowerChange;
-
-        $self->{items}->displayInPanel($window->{panel}, $idx);
-        $window->{panel}->selectTitle if $select;
         
-#        $self->{itemWindow} = $window;
-        my $code = $window->show;
-#        $self->{itemWindow} = 0;
+        return $window;
+    }
 
-        if (!$random && ($code eq 'ok'))
-        {
-            $self->updateSelectedItemInfoFromGivenPanelAndSelect($window->{panel}, $idx);
-        }
-
+    sub saveItemWindowSettings
+    {
+        my ($self, $window) = @_;
+        
         my ($width, $height) = $window->get_size;
         $self->{options}->itemWindowWidth($width);
         $self->{options}->itemWindowHeight($height);
 
         ($self->{previousWindowPosition}->{x}, $self->{previousWindowPosition}->{y})
             = $window->get_position;
+    }
+    
+    sub displayInWindow
+    {
+        my ($self, $idx, $type, $select) = @_;
+        
+        $type ||= 'item';
 
-#        $window->destroy;
+        my $title = $self->{items}->getTitle($idx);
+
+        my $window = $self->getItemWindow($type);
+        $window->setTitle($title);
+
+        $self->{items}->displayInPanel($window->{panel}, $idx);
+        $window->{panel}->selectTitle if $select;
+        
+        my $code = $window->show;
+
+        if (($type eq 'item') && ($code eq 'ok'))
+        {
+            $self->updateSelectedItemInfoFromGivenPanelAndSelect($window->{panel}, $idx);
+            $self->refreshFilters;
+        }
+
+        $self->saveItemWindowSettings($window);
+
         $window->hide;
         
         return $code;
-
     }
 
     sub randomItem
@@ -2895,7 +2904,7 @@ use Gtk2;
             {
         	   $idx = int rand(scalar @{$self->{randomPool}});
         	   $realId = $self->{randomPool}->[$idx]->{realId};
-        	   $code = $self->displayInWindow($realId, 1);
+        	   $code = $self->displayInWindow($realId, 'random');
         	   splice @{$self->{randomPool}}, $idx, 1;
         	   last if ! @{$self->{randomPool}};
             }
@@ -2978,7 +2987,7 @@ use Gtk2;
     {
         my ($self, $current) = @_;
         $self->{progress}->set_fraction($current);
-        Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setItemsTotal
@@ -3006,7 +3015,7 @@ use Gtk2;
             #$self->{progress}->set_fraction(0.3);
             $self->setProgress(0.3);
         }
-        #Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setProgressForItemsDisplay
@@ -3026,7 +3035,7 @@ use Gtk2;
             $self->setProgress(0.5);
             #$self->{progress}->set_fraction(0.5);
         }
-        #Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub setProgressForItemsSort
@@ -3046,7 +3055,7 @@ use Gtk2;
             $self->setProgress(0.7);
             $self->{progress}->set_fraction(0.7);
         }
-        #Gtk2->main_iteration while (Gtk2->events_pending);
+        GCUtils::updateUI;
     }
 
     sub blockListUpdates
@@ -3066,6 +3075,7 @@ use Gtk2;
     sub setItemsList
     {
         my ($self, $init, $doNotSavePreferences) = @_;
+
         my $view = $self->{options}->view;
         my $columns = $self->{options}->columns;
         $columns = 0 if $self->{options}->resizeImgList;
@@ -3074,20 +3084,34 @@ use Gtk2;
         if ($self->{itemsView})
         {
             $current = $self->{itemsView}->getCurrentIdx if !$init;
-            $self->{pane}->remove($self->{itemsView}) if $self->{pane};
+            $self->{listPane}->remove($self->{itemsView}) if $self->{listPane};
             $self->savePreferences if ! $doNotSavePreferences;
             $self->{itemsView}->destroy;
         }
 
-        $self->{itemsView} = new GCTextList($self, $self->{model}->getDisplayedItems)
-            if $view == 0;
-        $self->{itemsView} = new GCImageList($self, $columns) if $view == 1;
-        $self->{itemsView} = new GCDetailedList($self) if $view == 2;
+        if ($view == 0)
+        {
+            $self->{itemsView} = new GCTextList($self, $self->{model}->getDisplayedItems);
+        }
+        elsif ($view == 1)
+        {
+            $self->{itemsView} = new GCImageList($self, $columns);
+        }
+        else
+        {
+            $self->{itemsView} = new GCDetailedList($self);
+        }
         $self->{itemsView}->{initializing} = 1;
+
+        $self->{listOptionsPanel}->setView($view);
+
         $self->setExpandCollapseInContext($self->{itemsView}->couldExpandAll);
 
-        $self->{pane}->pack1($self->{itemsView},1,0) if $self->{pane};
-        $self->{itemsView}->show_all;
+        if ($self->{listPane})
+        {
+            $self->{listPane}->pack1($self->{itemsView},1,0);
+            $self->{itemsView}->show_all;
+        }
         if ($self->{items})
         {
             $self->reloadList if ! $self->{initializing};
@@ -3149,7 +3173,7 @@ use Gtk2;
         
         $self->{contextNewWindow} = Gtk2::MenuItem->new_with_mnemonic($self->{lang}->{MenuNewWindow});
         $self->{contextNewWindow}->signal_connect("activate" , sub {
-                $self->displayInWindow;
+                $self->displayInWindow(undef, 'item');
         });
         $self->{context}->append($self->{contextNewWindow});
    
@@ -3222,12 +3246,15 @@ use Gtk2;
         $self->{context}->{itemDisplayType}->set_submenu($self->{context}->{menuDisplayType});
         $self->{context}->append($self->{context}->{itemDisplayType});
         
+        $self->{context}->{displayItem} = Gtk2::MenuItem->new_with_mnemonic($self->{lang}->{MenuDisplayMenu});
+        $self->{context}->append($self->{context}->{displayItem});
+        
         $self->{context}->append(Gtk2::SeparatorMenuItem->new);
         
         # Filters selection
                 
         my $menuDisplay = Gtk2::Menu->new();
-        my $displayItem = Gtk2::MenuItem->new_with_mnemonic($self->{lang}->{MenuDisplay});
+        my $filterItem = Gtk2::MenuItem->new_with_mnemonic($self->{lang}->{MenuDisplay});
         
         $self->{contextViewAllItems} = Gtk2::MenuItem->new_with_mnemonic($self->{lang}->{MenuViewAllItems});
         $self->{contextViewAllItems}->signal_connect("activate" , sub {
@@ -3241,8 +3268,16 @@ use Gtk2;
         });
         $menuDisplay->append($searchSelectedItems);
         
-        $displayItem->set_submenu($menuDisplay);
-        $self->{context}->append($displayItem);
+        $filterItem->set_submenu($menuDisplay);
+        $self->{context}->append($filterItem);
+        
+        $self->{context}->signal_connect('show' => sub {
+            $self->{menubar}->attachDisplayMenu($self->{context}->{displayItem});
+        });
+        
+        $self->{context}->signal_connect('hide' => sub {
+            $self->{menubar}->attachDisplayMenu();
+        });
         
         $self->{context}->show_all;
       
@@ -3512,14 +3547,20 @@ use Gtk2;
 
         $self->{menubar} = new GCMenuBar($self, $self->{AccelMapFile});
         $self->{menubar}->set_name('GCMenubar');
+        
         $self->{bookmarksLoader} = new GCBookmarksLoader($self, $self->{menubar});
         $self->{toolbar} = GCToolBar->new($self);
         
         $self->{mainVbox} = new Gtk2::VBox(0, 0);
         $self->{mainHbox} = new Gtk2::HBox(0, 0);
         $self->{pane} = new Gtk2::HPaned;
+        $self->{listPane} = new Gtk2::VPaned;
 
         $self->{pane}->set_position($self->{options}->split);
+        $self->{listPane}->set_position($self->{options}->listPaneSplit);
+        $self->{pane}->pack1($self->{listPane},1,0);
+        $self->{listOptionsPanel} = new GCListOptionsPanel($self->{options}, $self);
+        $self->{listPane}->pack2($self->{listOptionsPanel},1,1);
 
         $self->{mainVbox}->pack_start($self->{menubar}, 0, 0, 0);
         $self->{mainHbox}->pack_start($self->{pane},1,1,0);
@@ -3586,23 +3627,23 @@ use Gtk2;
                     # One url has been dropped, parse it for item data
                     $self->loadUrl($files[0]);
                 }
-                elsif ((grep {$_ eq $extension} @GCGraphicComponents::videoExtensions)
+                elsif ((grep {$_ eq $extension} @GCBaseWidgets::videoExtensions)
                          && ($self->{model}->{collection}->{name} eq 'GCfilms'))
                 {
                     # At least one video file was dropped and a movie collection is open    
-                    $self->handleDroppedFiles(\@files, \@GCGraphicComponents::videoExtensions, 'trailer');
+                    $self->handleDroppedFiles(\@files, \@GCBaseWidgets::videoExtensions, 'trailer');
                 }
-                elsif ((grep {$_ eq $extension} @GCGraphicComponents::ebookExtensions)
+                elsif ((grep {$_ eq $extension} @GCBaseWidgets::ebookExtensions)
                          && ($self->{model}->{collection}->{name} eq 'GCbooks'))
                 {
                     # At least one ebook file was dropped and a book collection is open    
-                    $self->handleDroppedFiles(\@files, \@GCGraphicComponents::ebookExtensions, 'digitalfile');
+                    $self->handleDroppedFiles(\@files, \@GCBaseWidgets::ebookExtensions, 'digitalfile');
                 }
-                elsif ((grep {$_ eq $extension} @GCGraphicComponents::audioExtensions)
+                elsif ((grep {$_ eq $extension} @GCBaseWidgets::audioExtensions)
                          && ($self->{model}->{collection}->{name} eq 'GCmusics'))
                 {
                     # At least one audio file was dropped and a music collection is open    
-                    $self->handleDroppedFiles(\@files, \@GCGraphicComponents::audioExtensions, 'playlist');
+                    $self->handleDroppedFiles(\@files, \@GCBaseWidgets::audioExtensions, 'playlist');
                 }
                 else
                 {
@@ -3639,7 +3680,7 @@ use Gtk2;
         $splash->setProgress(0.07) if $splash;
         
         $self->show_all;
-
+        
         $self->checkDisplayed;
         $self->checkView;
         $self->checkTransform;
@@ -3820,24 +3861,9 @@ use Gtk2;
     {
         my $self = shift;
         
-        if ($self->{options}->status)
-        {
-            $self->{status}->show;
-        }
-        else
-        {
-            $self->{status}->hide;
-        }
-
-        if ($self->{options}->toolbar)
-        {
-            $self->{toolbar}->show;
-        }
-        else
-        {
-            $self->{toolbar}->hide;
-        }
-
+        $self->setDisplayMenuBar($self->{options}->displayMenuBar);
+        $self->setDisplayStatusBar($self->{options}->status);
+        $self->setDisplayToolBar($self->{options}->toolbar);
     }
 
     sub checkProxy
@@ -3897,7 +3923,7 @@ use Gtk2;
         {
             s/^\s*//;
             s/\s*$//;
-            $tmpExpr .= "$_|";
+            $tmpExpr .= "\Q$_\E|";
         }
         chomp $tmpExpr;
         
@@ -4008,6 +4034,91 @@ use Gtk2;
         });
     }
 
+    sub setFullScreen
+    {
+        my ($self, $fullscreen) = @_;
+        
+        if ($fullscreen)
+        {
+            $self->fullscreen;
+        }
+        else
+        {
+            $self->unfullscreen;
+        }
+    }
+
+    sub setDisplayMenuBar
+    {
+        my ($self, $show) = @_;
+        
+        if ($show)
+        {
+            $self->{menubar}->show_all;
+        }
+        else
+        {
+            $self->{menubar}->hide;
+        }
+        $self->{options}->displayMenuBar($show);
+    }
+
+    sub setDisplayToolBar
+    {
+        my ($self, $show) = @_;
+        
+        if ($show)
+        {
+            $self->{toolbar}->show_all;
+        }
+        else
+        {
+            $self->{toolbar}->hide;
+        }
+        $self->{options}->toolbar($show);
+    }
+
+    sub setDisplayStatusBar
+    {
+        my ($self, $show) = @_;
+        
+        if ($show)
+        {
+            $self->{status}->show_all;
+        }
+        else
+        {
+            $self->{status}->hide;
+        }
+        $self->{options}->status($show);
+    }
+    
+    sub setDefaultValues
+    {
+        my $self = shift;
+        
+        my $window = $self->getItemWindow('defaultValues');
+        my $title = $self->{lang}->{MenuDefaultValues};
+        
+        $window->setTitle($title);
+
+        my $info = $self->{model}->getDefaultValues;
+        $self->{items}->displayDataInPanel($window->{panel}, $info);
+        my $code = $window->show;
+
+        if ($code eq 'ok')
+        {
+            my ($changed, $info, $previous) = $self->{items}->getInfoFromPanel($window->{panel}, $info);
+            $self->{model}->setDefaultValues($info);
+        }
+
+        $self->saveItemWindowSettings($window);
+
+        $window->hide;
+        
+        return $code;
+        
+    }
 }
 
 1;

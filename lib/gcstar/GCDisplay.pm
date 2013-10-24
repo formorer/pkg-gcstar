@@ -18,7 +18,7 @@ package GCDisplay;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -384,7 +384,7 @@ use Gtk2;
 {
     package GCSearchDialog;
     
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
     
     use base 'GCModalDialog';
     
@@ -576,7 +576,7 @@ use Gtk2;
                     $self->{layoutTable}->attach($label, 0, 1, $row, $row + 1, 'fill', 'fill', 2 * $GCUtils::margin, 0);
 
                     ($self->{$field}, $withComparisonLabel) = 
-                        GCGraphicComponents::createWidget($self, $fieldsInfo->{$field},
+                        GCBaseWidgets::createWidget($self, $fieldsInfo->{$field},
                                                           $filter->{comparison});
                     $self->{$field}->signal_connect('activate' => sub {$self->response('ok')} )
                         if $self->{$field}->isa('GCShortText');
@@ -606,7 +606,7 @@ use Gtk2;
 {
     package GCAdvancedSearchDialog;
     
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
     
     use base 'GCSearchDialog';
     
@@ -969,7 +969,7 @@ use Gtk2;
 {
     package GCUserFiltersDialog;
     
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
     use Storable;
     use base 'GCModalDialog';
 

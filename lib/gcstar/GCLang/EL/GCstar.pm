@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -138,9 +138,15 @@ search plugins) προορίζονται για <b>προσωπική χρήση
             'MenuNoFilter' => '_Όλα',
     
         'MenuConfiguration' => '_Ρυθμίσεις',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Εμφάνιση Πληροφοριών',
             'MenuBorrowers' => '_Δανειολήπτες',
             'MenuToolbarConfiguration' => '_Κουμπιά γραμμής εργαλειών',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Μετατροπή είδους',
         
         'MenuBookmarks' => 'Οι _Συλλογές μου',
@@ -219,8 +225,7 @@ TPF: Προγραμματιστής
 Adolfo González: Προγραμματιστής
 ',
         'AboutLicense' => 'Διανέμεται με την άδεια χρήσης GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Γλενταδάκης Δημήτρης dglent@gmail.com',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo and webdesign by le Spektre',
@@ -404,6 +409,7 @@ Logo and webdesign by le Spektre',
         'ImagesOptionsBgTooltip' => 'Αλλαγή χρώματος παρασκηνίου',
         'ImagesOptionsFgTooltip'=> 'Αλλαγή χρώματος επιλογής',
         'ImagesOptionsResizeImgList' => 'Αυτόματη ρύθμιση του αριθμού των στηλών',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Μέγεθος',
         'ImagesOptionsSizeList' => {0 => 'Πολύ μικρό', 1 => 'Μικρό', 2 => 'Μεσαίο', 3 => 'Μεγάλο', 4 => 'Πολύ μεγάλο'},
         'ImagesOptionsSizeTooltip' => 'Επιλέξτε το μέγεθος της εικόνας',
@@ -661,6 +667,8 @@ Logo and webdesign by le Spektre',
         'StatsShowAllDates' => 'Εμφάνιση όλων των ημερομηνιών',
         'StatsSortByNumber' => 'Ταξινόμηση ανά αριθμό {lowercaseX}',
         'StatsWidth' => 'Πλάτος',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

@@ -27,6 +27,14 @@ name="GCgames">
 				<field>genre</field>
 				<field>released</field>
 			</results>
+			<summary>
+				<field>platform</field>
+				<field>genre</field>
+				<field>editor</field>
+				<field>completion</field>
+				<field>borrower</field>
+				<field>tags</field>
+			</summary>
 		</fields>
 
 		<overlay>
@@ -216,7 +224,8 @@ name="GCgames">
 				init="0"
 				values="filesizeunits"
 				group="details"
-				imported="false"/>
+				imported="false"
+				relatedto="installationsize"/>
 		<field value="executable"
 				type="file"
 				format="program"

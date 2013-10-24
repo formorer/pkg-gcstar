@@ -18,7 +18,7 @@ package GCPlugins::GCPluginsBase;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -323,11 +323,11 @@ use utf8;
         my $html = $self->loadPage($realUrl);
         $self->{parsingList} = 0;
         #$html = $self->convertCharset($html);
+        $self->{curInfo} = {};
+
         $html = $self->preProcess($html);
         decode_entities($html)
             if $self->decodeEntitiesWanted;
-
-        $self->{curInfo} = {};
 
         $self->{curInfo}->{$self->{urlField}} = $url;
         $self->{inside} = undef;

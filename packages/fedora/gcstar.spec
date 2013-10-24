@@ -1,5 +1,5 @@
 Name:           gcstar
-Version:        1.6.2
+Version:        1.7.0
 Release:        4%{?dist}
 Summary:        Personal collections manager
 

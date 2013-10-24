@@ -1,7 +1,7 @@
 # Initial spec file created by autospec ver. 0.8 with rpm 3 compatibility
 Summary: GCstar, Collection manager
 Name: gcstar
-Version: 1.6.2
+Version: 1.7.0
 Release: 1
 Group: Applications/Databases
 License: GPL

@@ -2,7 +2,7 @@ package GCPlugins::GCgames::GCGameSpot;
 
 ###################################################
 #
-#  Copyright 2005-2010 Christian Jodar
+#  Copyright 2005-2011 Christian Jodar
 #
 #  This file is part of GCstar.
 #
@@ -18,7 +18,7 @@ package GCPlugins::GCgames::GCGameSpot;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -58,26 +58,33 @@ use GCPlugins::GCgames::GCgamesCommon;
         }
         elsif ($self->{parsingTips})
         {
-            if ($tagname eq 'div')
+            if (($tagname eq 'h2') && ($attr->{class} eq 'module_title'))
             {
-                if ($attr->{class} eq 'module')
-                {
-                    $self->{section} = '';
-                    $self->{isSection} = 1;
-                }
-                if ($attr->{class} eq 'quick_links')
-                {
-                    # To be sure we don't get extra data
-                    $self->{section} = '';
-                    $self->{isSection} = 0;
-                }
+                $self->{isSection} = 1;
             }
-            elsif ($tagname eq 'td')
+            elsif (($tagname eq 'th') && ($attr->{scope} eq 'row') && ($attr->{class} eq 'code') && ($self->{section} ne ''))
             {
-                $self->{isCheat} = 1
-                    if $attr->{class} eq 'cheat';
-                $self->{isDesc} = 1
-                    if $attr->{class} eq '';
+                $self->{isCheat} = 1;
+            }
+            elsif (($tagname eq 'td') && ($attr->{class} eq 'effect') && ($self->{section} ne ''))
+            {
+                $self->{isDesc} = 1;
+            }
+            elsif (($tagname eq 'h3') && ($attr->{class} eq 'cheatCodeTitle') && ($self->{section} eq 'Secrets'))
+            {
+                $self->{curInfo}->{secrets} .= "\n" if $self->{curInfo}->{secrets};
+            }
+            elsif ($tagname eq 'tpfdebuttpf')
+            {
+                $self->{section} = 'Secrets';
+            }
+            elsif (($tagname eq 'div') && ($attr->{class} eq 'head'))
+            {
+                $self->{section} = '';
+            }
+            elsif ($tagname eq 'head')
+            {
+                $self->{urlTips} = '';
             }
         }
         else
@@ -124,29 +131,33 @@ use GCPlugins::GCgames::GCgamesCommon;
                }
                $self->{isBox} = 0;
             }
-            elsif ($tagname eq 'h2')
+            elsif (($tagname eq 'h1') && ($attr->{class} eq 'productPageTitle'))
             {
                 $self->{isName} = 1 if ! $self->{curInfo}->{name};
             }
-            elsif (($tagname eq 'div') && ($attr->{class} eq 'label'))
+            elsif (($tagname eq 'meta') && ($attr->{name} eq 'description'))
             {
-                $self->{isInfo} = 1;
+                $self->{curInfo}->{description} = $attr->{content};
+            }
+            elsif (($tagname eq 'li') && ($attr->{class} =~ /activeFilter/))
+            {
+                $self->{curInfo}->{exclusive} = 0;
+            }
+            elsif (($tagname eq 'span') && ($attr->{class} eq 'reviewer'))
+            {
+                $self->{isRating} = 1;
+            }
+            elsif (($tagname eq 'a') && ($self->{isRating} eq 1))
+            {
+                $self->{isRating} = 2;
+            }
+            elsif (($tagname eq 'li') && ($attr->{class} eq 'moreStat play_info number_of_players'))
+            {
+                $self->{isPlayers} = 1;
             }
             elsif (($tagname eq 'p') && ($self->{isPlayers} eq 1))
             {
                 $self->{isPlayers} = 2;
-            }
-            elsif ($tagname eq 'p')
-            {
-                $self->{isDesc} = 1 if $attr->{class} eq 'review deck';
-            }
-            elsif ($tagname eq 'div')
-            {
-                $self->{isDesc} = 1 if $attr->{class} eq 'f12 dots pb5 mb5';
-            }
-            elsif ($tagname eq 'title')
-            {
-                $self->{isPlatform} = 1;
             }
             elsif (($tagname eq 'li') && ($attr->{class} eq 'publisher'))
             {
@@ -181,6 +192,10 @@ use GCPlugins::GCgames::GCgamesCommon;
             {
                 $self->{isReleased} = 2;
             }
+            elsif (($tagname eq 'a') && ($attr->{href} =~ /\/cheats\//) && ($attr->{class} eq 'navItemAction'))
+            {
+                $self->{urlTips} = $attr->{href};
+            }
         }
     }
 
@@ -210,6 +225,7 @@ use GCPlugins::GCgames::GCgamesCommon;
                 $origtext =~ /^(.*?)\s*\((.*?)\)\s*$/;
                 $self->{itemsList}[$self->{itemIdx}]->{name} = $1;
                 $self->{itemsList}[$self->{itemIdx}]->{platform} = $2;
+                $self->{itemsList}[$self->{itemIdx}]->{url} = $self->{itemsList}[$self->{itemIdx}]->{url} . 'tpfplatformtpf' . $self->{itemsList}[$self->{itemIdx}]->{platform};
                 $self->{isName} = 0;
             }
             elsif ($self->{isDate})
@@ -221,13 +237,12 @@ use GCPlugins::GCgames::GCgamesCommon;
         }
         elsif ($self->{parsingTips})
         {
-            if (($self->{isSection}) && $self->{inside}->{h2})
+            if (($self->{isSection} eq 1) && $self->{inside}->{h2})
             {
-                $self->{section} = 'Codes' if $origtext =~ /Cheat Codes$/;    
-                $self->{section} = 'Secrets' if $origtext =~ /Secrets$/;    
-                $self->{section} = 'Unlockables' if $origtext =~ /Unlockables$/;    
-                $self->{curInfo}->{code} = [] if $self->{section} eq 'Codes';
-                $self->{curInfo}->{unlockable} = [] if $self->{section} eq 'Unlockables';
+                $self->{section} = 'Codes' if $origtext =~ /Cheat Codes$/;
+                $self->{section} = 'Unlockables' if $origtext =~ /Unlockables$/;
+                $self->{section} = 'Secrets' if $origtext =~ /Secrets$/;
+                $self->{section} = 'Secrets' if $origtext =~ /Easter Eggs$/;
                 $self->{isSection} = 0;
             }
             elsif (($self->{section} eq 'Codes') || ($self->{section} eq 'Unlockables'))
@@ -239,20 +254,31 @@ use GCPlugins::GCgames::GCgamesCommon;
                 
                 if ($self->{isCheat})
                 {
-                    $self->{tmpCheatLine} = [];
-                    push @{$self->{tmpCheatLine}}, $origtext;
+                    if ($self->{section} eq 'Codes')
+                    {
+                        $self->{tmpCheatLine} = [];
+                        push @{$self->{tmpCheatLine}}, $origtext;
+                    }
+                    else
+                    {
+                        $self->{tmpCheatLine} = [];
+                        ${$self->{tmpCheatLine}}[1] = $origtext;
+                    }
                     $self->{isCheat} = 0;
                 }
                 elsif ($self->{isDesc})
                 {
-                    push @{$self->{tmpCheatLine}}, $origtext;
                     if ($self->{section} eq 'Codes')
                     {
+                        push @{$self->{tmpCheatLine}}, $origtext;
                         push @{$self->{curInfo}->{code}}, $self->{tmpCheatLine};
+                        $self->{tmpCheatLine} = [];
                     }
                     else
                     {
+                        ${$self->{tmpCheatLine}}[0] = $origtext;
                         push @{$self->{curInfo}->{unlockable}}, $self->{tmpCheatLine};
+                        $self->{tmpCheatLine} = [];
                     }
                     $self->{isDesc} = 0;
                 }
@@ -262,7 +288,7 @@ use GCPlugins::GCgames::GCgamesCommon;
                 $origtext =~ s/^\s*//;
                 $origtext =~ s/\s*$//;
                 return if !$origtext;
-                $self->{curInfo}->{secrets} .= "\n\n" if $self->{curInfo}->{secrets};
+                $self->{curInfo}->{secrets} .= "\n" if $self->{curInfo}->{secrets};
                 $self->{curInfo}->{secrets} .= $origtext;
             }
         }
@@ -272,25 +298,14 @@ use GCPlugins::GCgames::GCgamesCommon;
             {
                 $origtext =~ s/\n//g;
                 $self->{curInfo}->{name} = $origtext;
+                $self->{curInfo}->{platform} = $self->{url_plateforme};
+                $self->{curInfo}->{exclusive} = 1;
                 $self->{isName} = 0;
             }
-            elsif ($self->{isDesc})
+            elsif ($self->{isRating} eq 2)
             {
-                $origtext =~ s/^\s*//;
-                $origtext =~ s/\s*$//;
-                $self->{curInfo}->{description} = $origtext;
-                $self->{isDesc} = 0;
-            }
-            elsif ($self->{isInfo})
-            {
-                $self->{isPlayers} = 1 if $origtext =~ /Number of Players:\s*/;
-                $self->{isInfo} = 0;
-            }
-            elsif ($self->{isPlatform})
-            {
-                $origtext =~ /^.*?for\s*(.*?)\s*-/;
-                $self->{curInfo}->{platform} = $1;
-                $self->{isPlatform} = 0;
+                $self->{curInfo}->{ratingpress} = $origtext;
+                $self->{isRating} = 0;
             }
             else
             {
@@ -326,10 +341,7 @@ use GCPlugins::GCgames::GCgamesCommon;
     sub getTipsUrl
     {
         my $self = shift;
-        
-        my $url = $self->{curInfo}->{$self->{urlField}};
-        $url =~ s/index\.html/hints.html/;
-        return $url;
+        return 'http://www.gamespot.com' .$self->{urlTips};
     }
 
     sub new
@@ -348,10 +360,10 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{isName} = 0;
         $self->{isGame} = 0;
         $self->{isDate} = 0;
-        $self->{isDesc} = 0;
-        $self->{isInfo} = 0;
         $self->{isCheat} = 0;
         $self->{isDesc} = 0;
+        $self->{isTip} = 0;
+        $self->{isRating} = 0;
         $self->{section} = '';
         $self->{isSection} = 0;
         $self->{isDeveloper} = 0;
@@ -360,6 +372,10 @@ use GCPlugins::GCgames::GCgamesCommon;
         $self->{isReleased} = 0;
         $self->{isPlayers} = 0;
         $self->{isBox} = 0;
+        $self->{isExclu} = 0;
+        $self->{url_plateforme} = '';
+        $self->{urlTips} = "";
+        $self->{SaveUrl} = "";
 
         return $self;
     }
@@ -371,6 +387,9 @@ use GCPlugins::GCgames::GCgamesCommon;
         if ($self->{parsingTips})
         {
             $html =~ s|<b>(.*?)</b>|$1|g;
+            $html =~ s|<i>(.*?)</i>|$1|g;
+## It takes too much time
+#            $html =~ s|<li class="guideAct"><a href="(.+)">Go to Online Walkthrough|'<tpfdebuttpf>' . $self->RecupSolution($1) . '<tpffintpf>'|ge;
         }
         elsif ($self->{parsingList})
         {
@@ -388,17 +407,53 @@ use GCPlugins::GCgames::GCgamesCommon;
         return $html;
     }
     
+    sub RecupSolution
+    {
+        my ($self, $url) = @_;
+
+        my $html = $self->loadPage($url);
+
+        my $found = index($html,"<h2>");
+        if ( $found >= 0 )
+        {
+            $html = substr($html, $found,length($html)- $found);
+        }
+        else
+        {
+            $found = index($html,"<span class=\"author\">");
+            if ( $found >= 0 )
+            {
+                $html = substr($html, $found,length($html)- $found);
+            }
+        }
+
+        $html = substr($html, 0, index($html, " rel=\"next\">"));
+
+        $html =~ s|<a class="next" href="/gameguides.html"||ge;
+        $html =~ s|<a class="next" href="(.+)"|$self->RecupSolution('http://www.gamespot.com'.$1)|ge;
+
+        return $html;
+    }
+
     sub getSearchUrl
     {
 		my ($self, $word) = @_;
 	
         #return 'http://www.gamespot.com/search.html?qs='.$word.'&sub=g&stype=11&type=11';
         return 'http://www.gamespot.com/pages/search/solr_search_ajax.php?q='.$word.'&type=game&offset=0&tags_only=false&sort=false';
+        #return 'http://www.gamespot.com/search.html?qs=' .$word. '&tag=masthead%3Bsearch';
     }
     
     sub getItemUrl
     {
 		my ($self, $url) = @_;
+        my $found = index($url,"tpfplatformtpf");
+        if ( $found >= 0 )
+        {
+            $self->{url_plateforme} = substr($url, $found +length('tpfplatformtpf'),length($url)- $found -length('tpfplatformtpf'));
+            $url = substr($url, 0,$found);
+        }
+
         return 'http://www.gamespot.com' . $url
             if $url !~ /gamespot\.com/;
         return $url if $url;

@@ -18,7 +18,7 @@ package GCOptions;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -40,9 +40,14 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
 
     sub new
     {
-        my ($proto, $file, $main) = @_;
+        # fallbackOptions has been added in 1.7.0. Previous versions stored some collection
+        # specific settings at global level. This has been moved to collection level, but to
+        # let users keep their previous settings, it will try to find it at global level if not found
+        # at collection level.
+        
+        my ($proto, $file, $main, $fallbackOptions) = @_;
         my $class = ref($proto) || $proto;
-        my $self  = {created => 0};
+        my $self  = {created => 0, fallbackOptions => $fallbackOptions};
         
         #GCLang::loadLangs;
         
@@ -137,7 +142,6 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                 tearoffMenus     => 0, 
                 toolbar          => 3,
                 toolbarPosition  => 0,
-                status           => 1,
                 transform        => 1,
                 articles         => "le,la,les,l,un,une,des,a,the,der,die,das,ein,eine,el,los,una",
                 askImport        => 0,
@@ -149,7 +153,8 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                 emails           => "",
                 view             => 0,
                 columns          => 3,
-                resizeImgList    => 0,
+                resizeImgList    => 1,
+                animateImgList   => 1,
                 listBgPicture    => 1,
                 useOverlays      => 1,
                 mailer           => "Sendmail",
@@ -167,6 +172,8 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                 cdDevice         => '/dev/cd',
                 useStars         => 1,
                 bigPics          => 0,
+                listPaneSplit    => 10000,  # Big value to make sure it's hidden by default
+                displayMenuBar   => 1
             ); 
         }; # if
 
@@ -179,6 +186,9 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
             my $options = \%defaults;
             while (my $line = $handle->getline())
             {
+                # Remove last character if white space
+                # This includes carriage return and fix an issue when using DOS-encoded file on Unix system
+                $line =~ s/\s$//;
                 if ($line =~ m{^(.*?)=(.*)$})
                 {
                     $options->{$1} = $2;
@@ -228,13 +238,13 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
     sub getFullLang
     {
         my $self = shift;
-        
         (my $lang = $self->lang) =~ s/(.*)/\L$1\E_$1/;
         $lang =~ s/_EN/_US/; # Fix for english
         $lang =~ s/_CS/_CZ/; # Fix for Czech
+        $lang =~ s/_cn_ZH//; # Fix for Simplified Chinese
         $lang =~ s/_ZH/_TW/; # Fix for Traditional Chinese
         $lang .= '.UTF-8';
-        $lang = 'sr@Latn' if $lang =~ /^sr/;  # Fix for serbian        
+        $lang = 'sr@Latn' if $lang =~ /^sr/;  # Fix for serbian
         return $lang;
     }
 
@@ -280,6 +290,10 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         }
         else
         {
+            if (!exists $self->{options}->{$name} && $self->{fallbackOptions})
+            {
+                $self->{options}->{$name} = $self->{fallbackOptions}->$name;
+            }
             return $self->{options}->{$name};
         }
     }
@@ -425,8 +439,9 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
     sub initValues
     {
         my $self = shift;
-        
+
         $self->{viewChanged} = 0;
+        $self->{viewOptionsChanged} = 0;
         $self->{expert}->set_active($self->{options}->expert);
 
         if ($self->{options}->programs eq 'system')
@@ -454,7 +469,6 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->{spellCheck}->set_active($self->{options}->spellCheck)
             if $self->{spellCheck};
         $self->{useRelativePaths}->set_active($self->{options}->useRelativePaths);
-        $self->{status}->set_active($self->{options}->status);
         $self->{useStars}->set_active($self->{options}->useStars);
         $self->{proxycb}->set_active($self->{options}->proxy);
         $self->{proxyurl}->set_text($self->{options}->proxy);
@@ -477,6 +491,9 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
 
         $self->{options}->resizeImgList(0) if ! $self->{options}->exists('resizeImgList');
         $self->{resizeImgList} = $self->{options}->resizeImgList;
+
+        $self->{options}->animateImgList(1) if ! $self->{options}->exists('animateImgList');
+        $self->{animateImgList} = $self->{options}->animateImgList;
 
         $self->{options}->toolbar(3) if ! $self->{options}->exists('toolbar');
         $self->{toolbarOption}->setValue($self->{options}->toolbar);
@@ -567,7 +584,6 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->{options}->tearoffMenus(($self->{tearoffMenus}->get_active) ? 1 : 0);
         $self->{options}->spellCheck(($self->{spellCheck}->get_active) ? 1 : 0)
             if $self->{spellCheck};
-        $self->{options}->status(($self->{status}->get_active) ? 1 : 0);
         $self->{options}->useStars(($self->{useStars}->get_active) ? 1 : 0);
         $self->{options}->useRelativePaths(($self->{useRelativePaths}->get_active) ? 1 : 0);
         $self->{options}->useTitleForPics(($self->{picturesNameTitle}->get_active) ? 1 : 0);
@@ -604,81 +620,8 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         my $currentView = $self->{options}->view;
         $self->{options}->view($self->{viewOption}->getValue);
         
-        my $currentResizeImgList = $self->{options}->resizeImgList;
-        my $currentColumns = $self->{options}->columns;
-        my $currentListImgSize = $self->{options}->listImgSize;
-        my $currentImgSkin = $self->{options}->listImgSkin;
-        my $currentBg = $self->{options}->listBgColor;
-        my $currentFg = $self->{options}->listFgColor;
-        my $currentBgPicture = $self->{options}->listBgPicture;
-        my $currentUseOverlays = $self->{options}->useOverlays;
-        my $currentDetailImgSize = $self->{options}->detailImgSize;
-        my $currentDetails = $self->{model}->{preferences}->details;
-        my $currentGroupBy = $self->{model}->{preferences}->groupBy;
-        my $currentSecondarySort = $self->{model}->{preferences}->secondarySort;
-        my $currentGroupedFirst = $self->{model}->{preferences}->groupedFirst;
-        my $currentAddCount = $self->{model}->{preferences}->addCount;
-        $self->{options}->resizeImgList($self->{resizeImgList});
-        $self->{options}->columns($self->{columns});
-        $self->{options}->listImgSize($self->{listImgSize});
-        $self->{options}->listImgSkin($self->{listImgSkin});
-        $self->{options}->listBgColor($self->{mlbg});
-        $self->{options}->listFgColor($self->{mlfg});
-        $self->{options}->useOverlays($self->{useOverlays});
-        $self->{options}->listBgPicture($self->{listBgPicture});
-        $self->{options}->detailImgSize($self->{detailImgSize});
-        $self->{model}->{preferences}->details($self->{details});
-        $self->{model}->{preferences}->groupBy($self->{groupBy});
-        $self->{model}->{preferences}->secondarySort($self->{secondarySort});
-        $self->{model}->{preferences}->groupedFirst($self->{groupedFirst});
-        $self->{model}->{preferences}->addCount($self->{addCount});
-        if (
-             ($currentView != $self->{options}->view)
-             ||
-             (
-                ($self->{options}->view == 1)
-                &&
-                (
-                  ($currentResizeImgList != $self->{options}->resizeImgList)
-                  ||
-                  ($currentColumns != $self->{options}->columns)
-                  ||
-                  ($currentListImgSize ne $self->{options}->listImgSize)
-                  ||
-                  ($currentImgSkin ne $self->{options}->listImgSkin)
-                  ||
-                  ($currentBg ne $self->{options}->listBgColor)
-                  ||
-                  ($currentFg ne $self->{options}->listFgColor)
-                  ||
-                  ($currentBgPicture != $self->{options}->listBgPicture)
-                  ||
-                  ($currentUseOverlays != $self->{options}->useOverlays)
-                  ||
-                  ($currentGroupBy ne $self->{model}->{preferences}->groupBy)
-                  ||
-                  ($currentSecondarySort ne $self->{model}->{preferences}->secondarySort)
-                )
-             )
-             ||
-             (
-                ($self->{options}->view == 2)
-                &&
-                (
-                  ($currentDetailImgSize ne $self->{options}->detailImgSize)
-                  ||
-                  ($currentDetails ne $self->{model}->{preferences}->details)
-                  ||
-                  ($currentGroupBy ne $self->{model}->{preferences}->groupBy)
-                  ||
-                  ($currentSecondarySort ne $self->{model}->{preferences}->secondarySort)
-                  ||
-                  ($currentGroupedFirst ne $self->{model}->{preferences}->groupedFirst)
-                  ||
-                  ($currentAddCount ne $self->{model}->{preferences}->addCount)
-                )
-             )
-           )
+        if (($currentView != $self->{options}->view)
+         || ($self->{viewOptionsChanged}))
         {
             $self->{parent}->setItemsList(0, 1);
             $self->{viewChanged} = 1;
@@ -734,10 +677,13 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->SUPER::show_all;
         $self->{hboxImages}->hide;
         $self->{hboxDetails}->hide;
-        $self->{hboxImages}->show_all if ($self->{options}->view == 1);
-        $self->{hboxDetails}->show_all if ($self->{options}->view == 2);
         $self->{hboxSMTP}->hide if $self->{mailerOption}->getValue ne 'SMTP';
-        if (!$self->{expert}->get_active)
+        if ($self->{expert}->get_active)
+        {
+            $self->{hboxImages}->show_all if ($self->{options}->view == 1);
+            $self->{hboxDetails}->show_all if ($self->{options}->view == 2);
+        }
+        else
         {
             # Toolbar and status bar
             $self->{labelToolbar}->hide_all;
@@ -751,22 +697,17 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                 $self->{labelDateFormat}->hide_all;
                 $self->{dateFormat}->hide_all;
             }
-            $self->{status}->hide_all;
             $self->{useStars}->hide_all;
             # CD Device
             $self->{cdDeviceLabel}->hide_all;
             $self->{cdDevice}->hide_all;
             # Pictures
-#            $self->{labelImagesGroup}->hide_all;
-#            $self->{labelImages}->hide_all;
-#            $self->{images}->hide_all;
             $self->{picturesNameFormat}->hide_all;
             $self->{picturesNameAuto}->hide_all;
             $self->{picturesNameTitle}->hide_all;
             $self->{useRelativePaths}->hide_all;
             # Internet searches
             $self->{searchStop}->hide_all;
-            #$self->{bigPics}->hide_all;
             # Internet access
             $self->{proxycb}->hide_all;
             $self->{proxyurl}->hide_all;
@@ -842,7 +783,6 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         
         
         $fieldsDialog->show;
-        $self->{details} = join('|', @{$self->{fields}});
         $fieldsDialog->destroy;
     }
 
@@ -989,8 +929,11 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                 my $i = $self->{viewOption}->getValue;
                 $self->{hboxImages}->hide;
                 $self->{hboxDetails}->hide;
-                $self->{hboxImages}->show_all if ($i == 1);
-                $self->{hboxDetails}->show_all if ($i == 2);
+                if ($self->{expert}->get_active)
+                {
+                    $self->{hboxImages}->show_all if ($i == 1);
+                    $self->{hboxDetails}->show_all if ($i == 2);
+                }
         });
         $tableDisplay->attach($self->{hboxImages}, 4, 6, 1, 2, 'fill', 'fill', 0, 0);
         $tableDisplay->attach($self->{hboxDetails}, 4, 6, 1, 2, 'fill', 'fill', 0, 0);
@@ -1053,6 +996,9 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $tableDisplay->attach($self->{labelExpandersMode}, 2, 3, 4, 5, 'fill', 'fill', 0, 0);
         $tableDisplay->attach($self->{expandersMode}, 3, 4, 4, 5, 'fill', 'fill', 0, 0);
 
+        $self->{useStars} = new Gtk2::CheckButton($parent->{lang}->{OptionsUseStars});
+        $tableDisplay->attach($self->{useStars}, 4, 6, 4, 5, ['expand', 'fill'], 'fill', 0, 0);
+
         if ($GCUtils::hasTimeConversion)
         {
             $self->{labelDateFormat} = new GCLabel($parent->{lang}->{OptionsDateFormat});
@@ -1060,16 +1006,9 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
             $self->{dateFormat}->set_width_chars(10);
             $self->{tooltips}->set_tip($self->{dateFormat},
                                        $parent->{lang}->{OptionsDateFormatTooltip});
-            $tableDisplay->attach($self->{labelDateFormat}, 4, 5, 4, 5, 'fill', 'fill', 0, 0);
-            $tableDisplay->attach($self->{dateFormat}, 5, 6, 4, 5, 'fill', 'fill', 0, 0);
+            $tableDisplay->attach($self->{labelDateFormat}, 2, 3, 5, 6, 'fill', 'fill', 0, 0);
+            $tableDisplay->attach($self->{dateFormat}, 3, 6, 5, 6, 'fill', 'fill', 0, 0);
         }
-
-        $self->{status} = new Gtk2::CheckButton($parent->{lang}->{OptionsStatus});
-        $self->{status}->set_active($options->status);
-        $tableDisplay->attach($self->{status}, 2, 4, 5, 6, 'fill', 'fill', 0, 0);
-
-        $self->{useStars} = new Gtk2::CheckButton($parent->{lang}->{OptionsUseStars});
-        $tableDisplay->attach($self->{useStars}, 4, 6, 5, 6, ['expand', 'fill'], 'fill', 0, 0);
 
         my $labelDisplayArticlesGroup = new GCHeaderLabel($parent->{lang}->{OptionsDisplayArticlesGroup});
         $tableDisplay->attach($labelDisplayArticlesGroup, 0, 6, 7, 8, 'fill', 'fill', 0, 0);
@@ -1314,7 +1253,7 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $self->{splash}->set_active(1) if (! $options->exists('splash'));
         $self->{spellCheck} = 0;
         my $restoreAccelOffset = 0;
-        if ($GCGraphicComponents::hasSpellChecker)
+        if ($GCBaseWidgets::hasSpellChecker)
         {
             $self->{spellCheck} = new Gtk2::CheckButton($parent->{lang}->{OptionsSpellCheck});
             $self->{spellCheck}->set_active($options->spellCheck);
@@ -1384,12 +1323,6 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
         $tabs->append_page_menu($vboxInternet, $internetButton, Gtk2::Label->new($parent->{lang}->{OptionsInternet}));
         $tabs->append_page_menu($vboxConvenience, $conveniencesButton, Gtk2::Label->new($parent->{lang}->{OptionsConveniences}));
 
-#        $tabs->append_page($vboxMain, $parent->{lang}->{OptionsMain});
-#        $tabs->append_page($vboxDisplay, $parent->{lang}->{OptionsDisplay});
-#        $tabs->append_page($vboxPath, $parent->{lang}->{OptionsPaths});
-#        $tabs->append_page($vboxInternet, $parent->{lang}->{OptionsInternet});
-#        $tabs->append_page($vboxConvenience, $parent->{lang}->{OptionsConveniences});
-
         $tabs->set_tab_label_packing ($vboxMain, 1, 0, 'start');
         $tabs->set_tab_label_packing ($vboxDisplay, 1, 0, 'start');
         $tabs->set_tab_label_packing ($vboxPath, 1, 0, 'start');
@@ -1416,81 +1349,22 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
     # Class used to let user select images options
     package GCImagesOptionsDialog;
     use base "GCModalDialog";
-    
-    sub initValues
-    {
-        my $self = shift;
-        
-        $self->{resizeImgList}->set_active($self->{parent}->{resizeImgList});
-        $self->{columns}->set_value($self->{parent}->{columns});
-        $self->{imgSizeOption}->setValue($self->{parent}->{listImgSize});
-        $self->{optionStyle}->setValue($self->{parent}->{listImgSkin});
-        $self->{useOverlays}->set_active($self->{parent}->{useOverlays});             
-        $self->{listBgPicture}->set_active($self->{parent}->{listBgPicture});
-        $self->activateColors(! $self->{parent}->{listBgPicture});
-        $self->{mlbg} = $self->{parent}->{mlbg};
-        $self->{mlfg} = $self->{parent}->{mlfg};
-        $self->{groupByOption}->setValue($self->{parent}->{groupBy});
-        $self->{secondarySortOption}->setValue($self->{parent}->{secondarySort});        
-    }
-    
-    sub saveValues
-    {
-        my $self = shift;
-        
-        $self->{parent}->{resizeImgList} = (($self->{resizeImgList}->get_active) ? 1 : 0);
-        $self->{parent}->{columns} = $self->{columns}->get_value;
-        $self->{parent}->{listImgSize} = $self->{imgSizeOption}->getValue;
-        $self->{parent}->{listImgSkin} = $self->{optionStyle}->getValue;
-        $self->{parent}->{mlbg} = $self->{mlbg};
-        $self->{parent}->{mlfg} = $self->{mlfg};
-        $self->{parent}->{listBgPicture} = (($self->{listBgPicture}->get_active) ? 1 : 0);
-        $self->{parent}->{useOverlays} = (($self->{useOverlays}->get_active) ? 1 : 0);
-        $self->{parent}->{groupBy} =  $self->{groupByOption}->getValue;
-        $self->{parent}->{secondarySort} =  $self->{secondarySortOption}->getValue;        
-    }
-    
+    use GCItemsLists::GCListOptions;
+
     sub show
     {
         my $self = shift;
 
-        $self->initValues;
+        $self->{panel}->initValues;
         
         $self->show_all;
         my $code = $self->run;
         if ($code eq 'ok')
         {
-            $self->saveValues;
+            $self->{panel}->saveValues;
+            $self->{parent}->{viewOptionsChanged} = 1;
         }
         $self->hide;
-    }
-    
-    sub changeColor
-    {
-        my ($self, $type) = @_;
-        
-        my $dialog = new Gtk2::ColorSelectionDialog($self->{parent}->{lang}->{ImagesOptionsSelectColor});
-        my $vboxPicture = new Gtk2::VBox(0,0);
-        my @colors = split m/,/, $self->{'ml'.$type};
-        my $previous = new Gtk2::Gdk::Color($colors[0], $colors[1], $colors[2]);
-        $dialog->colorsel->set_current_color($previous) if $previous;
-        my $response = $dialog->run;
-        if ($response eq 'ok')
-        {
-            my $color = $dialog->colorsel->get_current_color;
-            $self->{'ml'.$type} = join ',',$color->red, $color->green, $color->blue;
-        }
-        $dialog->destroy;
-    }
-    
-    sub activateColors
-    {
-        my ($self, $value) = @_;
-        
-        $self->{labelStyle}->set_sensitive(!$value);
-        $self->{optionStyle}->set_sensitive(!$value);
-        $self->{labelBg}->set_sensitive($value);
-        $self->{buttonBg}->set_sensitive($value);
     }
     
     sub new
@@ -1502,96 +1376,10 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
                                        $parent->{lang}->{ImagesOptionsTitle},
                                       );
 
-        my $tableLayout = new Gtk2::Table(13,4);
-        $tableLayout->set_row_spacings($GCUtils::halfMargin);
-        $tableLayout->set_col_spacings($GCUtils::margin);
-        $tableLayout->set_border_width($GCUtils::margin);
+        $self->{panel} = new GCImagesOptionsPanel($parent->{model}->{preferences}, $parent->{parent});
+        $self->{parent} = $parent;
 
-        my $labelColumns = new GCLabel($parent->{lang}->{OptionsColumns});
-        my  $adj = Gtk2::Adjustment->new(0, 1, 20, 1, 1, 0) ;
-        $self->{columns} = Gtk2::SpinButton->new($adj, 0, 0);
-
-        $self->{resizeImgList} = new Gtk2::CheckButton($parent->{lang}->{ImagesOptionsResizeImgList});
-        $self->{resizeImgList}->signal_connect('clicked' => sub {
-            $self->{columns}->set_sensitive(! $self->{resizeImgList}->get_active);
-        });
-        $self->{resizeImgList}->set_active($self->{resizeImgList});
-
-        my $imgSizeLabel = new GCLabel($parent->{lang}->{ImagesOptionsSizeLabel});
-        $self->{imgSizeOption} = new GCMenuList;
-        my %imgSizes = %{$parent->{lang}->{ImagesOptionsSizeList}};
-        my @imgValues = map {{value => $_, displayed => $imgSizes{$_}}}
-                                 (sort keys %imgSizes);
-        $self->{imgSizeOption}->setValues(\@imgValues);
-
-        $self->{useOverlays} = new Gtk2::CheckButton($parent->{lang}->{ImagesOptionsUseOverlays});
-        $self->{useOverlays}->set_active($self->{useOverlays});
-
-        $self->{listBgPicture} = new Gtk2::CheckButton($parent->{lang}->{ImagesOptionsBgPicture});
-        $self->{listBgPicture}->signal_connect('clicked' => sub {
-            $self->activateColors(! $self->{listBgPicture}->get_active);
-        });
-        
-        $self->{labelStyle} = new GCLabel($parent->{lang}->{OptionsStyle});
-        $self->{optionStyle} = new GCMenuList;
-        my @styleValues;
-        foreach (@GCStyle::lists)
-        {
-            (my $displayed = $_) =~ s/_/ /g;
-            push @styleValues, {value => $_, displayed => $displayed};
-        }
-        $self->{optionStyle}->setValues(\@styleValues);
-       
-        $self->{labelBg} = new GCLabel($parent->{lang}->{ImagesOptionsBg});
-        $self->{buttonBg} = new Gtk2::Button($parent->{lang}->{ImagesOptionsSelectColor});
-        $parent->{tooltips}->set_tip($self->{buttonBg},
-                                     $parent->{lang}->{ImagesOptionsBgTooltip});
-        $self->{buttonBg}->signal_connect('clicked' => sub {
-            $self->changeColor('bg');
-        });
-        
-        $self->{labelFg} = new GCLabel($parent->{lang}->{ImagesOptionsFg});
-        $self->{buttonFg} = new Gtk2::Button($parent->{lang}->{ImagesOptionsSelectColor});
-        $self->{buttonFg}->signal_connect('clicked' => sub {
-            $self->changeColor('fg');
-        });
-        $parent->{tooltips}->set_tip($self->{buttonFg},
-                                     $parent->{lang}->{ImagesOptionsFgTooltip});
-
-        $self->{groupItems} = new GCLabel($parent->{lang}->{DetailedOptionsGroupItems});
-        $self->{groupByOption} = new GCFieldSelector(0, undef, 1);
-        $self->{groupByOption}->setModel($parent->{parent}->{model});
-        
-        $self->{secondarySort} = new GCLabel($parent->{lang}->{DetailedOptionsSecondarySort});
-        $self->{secondarySortOption} = new GCFieldSelector(0, undef, 1);
-        $self->{secondarySortOption}->setModel($parent->{parent}->{model});
-
-        my $imagesDisplayGroupLabel = new GCHeaderLabel($parent->{lang}->{OptionsImagesDisplayGroup});
-        $tableLayout->attach($imagesDisplayGroupLabel, 0, 4, 0, 1, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{resizeImgList}, 2, 4, 1, 2, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($labelColumns, 2, 3, 2, 3, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{columns}, 3, 4, 2, 3, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($imgSizeLabel, 2, 3, 3, 4, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{imgSizeOption}, 3, 4, 3, 4, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{groupItems}, 2, 3, 4, 5, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{groupByOption}, 3, 4, 4, 5, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{secondarySort}, 2, 3, 5, 6, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{secondarySortOption}, 3, 4, 5, 6, 'fill', 'fill', 0, 0);        
-
-        my $imagesStyleGroupLabel = new GCHeaderLabel($parent->{lang}->{OptionsImagesStyleGroup});
-        $tableLayout->attach($imagesStyleGroupLabel, 0, 4, 7, 8, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{useOverlays}, 2, 4, 8, 9, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{listBgPicture}, 2, 4, 9, 10, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{labelStyle}, 2, 3, 10, 11, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{optionStyle}, 3, 4, 10, 11, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{labelBg}, 2, 3, 11, 12, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{buttonBg}, 3, 4, 11, 12, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{labelFg}, 2, 3, 12, 13, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{buttonFg}, 3, 4, 12, 13, 'fill', 'fill', 0, 0);
-
-        $tableLayout->show_all;
-
-        $self->vbox->pack_start($tableLayout,1,1,0);
+        $self->vbox->pack_start($self->{panel},1,1,0);
 
         bless ($self, $class);
         return $self;
@@ -1601,111 +1389,44 @@ our $DEFAULT_IMG_DIR='./.%FILE_BASE%_pictures/';
 {
     # Class used to let user select detailed options
     package GCDetailedOptionsDialog;
-    use GCDialogs;
-    use base 'GCFieldsSelectionDialog';
-    
-    sub initValues
-    {
-        my $self = shift;
-        
-        $self->{imgSizeOption}->setValue($self->{parent}->{detailImgSize});
-        $self->{groupByOption}->setValue($self->{parent}->{groupBy});
-        $self->{secondarySortOption}->setValue($self->{parent}->{secondarySort});
-        $self->{groupedFirst}->setValue($self->{parent}->{groupedFirst});
-        $self->{addCount}->setValue($self->{parent}->{addCount});
-    }
-    
-    sub saveValues
-    {
-        my $self = shift;
-        
-        $self->{parent}->{detailImgSize} = $self->{imgSizeOption}->getValue;
-        $self->{parent}->{groupBy} =  $self->{groupByOption}->getValue;
-        $self->{parent}->{secondarySort} =  $self->{secondarySortOption}->getValue;
-        $self->{parent}->{groupedFirst} =  $self->{groupedFirst}->getValue;
-        $self->{parent}->{addCount} =  $self->{addCount}->getValue;
-    }
-    
-    sub hideExtra
-    {
-        my $self = shift;
-
-    }
+    use base "GCModalDialog";
+    use GCItemsLists::GCListOptions;
 
     sub show
     {
         my $self = shift;
 
-        $self->initValues;
+        $self->{panel}->initValues;
         
-        my $code = $self->SUPER::show;
+        $self->show_all;
+        my $code = $self->run;
         if ($code eq 'ok')
         {
-            $self->saveValues;
+            $self->{panel}->saveValues;
+            $self->{parent}->{viewOptionsChanged} = 1;
         }
         $self->hide;
     }
     
     sub new
     {
-        my ($proto, $parent, $preIdList) = @_;
+        my ($proto, $parent) = @_;
         my $class = ref($proto) || $proto;
+        
         my $self  = $class->SUPER::new($parent,
                                        $parent->{lang}->{DetailedOptionsTitle},
-                                       $preIdList,
-                                       1);
+                                      );
+
+        $self->{panel} = new GCDetailedOptionsPanel($parent->{model}->{preferences}, $parent->{parent});
+        $self->{parent} = $parent;
+
+        $self->vbox->pack_start($self->{panel},1,1,0);
 
         bless ($self, $class);
-
-        my $tableLayout = new Gtk2::Table(9,7);
-        $tableLayout->set_border_width($GCUtils::margin);
-        $tableLayout->set_col_spacings($GCUtils::margin);
-        $tableLayout->set_row_spacings($GCUtils::halfMargin);
-
-        $self->{groupItems} = new GCLabel($parent->{lang}->{DetailedOptionsGroupItems});
-        $self->{groupByOption} = new GCFieldSelector(0, undef, 1);
-        $self->{groupByOption}->setModel($parent->{parent}->{model});
-
-        $self->{secondarySort} = new GCLabel($parent->{lang}->{DetailedOptionsSecondarySort});
-        $self->{secondarySortOption} = new GCFieldSelector(0, undef, 1);
-        $self->{secondarySortOption}->setModel($parent->{parent}->{model});
-
-        $self->{groupedFirst} = new GCCheckBox($parent->{lang}->{DetailedOptionsGroupedFirst});
-        $self->{addCount} = new GCCheckBox($parent->{lang}->{DetailedOptionsAddCount});
-        
-        my $imgSizeLabel = new GCLabel($parent->{lang}->{DetailedOptionsImageSize});
-        $self->{imgSizeOption} = new GCMenuList;
-        my %imgSizes = %{$parent->{lang}->{ImagesOptionsSizeList}};
-        my @imgValues = map {{value => $_, displayed => $imgSizes{$_}}}
-                                 (sort keys %imgSizes);
-        $self->{imgSizeOption}->setValues(\@imgValues);
-
-        my $preferencesLabel = new GCHeaderLabel($parent->{lang}->{OptionsDetailedPreferencesGroup});
-        $tableLayout->attach($preferencesLabel, 0, 6, 0, 1, 'fill', 'fill', 0, 0);
-
-        $tableLayout->attach($imgSizeLabel, 2, 3, 1, 2, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{imgSizeOption}, 3, 4, 1, 2, 'fill', 'fill', 0, 0);
-
-        $tableLayout->attach($self->{groupItems}, 2, 3, 2, 3, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{groupByOption}, 3, 4, 2, 3, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{secondarySort}, 2, 3, 3, 4, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{secondarySortOption}, 3, 4, 3, 4, 'fill', 'fill', 0, 0);
-
-        $tableLayout->attach($self->{groupedFirst}, 2, 4, 4, 5, 'fill', 'fill', 0, 0);
-        $tableLayout->attach($self->{addCount}, 2, 4, 5, 6, 'fill', 'fill', 0, 0);
-
-        my $fieldsLabel = new GCHeaderLabel($parent->{lang}->{DetailedOptionsFields});
-        $tableLayout->attach($fieldsLabel, 0, 6, 8, 9, 'fill', 'fill', 0, 0);
-
-        $self->vbox->pack_start($tableLayout,0,0,0);
-        $self->vbox->remove($self->{marginBox});
-        $self->vbox->reorder_child($tableLayout,0);
-
-        $self->set_default_size(-1,480);
-
         return $self;
     }
 }
+
 
 {
     # Class used to let user select program to run

@@ -1,3 +1,43 @@
+1.7.0
+
+	* New translations
+		- Chinese (Simplified) translation added thanks to 林雪凡.
+
+	* User interface changes
+		- All the settings for the current type of list can be changed directly
+		  below the list, on the bottom left of the application. By default,
+		  the settings panel is hidden, but it can be shown by dragging the
+		  separator.
+		- It's now possible to define default values for the fields when adding
+		  a new item to a collection.
+		- New menu to show/hide menu, tool and status bars. This also appears
+		  in the context menu shown when right-clicking on an element in the
+		  list. It contains an option to use fullscreen mode.
+		- Slight animations have been added in image mode.
+		- A popup is displayed in image mode to show a summary of the item.
+		
+	* Bugs fixed
+		- There was a bug when saving an item which date is the current one.
+		- The list of saved searches in toolbar was not reset when displaying
+		  all collection items.
+		- Ranges were not handled correctly when searching.
+		- With collections of video games, the units field was not hidden if
+		  user chose to hide file size.
+		- In image mode, some items were not displayed correctly when grouping.
+        - Bug fixed in some website plugins:
+            All Amazon plugins for books
+            Allocine
+            Bedetheque
+            CSFD
+            Discogs
+            GameSpot
+            IMDb
+            jeuxvideo.com
+            MobyGames
+            Saraiva
+            
+-------------------------------------------------------------------
+
 1.6.2
 
 	* New features
