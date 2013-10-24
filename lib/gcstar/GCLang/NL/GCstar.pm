@@ -137,9 +137,15 @@ kunt u gebruik maken van de <b>onderstaande knop item details</b>.',
             'MenuNoFilter' => '_Om het even welk',
     
         'MenuConfiguration' => 'In_stellingen',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => 'Getoon_de informatie',
             'MenuBorrowers' => '_Leners',
             'MenuToolbarConfiguration' => '_Werkbalk aanpassen',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => 'Genre om_zetting',
         
         'MenuBookmarks' => 'Mijn _Collecties',
@@ -217,8 +223,7 @@ TPF: programmeur
 Adolfo González: programmeur
 ',
         'AboutLicense' => 'verspreid onder GNU GPL termen
-Logo Copyright le Spektre
-http://le-spektre.org',
+Logo Copyright le Spektre',
         'AboutTranslation' => 'Engelse vertaling door Kim',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo en webdesign door le Spektre',
@@ -400,6 +405,7 @@ Logo en webdesign door le Spektre',
         'ImagesOptionsBgTooltip' => 'Verander achtergrondkleur',
         'ImagesOptionsFgTooltip'=> 'Verander selectiekleur',
         'ImagesOptionsResizeImgList' => 'Aantal kolommen automatisch veranderen',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Grootte',
         'ImagesOptionsSizeList' => {0 => 'Zeer klein', 1 => 'Klein', 2 => 'Gemiddeld', 3 => 'Groot', 4 => 'Zeer groot'},
         'ImagesOptionsSizeTooltip' => 'Kies afbeeldingsgrootte',
@@ -658,6 +664,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

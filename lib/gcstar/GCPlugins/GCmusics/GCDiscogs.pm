@@ -18,7 +18,7 @@ package GCPlugins::GCmusics::GCDiscogs;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -51,7 +51,7 @@ use GCPlugins::GCmusics::GCmusicsCommon;
                 {
                          $self->{itemIdx}++;
                          my $title = $xml -> {'artist'} -> {'releases'} -> {'release'} -> {$release} -> {'title'};
-                         $self->{itemsList}[$self->{itemIdx}]->{url} = "http://www.discogs.com/release/".$release."?f=xml&api_key=e8f5ae8ba2";
+                         $self->{itemsList}[$self->{itemIdx}]->{url} = "http://api.discogs.com/release/".$release."?f=xml&api_key=e8f5ae8ba2";
                          $self->{itemsList}[$self->{itemIdx}]->{title} = $title;
                         # Enleve les blancs en debut de chaine
                          $self->{itemsList}[$self->{itemIdx}]->{title} =~ s/^\s+//;
@@ -70,7 +70,7 @@ use GCPlugins::GCmusics::GCmusicsCommon;
                          $self->{itemIdx}++;
                          my $title = $xml -> {'label'} -> {'releases'} -> {'release'} -> {$release} -> {'title'};
                          my $artist = $xml -> {'label'} -> {'releases'} -> {'release'} -> {$release} -> {'artist'};
-                         $self->{itemsList}[$self->{itemIdx}]->{url} = "http://www.discogs.com/release/".$release."?f=xml&api_key=e8f5ae8ba2";
+                         $self->{itemsList}[$self->{itemIdx}]->{url} = "http://api.discogs.com/release/".$release."?f=xml&api_key=e8f5ae8ba2";
                          $self->{itemsList}[$self->{itemIdx}]->{title} = $title;
                          # Enleve les blancs en debut de chaine
                          $self->{itemsList}[$self->{itemIdx}]->{title} =~ s/^\s+//;
@@ -240,19 +240,19 @@ use GCPlugins::GCmusics::GCmusicsCommon;
         my $url;
         if ( $key eq 'title' )
         {
-            $url = "http://www.discogs.com/search?type=all&q=". $word ."&f=xml&api_key=e8f5ae8ba2";
+            $url = "http://api.discogs.com/search?type=all&q=". $word ."&f=xml&api_key=e8f5ae8ba2";
         }
         elsif ( $key eq 'artist' )
         {
-            $url = "http://www.discogs.com/". $key ."/". $word ."?f=xml&api_key=e8f5ae8ba2"; 
+            $url = "http://api.discogs.com/". $key ."/". $word ."?f=xml&api_key=e8f5ae8ba2"; 
         }
         elsif ( $key eq 'label' )
         {
-            $url = "http://www.discogs.com/". $key ."/". $word ."?f=xml&api_key=e8f5ae8ba2"; 
+            $url = "http://api.discogs.com/". $key ."/". $word ."?f=xml&api_key=e8f5ae8ba2"; 
         }
         
         return $url;
-#        return "http://www.discogs.com/search?type=all&q=". $word ."&f=xml&api_key=e8f5ae8ba2";
+#        return "http://api.discogs.com/search?type=all&q=". $word ."&f=xml&api_key=e8f5ae8ba2";
     }
     
     sub getItemUrl
@@ -270,7 +270,7 @@ use GCPlugins::GCmusics::GCmusicsCommon;
             # and return a url corresponding to the api page for this release       
             $url =~ /release\/([0-9]+)/;
             my $id = $1;
-            $url = "http://www.discogs.com/release/". $id ."?f=xml&api_key=e8f5ae8ba2";
+            $url = "http://api.discogs.com/release/". $id ."?f=xml&api_key=e8f5ae8ba2";
         }
         return $url;
     }

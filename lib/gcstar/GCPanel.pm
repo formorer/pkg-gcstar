@@ -18,13 +18,13 @@ package GCPanel;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 use utf8;
 use Gtk2;
 use GCBorrowings;
-use GCGraphicComponents;
+use GCGraphicComponents::GCBaseWidgets;
 
 use strict;
 
@@ -535,6 +535,12 @@ use strict;
                         $self->{displayedValues}->{$_->{for}} = 
                                 $_->{values}
                              || $self->{model}->{fieldsInfo}->{$_->{for}}->{values};
+                    }
+                    # If the item is related to another, it has to be hidden with it
+                    if (exists $self->{model}->{fieldsInfo}->{$_->{for}}->{relatedto})
+                    {
+                        my $relatedTo = $self->{model}->{fieldsInfo}->{$_->{for}}->{relatedto};
+                        push @{$self->{dependencies}->{$relatedTo}}, $widget;
                     }
                 }
             }

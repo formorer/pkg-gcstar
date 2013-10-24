@@ -96,7 +96,7 @@ use GCPlugins::GCfilms::GCfilmsCommon;
             }
             elsif ($tagname eq "span")
             {
-                if ($attr->{class} eq "rating-rating")
+                if ($attr->{itemprop} eq "ratingValue")
                 {
                     $self->{insideRating} = 1;
                 }
@@ -329,13 +329,10 @@ use GCPlugins::GCfilms::GCfilmsCommon;
                 $self->{curInfo}->{synopsis} = $origtext;
                 $self->{insideStoryline} = 0;
             }
-            elsif ($self->{insideDirector} && $self->{inside}->{a})
+            elsif ($self->{insideDirector} && $self->{inside}->{div})
             {
-                if ($self->{curInfo}->{director})
-                {
-                    $self->{curInfo}->{director} .= ", ";
-                }
-                $self->{curInfo}->{director} .= $origtext;
+                    $origtext =~ s/,/, /;
+                    $self->{curInfo}->{director} .= $origtext;		
             }
             elsif ($self->{insideReleaseDate} && !$self->{curInfo}->{date}) {
                 if ($origtext =~ m/([0-9]{4})/)

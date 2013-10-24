@@ -18,7 +18,7 @@ package GCImageLists;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -32,6 +32,7 @@ my $timeOutBetweenEnhancements = 50;
     package GCBaseImageList;
     
     use File::Basename;
+    use GCItemsLists::GCImageListComponents;
     use GCUtils;
     use GCStyle;
     use base "Gtk2::VBox";
@@ -50,6 +51,7 @@ my $timeOutBetweenEnhancements = 50;
         $self->{imagesDir} = $parent->getImagesDir();
         $self->{coverField} = $parent->{model}->{commonFields}->{cover};
         $self->{titleField} = $parent->{model}->{commonFields}->{title};
+        $self->{idField} = $parent->{model}->{commonFields}->{id};
         $self->{borrowerField} = $parent->{model}->{commonFields}->{borrower}->{name};
         # Sort field
         $self->{sortField} = $self->{preferences}->secondarySort
@@ -86,6 +88,11 @@ my $timeOutBetweenEnhancements = 50;
         });
 
         $self->can_focus(1);
+        
+        $self->{imageCache} = new GCImageCache($self->{imagesDir},
+                                               $self->{preferences}->listImgSize,
+                                               $container->{style},
+                                               $self->{parent}->{defaultImage});
         
         return $self;
     }
@@ -152,7 +159,7 @@ my $timeOutBetweenEnhancements = 50;
                 sub compare
                 {
                     return (
-                            GCUtils::gccmp ($a->{sortValue}, $b->{sortValue})
+                            GCUtils::gccmpe($a->{sortValue}, $b->{sortValue})
                            );
                 }
                 if ($self->{currentOrder} == 1)
@@ -277,8 +284,8 @@ my $timeOutBetweenEnhancements = 50;
         {
             foreach (@{$self->{cache}})
             {
-                $_->{eventBox}->destroy
-                    if $_->{eventBox};
+                $_->{imageBox}->destroy
+                    if $_->{imageBox};
             }
         }
         $self->{cache} = [];
@@ -346,477 +353,23 @@ my $timeOutBetweenEnhancements = 50;
         $self->{columns} = $columns;
         my $init = $self->{initializing};
         $self->{initializing} = 1;
-        $self->refresh($refresh);
+        $self->refresh($refresh) if $refresh;
         $self->show_all;
         $self->{initializing} = $init;
     }
-    
-    # Resizes artwork to required sizes and saves copies of the images, for fast loading
-    sub createImageCache
+
+    sub getColumnsNumber
     {
-        my ($self, $srcImage, $useOverlays) = @_;
-
-        # Load in the original source image
-        my $origPixbuf = Gtk2::Gdk::Pixbuf->new_from_file($srcImage);
-        
-        my $idField = $self->{parent}->{model}->{commonFields}->{id};
-        my $titleField = $self->{parent}->{model}->{commonFields}->{title};
-        my $gcsautoid = $self->{parent}->{items}->{itemArray}->[$self->{fileIdx}]->{$idField};
-        my $title = $self->{parent}->{items}->{itemArray}->[$self->{fileIdx}]->{$titleField};
-        $title =~ s/[^a-zA-Z0-9]*//g;
-        
-        # Make sure destination directory exists
-        if ( ! -e $self->{imagesDir})
-        {
-            mkdir($self->{imagesDir});
-        }
-
-        # Get original picture format
-        my ($picFormat, $picWidth, $picHeight) = Gtk2::Gdk::Pixbuf->get_file_info($srcImage);
-
-        # Loop through possible sizes
-        for (my $size = 0; $size < 5; $size++) {
-            my $imgWidth;
-            my $imgHeight;
-            my $overlay;
-            
-            my $cacheFilename = $self->{imagesDir}.$gcsautoid.".".$title.".cache.".$size;
-            $cacheFilename .= ".overlay"
-                if $useOverlays;
-
-            # Get size for cached image
-            ($imgWidth, $imgHeight, $overlay) = $self->getDestinationImgSize($useOverlays, $size,
-                                                                            $picWidth,
-                                                                            $picHeight);                    
-            
-            # Scale pixbuf and save
-            my $scaledPixbuf = GCUtils::scaleMaxPixbuf($origPixbuf, $imgWidth, $imgHeight, 0, 0);
-            if ($picFormat->{name} eq 'jpeg')
-            {
-                $scaledPixbuf->save ($cacheFilename, 'jpeg', quality => '99');        
-            }
-            else
-            {
-                $scaledPixbuf->save ($cacheFilename, 'png');                    
-            }
-        }
+        my $self = shift;
+        return $self->{columns};
     }
     
-    # Calculates height and width of list image
-    sub getDestinationImgSize
-    {
-        my ($self, $useOverlays, $size, $origWidth, $origHeight) = @_;
-        
-        my $imgWidth;
-        my $imgHeight;
-        my $overlay;
-        
-        # No overlays
-        $imgWidth = (exists $self->{parent}->{model}->{collection}->{options}->{defaults}->{listImageWidth})
-              ? $self->{parent}->{model}->{collection}->{options}->{defaults}->{listImageWidth}
-              : 120;
-        $imgHeight = (exists $self->{parent}->{model}->{collection}->{options}->{defaults}->{listImageHeight})
-                           ? $self->{parent}->{model}->{collection}->{options}->{defaults}->{listImageHeight}
-                           : 160;
-                               
-        if ($useOverlays)
-        {
-            # Overlays
-            
-            # Calculate size of list image with proportional size of overlay padding added
-            my $pixbufTempHeight = (($self->{style}->{overlayPaddingTop} + $self->{style}->{overlayPaddingBottom})/$self->{style}->{overlayPixbuf}->get_height + 1) * $origHeight;
-            my $pixbufTempWidth = (($self->{style}->{overlayPaddingLeft} + $self->{style}->{overlayPaddingRight})/$self->{style}->{overlayPixbuf}->get_width + 1) * $origWidth;
-
-            # Find out target size of overlay, keeping the same ratio as the size calculated above (ie, list image + relative padding)
-            my $ratio = $pixbufTempHeight / $pixbufTempWidth;
-            my $targetOverlayHeight;
-            my $targetOverlayWidth;
-            if (($pixbufTempWidth > $imgWidth) || ($pixbufTempHeight > $imgHeight))
-            {
-                if (($pixbufTempWidth * $imgHeight/$pixbufTempHeight) < $imgHeight )
-                {
-                    $targetOverlayHeight = $imgHeight;
-                    $targetOverlayWidth = int($imgHeight / $ratio);
-                }
-                else
-                {
-                    $targetOverlayHeight = int( $imgWidth * $ratio);
-                    $targetOverlayWidth =  $imgWidth;
-                }
-            }
-            else
-            {
-                # Special case when image is small enough and doesn't need to be resized
-                $targetOverlayHeight = $pixbufTempHeight;
-                $targetOverlayWidth = $pixbufTempWidth;
-            }
-
-            # Calculate final offset amounts for target size of overlay
-            $overlay->{paddingLeft} = int($self->{style}->{overlayPaddingLeft} * $targetOverlayWidth / $self->{style}->{overlayPixbuf}->get_width);
-            $overlay->{paddingRight} = int($self->{style}->{overlayPaddingRight} * $targetOverlayWidth / $self->{style}->{overlayPixbuf}->get_width);
-            $overlay->{paddingTop} = int($self->{style}->{overlayPaddingTop} * $targetOverlayHeight / $self->{style}->{overlayPixbuf}->get_height);
-            $overlay->{paddingBottom} = int($self->{style}->{overlayPaddingBottom} * $targetOverlayHeight / $self->{style}->{overlayPixbuf}->get_height);
-
-            $imgWidth = $imgWidth - $overlay->{paddingLeft} - $overlay->{paddingRight};
-            $imgHeight = $imgHeight - $overlay->{paddingTop} - $overlay->{paddingBottom};
-        }   
-
-        my $factor = ($size == 0) ? 0.5
-                        : ($size == 1) ? 0.8
-                        : ($size == 3) ? 1.5
-                        : ($size == 4) ? 2
-                        : 1;                        
-        $imgWidth *= $factor;
-        $imgHeight *= $factor;
-        
-        return ($imgWidth, $imgHeight, $overlay);
-    }
-    
-    sub createPixbuf
-    {
-        my ($self, $displayedImage, $borrower, $favourite, $fileIdx, $isReplace, $forceEnhancement) = @_;
-        my $pixbuf = undef;
-        
-        my $idField = $self->{parent}->{model}->{commonFields}->{id};
-        my $titleField = $self->{parent}->{model}->{commonFields}->{title};
-        my $gcsautoid = $self->{parent}->{items}->{itemArray}->[$fileIdx]->{$idField};
-        my $title = $self->{parent}->{items}->{itemArray}->[$fileIdx]->{$titleField};
-        $title =~ s/[^a-zA-Z0-9]*//g;
-        $self->{fileIdx} = $fileIdx;
-        
-        # Item has a picture assigned
-        if ($displayedImage)
-        {
-            my $cacheFilename =$self->{imagesDir}.$gcsautoid.".".$title.".cache.".$self->{parent}->{options}->listImgSize;
-            $cacheFilename .= ".overlay"
-                if $self->{style}->{useOverlays};
-          
-            # Does cached image file exist? 
-            if (!(-e $cacheFilename) || $isReplace)
-            {
-                # Need to generate the cached images, if original picture exists
-                $self->createImageCache($displayedImage, $self->{style}->{useOverlays})
-                    if (-e $displayedImage);
-            }
-            
-            # Grab cached image
-            eval {
-                $pixbuf = Gtk2::Gdk::Pixbuf->new_from_file($cacheFilename);
-            };
-        }
-
-        # No picture assigned or using assigned picture failed, so use collection default
-        if ($@ || !$pixbuf)
-        {
-            my $cacheFilename = $self->{imagesDir}.$gcsautoid.".".$title.".cache.".$self->{parent}->{options}->listImgSize;
-                        $cacheFilename .= ".overlay"
-                if $self->{style}->{useOverlays};
-
-            # Does cached image file exist? 
-            if (!(-e $cacheFilename) || $isReplace)
-            {
-                # Need to generate the cached images
-                $self->createImageCache($self->{parent}->{defaultImage}, $self->{style}->{useOverlays})
-                    if (-e $self->{parent}->{defaultImage});
-            }            
-            $pixbuf = Gtk2::Gdk::Pixbuf->new_from_file($cacheFilename);
-        }
-
-        my $width;
-        my $height;
-        my $boxWidth = $self->{style}->{imgWidth};
-        my $boxHeight = $self->{style}->{imgHeight};
-
-        my $overlay;
-        my $imgWidth;
-        my $imgHeight;
-        my $targetOverlayHeight;
-        my $targetOverlayWidth;
-        my $pixbufTempHeight;
-        my $pixbufTempWidth;
-        my $alpha = 1;
-
-        if ($self->{style}->{useOverlays})
-        {
-            # Need to call this to get the overlay padding        
-            ($imgWidth, $imgHeight, $overlay) = $self->getDestinationImgSize(1, 2,
-                                                                    $pixbuf->get_width,
-                                                                    $pixbuf->get_height);                    
-        }
-        $width = $pixbuf->get_width;
-        $height = $pixbuf->get_height;
-        
-        # Do the composition
-
-        if ($self->{style}->{useOverlays})
-        {
-            if ($self->{style}->{withImage})
-            {
-                # Using background, so center accordingly
-                my $offsetX = 5 * $self->{style}->{factor} + (($boxWidth - ($width + $overlay->{paddingLeft} + $overlay->{paddingRight})) / 2);
-                my $offsetY = 15 * $self->{style}->{factor} + ($boxHeight - ($height + $overlay->{paddingTop} + $overlay->{paddingBottom}));
-
-                # Make an empty pixbuf to work within
-                my $tempPixbuf =Gtk2::Gdk::Pixbuf->new('rgb', 1, 8,
-                                                $self->{style}->{backgroundPixbuf}->get_width,
-                                                $self->{style}->{backgroundPixbuf}->get_height);
-                $tempPixbuf->fill(0x00000000);
-
-                # Place cover in pixbuf
-                $pixbuf->composite($tempPixbuf,
-                                      $offsetX + $overlay->{paddingLeft}, $offsetY + $overlay->{paddingTop}, 
-                                      $width , $height,
-                                      $offsetX + $overlay->{paddingLeft}, $offsetY + $overlay->{paddingTop}, 
-                                      1, 1, 
-                                      'nearest', 255);
-                $pixbuf = $tempPixbuf;
- 
-                # Composite overlay picture
-                $self->{style}->{overlayPixbuf}->composite($pixbuf,
-                                                  $offsetX, $offsetY,
-                                                  $width + $overlay->{paddingLeft} + $overlay->{paddingRight},
-                                                  $height + $overlay->{paddingTop} + $overlay->{paddingBottom},
-                                                  $offsetX, $offsetY,
-                                                  ($width + $overlay->{paddingLeft} + $overlay->{paddingRight}) / $self->{style}->{overlayPixbuf}->get_width,
-                                                  ($height + $overlay->{paddingTop} + $overlay->{paddingBottom}) / $self->{style}->{overlayPixbuf}->get_height, 
-                                                  'nearest', 255);
-
-                # Overlay borrower image if required
-                if ($borrower && ($borrower ne 'none'))
-                {
-                   # De-saturate borrowed items
-                   $pixbuf->saturate_and_pixelate($pixbuf, .1, 0);
-                   $self->{style}->{lendPixbuf}->composite($pixbuf,
-                                                  $pixbuf->get_width - $self->{style}->{lendPixbuf}->get_width - $offsetX,
-                                                  $offsetY + $height + $overlay->{paddingTop} + $overlay->{paddingBottom} - $self->{style}->{lendPixbuf}->get_height,
-                                                  $self->{style}->{lendPixbuf}->get_width, $self->{style}->{lendPixbuf}->get_height,
-                                                  $pixbuf->get_width - $self->{style}->{lendPixbuf}->get_width - $offsetX,
-                                                  $offsetY + $height + $overlay->{paddingTop} + $overlay->{paddingBottom} - $self->{style}->{lendPixbuf}->get_height,
-                                                  1, 1, 
-                                                  'nearest', 255);
-                }
-
-                # Overlay favourite image if required
-                if ($favourite)
-                {
-                   $self->{style}->{favPixbuf}->composite($pixbuf,
-                                                  $pixbuf->get_width - $self->{style}->{favPixbuf}->get_width - $offsetX,
-                                                  $offsetY,
-                                                  $self->{style}->{favPixbuf}->get_width, $self->{style}->{favPixbuf}->get_height,
-                                                  $pixbuf->get_width - $self->{style}->{favPixbuf}->get_width - $offsetX,
-                                                  $offsetY,
-                                                  1, 1, 
-                                                  'nearest', 255);
-                }
-
-                # Create and apply reflection if required
-                if ($self->{style}->{withReflect})
-                {
-                    my $reflect;
-                    $reflect = $pixbuf->flip(0);
-                    $reflect->composite(
-                        $pixbuf,
-                        0, 2 * ($offsetY + $height + $overlay->{paddingTop} + $overlay->{paddingBottom}) - $pixbuf->get_height,
-                        $pixbuf->get_width,
-                        2 * ($pixbuf->get_height - $height - $offsetY - $overlay->{paddingTop} - $overlay->{paddingBottom}) - (10 * $self->{style}->{factor}),
-                        0, 2 * ($offsetY + $height + $overlay->{paddingTop} + $overlay->{paddingBottom}) - $pixbuf->get_height,
-                        1, 1,
-                        'nearest', 100
-                    );
-
-                    # Apply foreground fading
-                    $self->{style}->{foregroundPixbuf}->composite(
-                        $pixbuf,
-                        0, 0,
-                        $pixbuf->get_width, $pixbuf->get_height,
-                        0, 0,
-                        1, 1,
-                        'nearest', 255
-                    );
-                }
-
-                # Heft created pixbuf onto background
-                my $bgPixbuf = $self->{style}->{backgroundPixbuf}->copy;
-                $pixbuf->composite($bgPixbuf,
-                                      0,0,
-                                      $pixbuf->get_width , $pixbuf->get_height,
-                                      0,0,
-                                      1, 1, 
-                                      'nearest', 255);
-                $pixbuf = $bgPixbuf;
-
-            }
-            else
-            {
-                # Not using background, so we need to make an empty pixbuf which is right size for overlay first
-                my $tempPixbuf =Gtk2::Gdk::Pixbuf->new('rgb', 1, 8,
-                                                $width + $overlay->{paddingLeft} + $overlay->{paddingRight},
-                                                $height + $overlay->{paddingTop} + $overlay->{paddingBottom});
-                $tempPixbuf->fill(0x00000000);
-                            
-                # Now, place list image inside empty pixbuf
-                $pixbuf->composite($tempPixbuf,
-                                      $overlay->{paddingLeft}, $overlay->{paddingTop}, 
-                                      $width , $height,
-                                      $overlay->{paddingLeft}, $overlay->{paddingTop}, 
-                                      1, 1, 
-                                      'nearest', 255 * $alpha);
-                $pixbuf = $tempPixbuf;
-
-                # Place overlay on top of pixbuf
-                $self->{style}->{overlayPixbuf}->composite($pixbuf,
-                                                  0, 0,
-                                                  $width + $overlay->{paddingLeft} + $overlay->{paddingRight},
-                                                  $height + $overlay->{paddingTop} + $overlay->{paddingBottom},
-                                                  0, 0,
-                                                  ($width + $overlay->{paddingLeft} + $overlay->{paddingRight}) / $self->{style}->{overlayPixbuf}->get_width,
-                                                  ($height + $overlay->{paddingTop} + $overlay->{paddingBottom}) / $self->{style}->{overlayPixbuf}->get_height, 
-                                                  'nearest', 255 * $alpha);
-
-                # Overlay borrower image if required
-                if ($borrower && ($borrower ne 'none'))
-                {
-                   # De-saturate borrowed items
-                   $pixbuf->saturate_and_pixelate($pixbuf, .1, 0);
-
-                   $self->{style}->{lendPixbuf}->composite($pixbuf,
-                                                  $pixbuf->get_width - $self->{style}->{lendPixbuf}->get_width,
-                                                  $pixbuf->get_height - $self->{style}->{lendPixbuf}->get_height,
-                                                  $self->{style}->{lendPixbuf}->get_width, $self->{style}->{lendPixbuf}->get_height,
-                                                  $pixbuf->get_width - $self->{style}->{lendPixbuf}->get_width,
-                                                  $pixbuf->get_height - $self->{style}->{lendPixbuf}->get_height,
-                                                  1, 1, 
-                                                  'nearest', 255);
-                }
-
-                # Overlay favourite image if required
-                if ($favourite)
-                {
-                   $self->{style}->{favPixbuf}->composite($pixbuf,
-                                                  $pixbuf->get_width - $self->{style}->{favPixbuf}->get_width,
-                                                  0,
-                                                  $self->{style}->{favPixbuf}->get_width, $self->{style}->{favPixbuf}->get_height,
-                                                  $pixbuf->get_width - $self->{style}->{favPixbuf}->get_width,
-                                                  0,
-                                                  1, 1, 
-                                                  'nearest', 255);
-                }
-
-            }
-        }
-        else
-        {
-            # No overlays, nice and simple
-
-            # Overlay borrower image if required
-            if ($borrower && ($borrower ne 'none'))
-            {
-               # De-saturate borrowed items
-               $pixbuf->saturate_and_pixelate($pixbuf, .1, 0);
-               $self->{style}->{lendPixbuf}->composite($pixbuf,
-                                              $width - $self->{style}->{lendPixbuf}->get_width - $self->{style}->{factor},
-                                              $height - $self->{style}->{lendPixbuf}->get_height - $self->{style}->{factor},
-                                              $self->{style}->{lendPixbuf}->get_width, $self->{style}->{lendPixbuf}->get_height,
-                                              $width - $self->{style}->{lendPixbuf}->get_width - $self->{style}->{factor},
-                                              $height - $self->{style}->{lendPixbuf}->get_height - $self->{style}->{factor},
-                                              1, 1, 
-                                              'nearest', 255);
-            }
-
-            # Overlay favourite image if required
-            if ($favourite)
-            {
-               $self->{style}->{favPixbuf}->composite($pixbuf,
-                                              $width - $self->{style}->{favPixbuf}->get_width - $self->{style}->{factor},
-                                              $self->{style}->{factor},
-                                              $self->{style}->{favPixbuf}->get_width, $self->{style}->{favPixbuf}->get_height,
-                                              $width - $self->{style}->{favPixbuf}->get_width - $self->{style}->{factor},
-                                              $self->{style}->{factor},
-                                              1, 1, 
-                                              'nearest', 255);
-            }
-
-            my $reflect;
-            $reflect = $pixbuf->flip(0)
-                if $self->{style}->{withReflect};
-
-            my $offsetX = 5 * $self->{style}->{factor} + (($boxWidth - $width) / 2);
-            my $offsetY = 15 * $self->{style}->{factor} + ($boxHeight - $height);
-            if ($self->{style}->{withImage})
-            {
-                my $bgPixbuf = $self->{style}->{backgroundPixbuf}->copy;
-                $pixbuf->composite($bgPixbuf,
-                                   $offsetX, $offsetY, 
-                                   $width, $height,
-                                   $offsetX, $offsetY,
-                                   1, 1, 
-                                   'nearest', 255);
-                $pixbuf = $bgPixbuf;
-            }
-
-            if ($self->{style}->{withReflect})
-            {
-                $reflect->composite(
-                    $pixbuf,
-                    $offsetX, $height + $offsetY,
-                    $width, $pixbuf->get_height - $height - $offsetY - (10 * $self->{style}->{factor}),
-                    $offsetX, $height + $offsetY,
-                    1, 1,
-                    'nearest', 100
-                );
-
-                # Apply foreground fading
-                $self->{style}->{foregroundPixbuf}->composite(
-                    $pixbuf,
-                    0, 0,
-                    $pixbuf->get_width, $pixbuf->get_height,
-                    0, 0,
-                    1, 1,
-                    'nearest', 255
-                );
-           }
-      }
-
-
-        return $pixbuf;
-    }
-    
-    sub createEventBox
+    sub createImageBox
     {
         my ($self, $info) = @_;
-        my $eventBox = new Gtk2::EventBox;
-        $eventBox->can_focus(1);
-        # We store the index of the displayed data
-        my $image = new Gtk2::Image;
-        my $displayedImage = GCUtils::getDisplayedImage($info->{picture},
-                                                        undef,
-                                                        $self->{parent}->{options}->file,
-                                                        $self->{collectionDir});
-
-        my $pixbuf = $self->createPixbuf($displayedImage, $info->{borrower}, $info->{favourite}, $info->{idx}, 0);
-
-        #$self->{tooltips}->set_tip($eventBox, $info->{title}, '');
-
-        if (! $self->{style}->{withImage})
-        {
-            $eventBox->modify_bg('normal', $self->{style}->{inactiveBg});
-        }
-
-        $image->set_from_pixbuf($pixbuf);
-        # ONLY FOR DEBUG
-        $eventBox->{picture} = $displayedImage;
-        $eventBox->add($image);
-        $eventBox->set_size_request($self->{style}->{vboxWidth}, $self->{style}->{vboxHeight});
-        if ($self->{initializing})
-        {
-            push @{$self->{enhanceInformation}}, [$self, $eventBox, $displayedImage, $info->{borrower}, $info->{favourite}, $info->{title}];
-        }
-        else
-        {
-            $eventBox->show_all;
-        }
         
-        return $eventBox;
+        my $imageBox = new GCImageListItem($self, $info);
+        return $imageBox;
     }
 
     sub getFromCache
@@ -825,9 +378,7 @@ my $timeOutBetweenEnhancements = 50;
         if (! $self->{cache}->[$info->{idx}])
         {
             my $item = {};
-            $item->{eventBox} = $self->createEventBox($info);
-            $item->{keyHandler} = 0;
-            $item->{mouseHandler} = 0;
+            $item->{imageBox} = $self->createImageBox($info);
             $self->{cache}->[$info->{idx}] = $item;
         }
         return $self->{cache}->[$info->{idx}];
@@ -847,7 +398,7 @@ my $timeOutBetweenEnhancements = 50;
             foreach my $followingItem(@{$self->{itemsArray}})
             {
                 my $testSortValue = uc($followingItem->{sortValue});
-                my $cmp = GCUtils::gccmp ($testSortValue, $refSortValue);
+                my $cmp = GCUtils::gccmpe($testSortValue, $refSortValue);
                 $itemsIdx++ if ! ($cmp > 0);
                 
                 next if !$followingItem->{displayed};
@@ -860,7 +411,7 @@ my $timeOutBetweenEnhancements = 50;
             foreach my $followingItem(@{$self->{itemsArray}})
             {
                 my $testSortValue = uc($followingItem->{sortValue});
-                my $cmp = GCUtils::gccmp ($refSortValue, $testSortValue);                           
+                my $cmp = GCUtils::gccmpe($refSortValue, $testSortValue);                           
                 $itemsIdx++ if ! ($cmp > 0);
                 next if !$followingItem->{displayed};
                 last if ($cmp > 0);
@@ -870,22 +421,34 @@ my $timeOutBetweenEnhancements = 50;
         return ($place, $itemsIdx) if wantarray;
         return $place;
     }
-
-    sub addItem
+    
+    sub createItemInfo
     {
-        my ($self, $info, $immediate, $idx, $keepConversionTables) = @_;
-        
+        my ($self, $idx, $info) = @_;
+        my $displayedImage = GCUtils::getDisplayedImage($info->{$self->{coverField}},
+                                                        undef,
+                                                        $self->{parent}->{options}->file,
+                                                        $self->{collectionDir});
         my $item = {
                      idx => $idx,
                      title => $self->{parent}->transformTitle($info->{$self->{titleField}}),
-                     picture => $info->{$self->{coverField}},
+                     picture => $displayedImage,
                      borrower => $info->{$self->{borrowerField}},
                      sortValue => $self->{sortField} eq $self->{titleField}
                                                                             ? $self->{parent}->transformTitle($info->{$self->{titleField}})
                                                                             : $info->{$self->{sortField}},
                      favourite => $info->{favourite},
                      displayed => 1,
+                     autoid => $info->{$self->{idField}}
                    };
+        return $item;        
+    }
+
+    sub addItem
+    {
+        my ($self, $info, $immediate, $idx, $keepConversionTables) = @_;
+        
+        my $item = $self->createItemInfo($idx, $info);
 
         if ($immediate)
         {
@@ -930,150 +493,14 @@ my $timeOutBetweenEnhancements = 50;
         my ($self, $info, $place) = @_;
         return if ! $self->{columns};
         my $item = $self->getFromCache($info);
-        my $eventBox = $item->{eventBox};
+        my $imageBox = $item->{imageBox};
         my $i = $info->{idx};
         if (!defined $place)
         {
             $self->{displayedToIdx}->{$self->{number}} = $i;
             $self->{idxToDisplayed}->{$i} = $self->{number};
         }
-        # We store it here to be sure we have the correct one
-        $eventBox->{idx} = $i;
-        $eventBox->{info} = $info;
-        
-        $eventBox->signal_handler_disconnect($item->{mouseHandler})
-            if $item->{mouseHandler};
-        $item->{mouseHandler} = $eventBox->signal_connect('button_press_event' => sub {
-            my ($widget, $event) = @_;
-
-            if (($event->type ne '2button-press') && !(($event->button eq 3) && ($widget->{selected})))
-            {
-                my $state = $event->get_state;
-                my $keepPrevious = 0;
-                if ($state =~ /control-mask/)
-                {
-                    $self->select($widget->{idx}, 0, 1);
-                }
-                elsif ($state =~ /shift-mask/)
-                {
-                    $self->restorePrevious;
-                    my ($min, $max);
-                    if ($self->{previousSelectedDisplayed} > $self->{idxToDisplayed}->{$widget->{idx}})
-                    {
-                        $min = $self->{idxToDisplayed}->{$widget->{idx}};
-                        $max = $self->{previousSelectedDisplayed};
-                    }
-                    else
-                    {
-                        $min = $self->{previousSelectedDisplayed};
-                        $max = $self->{idxToDisplayed}->{$widget->{idx}};
-                    }
-                    foreach my $displayed($min..$max)
-                    {
-                        $self->select($self->{displayedToIdx}->{$displayed}, 0, 1);
-                    }
-                }
-                else
-                {
-                    $self->select($widget->{idx});
-                }
-                $self->{previousSelectedDisplayed} = $self->{idxToDisplayed}->{$widget->{idx}};
-        
-                #$self->{parent}->display($widget->{idx}) unless $event->type eq '2button-press';
-                $self->{parent}->display(keys %{$self->{selectedIndexes}});
-            }
-            
-            $self->{parent}->displayInWindow if $event->type eq '2button-press';
-            $self->{parent}->{context}->popup(undef, undef, undef, undef, $event->button, $event->time) if ($event->button eq 3);
-            $widget->grab_focus;
-            $self->{container}->setCurrentList($self);
-        });
-
-        $eventBox->signal_handler_disconnect($item->{keyHandler})
-            if $item->{keyHandler};
-
-        $item->{keyHandler} = $eventBox->signal_connect('key-press-event' => sub {
-            my ($widget, $event) = @_;
-            my $displayed = $self->{idxToDisplayed}->{$widget->{idx}};
-            my $key = Gtk2::Gdk->keyval_name($event->keyval);
-            if ($key eq 'Delete')
-            {
-                $self->{parent}->deleteCurrentItem;
-                return 1;
-            }
-            if (($key eq 'Return') || ($key eq 'space'))
-            {
-                $self->{parent}->displayInWindow;
-                return 1;
-            }
-            my $unicode = Gtk2::Gdk->keyval_to_unicode($event->keyval);
-            if ($unicode)
-            {
-                $self->showSearch(pack('U',$unicode));
-                $self->{searchTimeOut} = Glib::Timeout->add(4000, sub {
-                    $self->hideSearch;
-                    $self->{searchTimeOut} = 0;
-                    return 0;
-                });
-            }
-            else
-            {
-                ($key eq 'Right')      ? $displayed++ :
-                ($key eq 'Left')       ? $displayed-- :
-                ($key eq 'Down')       ? $displayed += $self->{columns} : 
-                ($key eq 'Up')         ? $displayed -= $self->{columns} :
-                ($key eq 'Page_Down')  ? $displayed += ($self->{style}->{pageCount} * $self->{columns}):
-                ($key eq 'Page_Up')    ? $displayed -= ($self->{style}->{pageCount} * $self->{columns}):
-                ($key eq 'Home')       ? $displayed = 0 :
-                ($key eq 'End')        ? $displayed = $self->{displayedNumber} - 1 :
-                                         return 1;
-
-                return 1 if ($displayed < 0) || ($displayed >= scalar @{$self->{boxes}});
-                my $column = $displayed % $self->{columns};                
-                my $valueIdx = $self->{displayedToIdx}->{$displayed};
-#                my $keepPrevious = 0;
-                my $state = $event->get_state;
-                if ($state =~ /control-mask/)
-                {
-                    $self->select($valueIdx, 0, 1);
-                    delete $self->{previousSelectedDisplayed};
-                }
-                elsif ($state =~ /shift-mask/)
-                {
-                    $self->{previousSelectedDisplayed} = $self->{idxToDisplayed}->{$widget->{idx}}
-                        if !exists $self->{previousSelectedDisplayed};
-                    $self->restorePrevious;
-                    my ($min, $max);
-                    if ($self->{previousSelectedDisplayed} > $displayed)
-                    {
-                        $min = $displayed;
-                        $max = $self->{previousSelectedDisplayed};
-                    }
-                    else
-                    {
-                        $min = $self->{previousSelectedDisplayed};
-                        $max = $displayed;
-                    }
-                    foreach my $disp($min..$max)
-                    {
-                        $self->select($self->{displayedToIdx}->{$disp}, 0, 1);
-                    }
-                }
-                else
-                {
-                    $self->select($valueIdx);
-                    delete $self->{previousSelectedDisplayed};
-                }
-                
-                $self->{parent}->display($valueIdx);
-                $self->{container}->setCurrentList($self);
-                $self->{boxes}->[$displayed]->grab_focus;
-                $self->showCurrent unless (($key eq 'Left')  && ($column != ($self->{columns} - 1)))
-                                       || (($key eq 'Right') && ($column != 0));
-            }
-            return 1;
-            
-        });
+        $imageBox->prepareHandlers($i, $info);
 
         if (($self->{number} % $self->{columns}) == 0)
         {
@@ -1090,18 +517,18 @@ my $timeOutBetweenEnhancements = 50;
             my $itemLine = int $place / $self->{columns};
             my $itemCol = $place % $self->{columns};
             # Insert it at correct place
-            $self->{rowContainers}->[$itemLine]->pack_start($eventBox,0,0,0);
-            $self->{rowContainers}->[$itemLine]->reorder_child($eventBox, $itemCol);
-            $eventBox->show_all;
+            $self->{rowContainers}->[$itemLine]->pack_start($imageBox,0,0,0);
+            $self->{rowContainers}->[$itemLine]->reorder_child($imageBox, $itemCol);
+            $imageBox->show_all;
             $self->shiftItems($place, 1, 0, scalar @{$self->{boxes}});
-            splice @{$self->{boxes}}, $place, 0, $eventBox;
+            splice @{$self->{boxes}}, $place, 0, $imageBox;
             $self->initConversionTables;            
         }
         else
         {
-            $self->{currentRow}->pack_start($eventBox,0,0,0);
+            $self->{currentRow}->pack_start($imageBox,0,0,0);
             $self->{idxToDisplayed}->{$i} = $self->{number};
-            push @{$self->{boxes}}, $eventBox;
+            push @{$self->{boxes}}, $imageBox;
         }
 
         $self->{number}++;
@@ -1167,7 +594,7 @@ my $timeOutBetweenEnhancements = 50;
             if ((!defined $maxPlace) && ($item->{idx} > $idx))
             {
                 $item->{idx} += $direction;
-                $self->{cache}->[$item->{idx}]->{eventBox}->{idx} = $item->{idx}
+                $self->{cache}->[$item->{idx}]->{imageBox}->{idx} = $item->{idx}
                     if ($item->{idx} > 0) && $self->{cache}->[$item->{idx}];
             }
             if ($shifting)
@@ -1176,10 +603,10 @@ my $timeOutBetweenEnhancements = 50;
                 if ($currentCol == $limit)
                 {
                     $self->{rowContainers}->[$currentLine]->remove(
-                        $self->{cache}->[$item->{idx}]->{eventBox}
+                        $self->{cache}->[$item->{idx}]->{imageBox}
                     );
                     $self->{rowContainers}->[$currentLine + $direction]->pack_start(
-                        $self->{cache}->[$item->{idx}]->{eventBox},
+                        $self->{cache}->[$item->{idx}]->{imageBox},
                         0,0,0
                     );
                     # We can't directly insert on the beginning.
@@ -1187,7 +614,7 @@ my $timeOutBetweenEnhancements = 50;
                     if ($direction > 0)
                     {
                         $self->{rowContainers}->[$currentLine + $direction]->reorder_child(
-                            $self->{cache}->[$item->{idx}]->{eventBox},
+                            $self->{cache}->[$item->{idx}]->{imageBox},
                             0
                         );
                     }
@@ -1235,6 +662,18 @@ my $timeOutBetweenEnhancements = 50;
             $displayed++;
         }
     }
+    
+    sub convertIdxToDisplayed
+    {
+        my ($self, $idx) = @_;
+        return $self->{idxToDisplayed}->{$idx};
+    }
+
+    sub convertDisplayedToIdx
+    {
+        my ($self, $displayed) = @_;
+        return $self->{displayedToIdx}->{$displayed};
+    }
 
     sub removeItem
     {
@@ -1247,14 +686,14 @@ my $timeOutBetweenEnhancements = 50;
         my $itemLine = int $displayed / $self->{columns};
         #my $itemCol = $displayed % $self->{columns};
         $self->{rowContainers}->[$itemLine]->remove(
-            $self->{cache}->[$idx]->{eventBox}
+            $self->{cache}->[$idx]->{imageBox}
         );
 
         # Remove event box from cache
         my $itemsArrayIdx = $self->displayedToItemsArrayIdx($displayed);
 
-        $self->{cache}->[$idx]->{eventBox}->destroy;
-        $self->{cache}->[$idx]->{eventBox} = 0;
+        $self->{cache}->[$idx]->{imageBox}->destroy;
+        $self->{cache}->[$idx]->{imageBox} = 0;
 
         splice @{$self->{cache}}, $idx, 1 if !$justFromView;
         splice @{$self->{boxes}}, $self->{idxToDisplayed}->{$idx}, 1;
@@ -1276,10 +715,8 @@ my $timeOutBetweenEnhancements = 50;
             $next = $self->{displayedToIdx}->{--$displayed}
         }
         $self->{current} = $displayed;
-        #$self->select($next, 1);
         
         my $last = scalar @{$self->{itemsArray}};
-        #delete $self->{idxToDisplayed}->{$self->{displayedToIdx}->{$last}};
         delete $self->{displayedToIdx}->{$last};
         # To be sure we still have consistent data, we re-initialize the other hash by swapping keys and values.
         $self->{idxToDisplayed} = {};
@@ -1315,15 +752,12 @@ my $timeOutBetweenEnhancements = 50;
     sub restoreItem
     {
         my ($self, $idx) = @_;
+
         my $previous = $self->{idxToDisplayed}->{$idx};
-        return if ($previous == -1) || (!defined $previous);
-        $self->{boxes}->[$previous]->modify_bg('normal', $self->{style}->{inactiveBg})
-            if (! $self->{style}->{withImage}) && $self->{boxes}->[$previous];
-        $self->{boxes}->[$previous]->child->set_from_pixbuf($self->{previousPixbufs}->{$idx})
-            if $self->{previousPixbufs}->{$idx} && $self->{boxes}->[$previous] && $self->{boxes}->[$previous]->child;
-        $self->{boxes}->[$previous]->{selected} = 0;
+        next if ($previous == -1) || (!defined $previous) || (!$self->{boxes}->[$previous]);
+           
+        $self->{boxes}->[$previous]->unhighlight;
         delete $self->{selectedIndexes}->{$idx};
-        
     }
 
     sub restorePrevious
@@ -1333,16 +767,7 @@ my $timeOutBetweenEnhancements = 50;
         {
             $self->restoreItem($idx);
         }
-        $self->clearPrevious;
         $self->{container}->clearSelected($self) if !$fromContainer;
-    }
-
-    sub clearPrevious
-    {
-        my $self = shift;
-        return if ! $self->{previousPixbufs};
-        #$self->{previousPixbuf}->destroy;
-        $self->{previousPixbufs} = {};
     }
 
     sub selectAll
@@ -1358,9 +783,32 @@ my $timeOutBetweenEnhancements = 50;
         $self->{parent}->display(keys %{$self->{selectedIndexes}});
     }
 
+    sub selectMany
+    {
+        my ($self, $lastSelected) = @_;
+        
+        my ($min, $max);
+        if ($self->{previousSelectedDisplayed} > $self->{idxToDisplayed}->{$lastSelected})
+        {
+            $min = $self->{idxToDisplayed}->{$lastSelected};
+            $max = $self->{previousSelectedDisplayed};
+        }
+        else
+        {
+            $min = $self->{previousSelectedDisplayed};
+            $max = $self->{idxToDisplayed}->{$lastSelected};
+        }
+        foreach my $displayed($min..$max)
+        {
+            $self->select($self->{displayedToIdx}->{$displayed}, 0, 1);
+        }
+        
+    }
+
     sub select
     {
         my ($self, $idx, $init, $keepPrevious) = @_;
+        $self->{container}->setCurrentList($self);
         $idx = $self->{displayedToIdx}->{0} if $idx == -1;
         my $displayed = $self->{idxToDisplayed}->{$idx};
         if (! $self->{columns})
@@ -1369,6 +817,7 @@ my $timeOutBetweenEnhancements = 50;
             return $idx;
         }
         my @boxes = @{$self->{boxes}};
+        
         return $idx if ! scalar(@boxes);
         my $alreadySelected = 0;
         $alreadySelected = $boxes[$displayed]->{selected}
@@ -1385,7 +834,8 @@ my $timeOutBetweenEnhancements = 50;
                 # Special case where user has deselect items, so now only one item is left selected
                 # and menus need to be updated to reflect that
                 $self->updateMenus(1)
-                    if $nbSelected <= 2;                
+                    if $nbSelected <= 2;    
+                                
                 return $idx;
             }
             $self->{selectedIndexes}->{$idx} = 1;
@@ -1397,26 +847,50 @@ my $timeOutBetweenEnhancements = 50;
         }
                    
         $self->{current} = $displayed;
-        if (! $self->{style}->{withImage})
-        {
-            $boxes[$displayed]->modify_bg('normal', $self->{style}->{activeBg});
-        
-        }
-        my $pixbuf = $boxes[$displayed]->child->get_pixbuf
+
+        $boxes[$displayed]->highlight
             if exists $boxes[$displayed];
-        $self->clearPrevious unless $keepPrevious;
-        $self->{previousPixbufs}->{$idx} = $pixbuf->copy;
-        $pixbuf->saturate_and_pixelate($pixbuf, 1.8, 0);
-        $pixbuf = $pixbuf->composite_color_simple ($pixbuf->get_width, $pixbuf->get_height, 'nearest',220, 128, $self->{style}->{activeBgValue}, $self->{style}->{activeBgValue});
-        $boxes[$displayed]->child->set_from_pixbuf($pixbuf);
-        $boxes[$displayed]->{selected} = 1;
+
         $self->grab_focus;
         $self->{container}->setCurrentList($self)
             if $self->{container};
         
         # Update menu items to reflect number of items selected
         $self->updateMenus(scalar keys %{$self->{selectedIndexes}});
-        return $idx;        
+        return $idx;
+    }
+
+    sub displayDetails
+    {
+        my ($self, $createWindow, @idx) = @_;
+        if ($createWindow)
+        {
+            $self->{parent}->displayInWindow($idx[0]);
+        }
+        else
+        {
+            $self->{parent}->display(@idx);
+        }
+    }
+
+    sub showPopupMenu
+    {
+        my ($self, $button, $time) = @_;
+        
+        $self->{parent}->{context}->popup(undef, undef, undef, undef, $button, $time);
+    }
+
+    sub setPreviousSelectedDisplayed
+    {
+        my ($self, $idx) = @_;
+        $self->{previousSelectedDisplayed} = $self->{idxToDisplayed}->{$idx}
+            if !exists $self->{previousSelectedDisplayed};
+    }
+
+    sub unsetPreviousSelectedDisplayed
+    {
+        my ($self, $idx) = @_;
+        delete $self->{previousSelectedDisplayed};
     }
 
     sub updateMenus
@@ -1523,9 +997,8 @@ my $timeOutBetweenEnhancements = 50;
                     $limit = $newDisplayed;
                     $itemNewCol++ if ($itemNewLine > $itemPreviousLine) && ($itemNewCol != 0)
                 }
-                my $box = $self->{cache}->[$idx]->{eventBox};
+                my $box = $self->{cache}->[$idx]->{imageBox};
                 my $previousItemsArrayIdx = $self->displayedToItemsArrayIdx($previousDisplayed);
-                #my $newItemsArrayIdx = $self->displayedToItemsArrayIdx($newDisplayed);
                 $self->{rowContainers}->[$itemPreviousLine]->remove($box);
                 splice @{$self->{boxes}}, $previousDisplayed, 1;
                 $self->{rowContainers}->[$itemNewLine]->pack_start($box,0,0,0);
@@ -1540,33 +1013,39 @@ my $timeOutBetweenEnhancements = 50;
             }
         }
 
+        my @boxes = @{$self->{boxes}};
+        my $item = $self->createItemInfo($idx, $new);
         if (($previous->{$self->{coverField}} ne $new->{$self->{coverField}})
          || ($previous->{$self->{borrowerField}} ne $new->{$self->{borrowerField}})
          || ($previous->{favourite} ne $new->{favourite}))
         {
-            my ($image, $borrower, $favourite) = ($new->{$self->{coverField}}, $new->{$self->{borrowerField}}, $new->{favourite});
-            my @boxes = @{$self->{boxes}};
-            my $displayedImage = GCUtils::getDisplayedImage($image,
-                                                            undef,
-                                                            $self->{parent}->{options}->file);
-
-            my $pixbuf = $self->createPixbuf($displayedImage, $borrower, $favourite, $idx, 1);
-            $self->{previousPixbufs}->{$idx} = $pixbuf->copy;
-            $boxes[$newDisplayed]->child->set_from_pixbuf($pixbuf);
+            $boxes[$newDisplayed]->refreshInfo($item, 1);
             $forceSelect = 1;
             $wantSelect = 1 if $wantSelect ne '';
+        }
+        else
+        {
+            # Popup is refreshed by previous call.
+            # So we just need to explicitely do it here
+            if ($boxes[$newDisplayed])
+            {
+                $boxes[$newDisplayed]->setInfo($item);
+                $boxes[$newDisplayed]->refreshPopup;
+            }
         }
         if ($self->{filter})
         {
             # Test visibility
+            my $previouslyVisible = $self->{filter}->test($previous);
             my $visible = $self->{filter}->test($new);
-            if (! $visible)
+            if ($previouslyVisible && ! $visible)
             {
                 $self->{displayedNumber}--;
                 $self->restorePrevious if $wantSelect;
                 my $itemLine = int $newDisplayed / $self->{columns};
+                
                 $self->{rowContainers}->[$itemLine]->remove(
-                                                            $self->{cache}->[$idx]->{eventBox}
+                                                            $self->{cache}->[$idx]->{imageBox}
                                                             );
                 my $info = $self->{boxes}->[$newDisplayed]->{info};
                 splice @{$self->{boxes}}, $newDisplayed, 1;
@@ -1587,6 +1066,11 @@ my $timeOutBetweenEnhancements = 50;
         $self->{searchEntry}->set_text($char);
         $self->{searchEntry}->show_all;
         $self->activateSearch;
+        $self->{container}->{searchTimeOut} = Glib::Timeout->add(4000, sub {
+            $self->hideSearch;
+            $self->{searchTimeOut} = 0;
+            return 0;
+        });
     }
 
     sub activateSearch
@@ -1633,10 +1117,6 @@ my $timeOutBetweenEnhancements = 50;
         }
         else
         {
-#            if (length($query) > 1)
-#            {
-#                $current = $self->{idxToDisplayed}->{$self->{itemsArray}->[$self->{current}]->{idx}};            
-#            }
             foreach(@{$self->{itemsArray}}[$current..$self->{count} - 1])
             {
                 next if !$_->{displayed};
@@ -1832,14 +1312,15 @@ my $timeOutBetweenEnhancements = 50;
         my $self = shift;
         my $parent = $self->{parent};
 
-        my $size = $parent->{options}->listImgSize;
-        $self->{style}->{withImage} = $parent->{options}->listBgPicture;
-        $self->{style}->{useOverlays} = ($parent->{options}->useOverlays) && ($parent->{model}->{collection}->{options}->{overlay}->{image});        
-        $parent->{options}->listImgSkin($GCStyle::defaultList) if ! $parent->{options}->exists('listImgSkin');
-        $self->{style}->{skin} = $parent->{options}->listImgSkin;
+        my $size = $self->{preferences}->listImgSize;
+        $self->{style}->{withAnimation} = $self->{preferences}->animateImgList;
+        $self->{style}->{withImage} = $self->{preferences}->listBgPicture;
+        $self->{style}->{useOverlays} = ($self->{preferences}->useOverlays) && ($parent->{model}->{collection}->{options}->{overlay}->{image});        
+        $self->{preferences}->listImgSkin($GCStyle::defaultList) if ! $self->{preferences}->exists('listImgSkin');
+        $self->{style}->{skin} = $self->{preferences}->listImgSkin;
         # Reflect setting can be enabled using "withReflect=1" in the listbg style file
         $self->{style}->{withReflect} = 0;
-        $parent->{options}->listImgSize(2) if ! $parent->{options}->exists('listImgSize');
+        $self->{preferences}->listImgSize(2) if ! $self->{preferences}->exists('listImgSize');
         
         my $bgdir;
         # Load in extra settings from the style file
@@ -1870,10 +1351,6 @@ my $timeOutBetweenEnhancements = 50;
                            ? $parent->{model}->{collection}->{options}->{defaults}->{listImageHeight}
                            : 160;
 
-        $self->{style}->{vboxWidth} = $self->{style}->{imgWidth} + 10;
-        $self->{style}->{vboxHeight} = $self->{style}->{imgHeight} + 10;
-        $self->{style}->{vboxHeight} += 20 if $self->{style}->{withImage};
-
         $self->{style}->{factor} = ($size == 0) ? 0.5
                         : ($size == 1) ? 0.8
                         : ($size == 3) ? 1.5
@@ -1881,7 +1358,21 @@ my $timeOutBetweenEnhancements = 50;
                         :                        1;                        
         $self->{style}->{imgWidth} *= $self->{style}->{factor};
         $self->{style}->{imgHeight} *= $self->{style}->{factor};
-        $self->{style}->{vboxWidth} = $self->{style}->{imgWidth} + (10 * $self->{style}->{factor});
+        $self->{style}->{offsetX} = 11;
+        if ($self->{style}->{withImage})
+        {
+            if (! $self->{style}->{useOverlays})
+            {
+                $self->{style}->{offsetX} = 26;
+            }
+        }
+        else
+        {
+            $self->{style}->{offsetX} = 22;
+        }
+        
+         $self->{style}->{vboxWidth} = $self->{style}->{imgWidth} + ($self->{style}->{offsetX} * $self->{style}->{factor});
+        
         $self->{style}->{vboxHeight} = $self->{style}->{imgHeight} + (10 * $self->{style}->{factor});
         $self->{style}->{vboxHeight} += (20 * $self->{style}->{factor}) if $self->{style}->{withImage};
         $self->{style}->{vboxHeight} += (30 * $self->{style}->{factor}) if $self->{style}->{withReflect};
@@ -1928,7 +1419,7 @@ my $timeOutBetweenEnhancements = 50;
                                                  $self->{style}->{vboxWidth},
                                                  $self->{style}->{vboxHeight},
                                                  1);
-            (my $fh, $self->{style}->{tmpBgPixmap}) = tempfile(UNLINK => 1);
+            (my $fh, $self->{style}->{tmpBgPixmapFile}) = tempfile(UNLINK => 1);
             close $fh;
             if ($^O =~ /win32/i)
             {
@@ -1937,16 +1428,19 @@ my $timeOutBetweenEnhancements = 50;
             }
             else
             {
-                $tmpPixbuf->save($self->{style}->{tmpBgPixmap}, 'png');
+                $tmpPixbuf->save($self->{style}->{tmpBgPixmapFile}, 'png');
             }
-            GCUtils::setWidgetPixmap($self->{mainList}->parent, $self->{style}->{tmpBgPixmap});
+            
+            #($self->{style}->{tmpBgPixmap}, $self->{style}->{tmpBgMask}) = $tmpPixbuf->render_pixmap_and_mask(255);
+            
+            GCUtils::setWidgetPixmap($self->{mainList}->parent, $self->{style}->{tmpBgPixmapFile});
             
             $self->{style}->{backgroundPixbuf} = Gtk2::Gdk::Pixbuf->new_from_file($self->{style}->{bgPixmap});
             $self->{style}->{backgroundPixbuf} = GCUtils::scaleMaxPixbuf($self->{style}->{backgroundPixbuf},
                                                                 $self->{style}->{vboxWidth},
                                                                 $self->{style}->{vboxHeight},
                                                                 1);
-            my @colors = split m/,/, $self->{parent}->{options}->listFgColor;
+            my @colors = split m/,/, $self->{preferences}->listFgColor;
             ($colors[0], $colors[1], $colors[2]) = (65535, 65535, 65535) if !@colors;
             my $red   = int($colors[0] / 257);
             my $green = int($colors[1] / 257);
@@ -1966,10 +1460,10 @@ my $timeOutBetweenEnhancements = 50;
         }
         else
         {
-            my @colors = split m/,/, $self->{parent}->{options}->listBgColor;
+            my @colors = split m/,/, $self->{preferences}->listBgColor;
             ($colors[0], $colors[1], $colors[2]) = (65535, 65535, 65535) if !@colors;
             $self->{style}->{inactiveBg} = new Gtk2::Gdk::Color($colors[0], $colors[1], $colors[2]);
-            @colors = split m/,/, $self->{parent}->{options}->listFgColor;
+            @colors = split m/,/, $self->{preferences}->listFgColor;
             ($colors[0], $colors[1], $colors[2]) = (0, 0, 0) if !@colors;
             $self->{style}->{activeBg} = new Gtk2::Gdk::Color($colors[0], $colors[1], $colors[2]);
             $self->{mainList}->parent->modify_bg('normal', $self->{style}->{inactiveBg});
@@ -1986,7 +1480,7 @@ my $timeOutBetweenEnhancements = 50;
         $list->{style} = $self->{style};
         if ($self->{style}->{withImage})
         {
-            GCUtils::setWidgetPixmap($list->parent, $self->{style}->{tmpBgPixmap});
+            GCUtils::setWidgetPixmap($list->parent, $self->{style}->{tmpBgPixmapFile});
         }
         else
         {
@@ -2059,11 +1553,11 @@ my $timeOutBetweenEnhancements = 50;
         # We sort it
         if ($self->{currentOrder} == 0)
         {
-            @tmpList = reverse sort {GCUtils::gccmp($a, $b)} @tmpList;
+            @tmpList = reverse sort {GCUtils::gccmpe($a, $b)} @tmpList;
         }
         else
         {
-            @tmpList = sort {GCUtils::gccmp($a, $b)} @tmpList;
+            @tmpList = sort {GCUtils::gccmpe($a, $b)} @tmpList;
         }
         
         # And now we find back its position
@@ -2245,14 +1739,14 @@ my $timeOutBetweenEnhancements = 50;
             # Now the internal lists are ordered, we need to order them
             my @tmpList = @{$self->{orderedLists}};
 
-            # We sort the list, using gccmp to handle sorting of numeric values
+            # We sort the list, using gccmpe to handle sorting of numeric values and dates
             if ($self->{currentOrder} == 0)
             {
-                @tmpList = reverse sort {GCUtils::gccmp($a, $b)} @{$self->{orderedLists}};
+                @tmpList = reverse sort {GCUtils::gccmpe($a, $b)} @{$self->{orderedLists}};
             }
             else
             {
-                @tmpList = sort {GCUtils::gccmp($a, $b)} @{$self->{orderedLists}};
+                @tmpList = sort {GCUtils::gccmpe($a, $b)} @{$self->{orderedLists}};
             }
             
             # Clear the current view
@@ -2451,7 +1945,6 @@ my $timeOutBetweenEnhancements = 50;
     sub changeCurrent
     {
         my ($self, $previous, $new, $idx, $wantSelect) = @_;
-
         if ($self->{groupItems})
         {
             # Will be set to a true value if the 1st added item should be selected
@@ -2480,7 +1973,7 @@ my $timeOutBetweenEnhancements = 50;
                 # If found, we just change it
                 if ($found)
                 {
-                    $self->{lists}->{$pg}->changeCurrent($previous, $new, $idx, 0);
+                    $self->{lists}->{$pg}->changeCurrent($previous, $new, $idx, $wantSelect);
                     # And we remove it from the list
                     splice @newGroups, $place, 1;
                 }

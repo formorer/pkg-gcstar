@@ -18,7 +18,7 @@ package GCBackend::GCBackendXmlCommon;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -132,7 +132,7 @@ use filetest 'access';
 
     sub save
     {
-        my ($self, $data, $info, $splash) = @_;
+        my ($self, $data, $info, $splash, $keepCurrentValueForDate) = @_;
 
         # Save into a new file to prevent crashes during saving
         (my ($tmpFd, $tmpFile)) = tempfile();
@@ -153,7 +153,6 @@ use filetest 'access';
         {
             $versionString = ' version="'.$self->{version}.'"';
         }
-        
         if (($self->{modelLoader}->{model}->isInline)
          || ($self->{modelLoader}->{model}->isPersonal && $self->{standAlone}))
         {
@@ -247,12 +246,14 @@ use filetest 'access';
                 }
                 else
                 {
-                    #(my $data = $_->{$field}) =~ s/&/&amp;/g;
-                    #$data =~ s/</&lt;/g;
-                    #$data =~ s/>/&gt;/g;
-                    #$data =~ s/"/&quot;/g;
                     (my $data = $_->{$field}) =~ s/([$toBeReplaced])/$xmlConv{$1}/go;
-                    #"
+                    if (($self->{modelLoader}->{model}->{fieldsInfo}->{$field}->{type} eq 'date')
+                     && ($data eq 'current')
+                     && (!$keepCurrentValueForDate))
+                    {
+                        my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+                        $data = sprintf('%02d/%02d/%4d', $mday, $mon+1, 1900+$year);
+                    }
                     print $tmpFd '  ', $field, '="', $data, '"
 ';
                 }

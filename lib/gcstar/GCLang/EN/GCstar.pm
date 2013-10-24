@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
     
@@ -138,9 +138,15 @@ may use the <b>button below item details</b>.',
             'MenuNoFilter' => '_Any',
     
         'MenuConfiguration' => '_Settings',
+            'MenuDisplayMenu' => 'Di_splay',
+                'MenuDisplayFullScreen' => '_Full screen',
+                'MenuDisplayMenuBar' => '_Menus',
+                'MenuDisplayToolBar' => '_Toolbar',
+                'MenuDisplayStatusBar' => 'B_ottom bar',
             'MenuDisplayOptions' => '_Displayed Information',
             'MenuBorrowers' => '_Borrowers',
             'MenuToolbarConfiguration' => '_Toolbar Controls',
+            'MenuDefaultValues' => 'Default values for new {1}', # Accepts model codes
             'MenuGenresConversion' => 'Genre _Conversion',
         
         'MenuBookmarks' => 'My _Collections',
@@ -219,8 +225,7 @@ TPF: Programmer
 Adolfo González: Programmer
 ',
         'AboutLicense' => 'Distributed under the terms of the GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'English translation by Christian Jodar and Jason Day',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo and webdesign by le Spektre',
@@ -431,6 +436,7 @@ Logo and webdesign by le Spektre',
         'ImagesOptionsBgTooltip' => 'Change background color',
         'ImagesOptionsFgTooltip'=> 'Change selection color',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Size',
         'ImagesOptionsSizeList' => {0 => 'Very Small', 1 => 'Small', 2 => 'Medium', 3 => 'Large', 4 => 'Extra Large'},
         'ImagesOptionsSizeTooltip' => 'Select image size',
@@ -628,7 +634,7 @@ Add some of them in the Filters tab of the collection settings.',
         'PropertiesFilePath' => 'Full path',
         'PropertiesItemsNumber' => 'Number of {lowercaseX}', # Accepts model codes
         'PropertiesFileSize' => 'Size',
-        'PropertiesFileSizeSymbols' => ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+        'PropertiesFileSizeSymbols' => ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
         'PropertiesCollection' => 'Collection properties',
         'PropertiesDefaultPicture' => 'Default picture',
 
@@ -701,6 +707,9 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
+
     );
 }
 1;

@@ -18,7 +18,7 @@ package GCData;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -92,6 +92,43 @@ use strict;
         $self->{panel} = $previousPanel;
     }
 
+    sub getInfoFromPanel
+    {
+        # $info contains default values that will be merged with new ones
+        my ($self, $panel, $info) = @_;
+        
+        my $idField = $self->{model}->{commonFields}->{id};
+        my $panelId = $panel->$idField;
+        my $previousId = $info->{$idField};
+        
+        my $changed = 0;
+        if ($panelId &&
+           ($panelId != $previousId))
+        {
+            $info->{$idField} = $panel->$idField;
+            $self->{loaded}->{information}->{maxId} = $panelId
+                if ($panelId > $self->{loaded}->{information}->{maxId});
+            $self->findMaxId if $previousId == $self->{loaded}->{information}->{maxId};
+            $changed = 1;
+        }
+        $panel->$idField($info->{$idField}) if $panel->$idField;
+
+        my $previous = {$idField => $previousId};
+
+        for my $field (@{$self->{model}->{fieldsNames}})
+        {
+            next if $field eq $idField;
+            $previous->{$field} = $info->{$field};
+            next if !$panel->{$field}->hasChanged;
+            $panel->{$field}->addHistory if ($self->{model}->{fieldsInfo}->{$field}->{hasHistory});
+            $changed = 1;
+            $info->{$field} = $panel->$field;
+            $self->{parent}->{menubar}->checkFilter($field);
+        }
+        
+        return ($changed, $info, $previous);
+    }
+
     sub updateSelectedItemInfoFromPanel
     {
         my ($self, $withSelect, $forced) = @_;
@@ -108,35 +145,9 @@ use strict;
             $info = ($self->getItemsListFiltered)->[$self->{currentItem}];
         }
 
-        my $idField = $self->{model}->{commonFields}->{id};
-        my $panelId = $self->{panel}->$idField;
-        my $previousId = $info->{$idField};
-        
-        my $changed = 0;
-        if ($panelId &&
-           ($panelId != $previousId))
-        {
-            $info->{$idField} = $self->{panel}->$idField;
-            $self->{loaded}->{information}->{maxId} = $panelId
-                if ($panelId > $self->{loaded}->{information}->{maxId});
-            $self->findMaxId if $previousId == $self->{loaded}->{information}->{maxId};
-            $changed = 1;
-        }
-        $self->{panel}->$idField($info->{$idField}) if $self->{panel}->$idField;
-
-        my $previous = {$idField => $previousId};
-
-        for my $field (@{$self->{model}->{fieldsNames}})
-        {
-            next if $field eq $idField;
-            $previous->{$field} = $info->{$field};
-            next if !$self->{panel}->{$field}->hasChanged;
-            $self->{panel}->{$field}->addHistory if ($self->{model}->{fieldsInfo}->{$field}->{hasHistory});
-            $changed = 1;
-            $info->{$field} = $self->{panel}->$field;
-            $self->{parent}->{menubar}->checkFilter($field);
-        }
-
+        my $changed;
+        my $previous;
+        ($changed, $info, $previous) = $self->getInfoFromPanel($self->{panel}, $info);
         if ($forced)
         {
             $previous->{$_} = 'GCS_FORCED' foreach @$forced;
@@ -274,6 +285,12 @@ use strict;
             return if $self->{currentItem} < 0;
             $info = ($self->getItemsListFiltered)->[$idx];
         }
+        $self->displayDataInPanel($panel, $info);
+    }
+
+    sub displayDataInPanel
+    {
+        my ($self, $panel, $info) = @_;
         for my $field (@{$self->{model}->{fieldsNotFormatted}})
         {
             $panel->$field($info->{$field});
@@ -801,8 +818,6 @@ use strict;
 
         $self->reloadList($splash, $fullProgress) unless $noReload;
                 
-#        $self->{parent}->refreshFilters;
-
         if ($ENV{GCS_PROFILING} > 0)
         {
             my $elapsed;
@@ -919,7 +934,37 @@ use strict;
         return 1;
     }
 
-    
+    sub getSummary
+    {
+        my ($self, $idx) = @_;
+        
+        my $info = ($self->getItemsListFiltered)->[$idx];
+
+        my $summary = "<b>".GCUtils::encodeEntities($info->{$self->{model}->{commonFields}->{title}})."</b>\n";
+        
+        for my $field (@{$self->{model}->getSummaryFields})
+        {
+            my $value = $info->{$field};
+            
+            if ($field eq $self->{model}->{commonFields}->{borrower}->{name})
+            {
+                $value = $self->{parent}->{lang}->{PanelNobody}
+                    if $value eq 'none';
+                $value = $self->{parent}->{lang}->{PanelUnknown}
+                    if $value eq 'unknown';
+            }
+            else
+            {
+                $value =  GCUtils::encodeEntities($self->transformValue($value, $field));
+            }
+            $summary .= "\n<b>"
+                       .GCUtils::encodeEntities($self->{model}->getDisplayedLabel($field))
+                       .$self->{parent}->{lang}->{Separator}
+                       ."</b>"
+                       .$value;
+        }
+        return $summary;
+    }
 }
 
 1;

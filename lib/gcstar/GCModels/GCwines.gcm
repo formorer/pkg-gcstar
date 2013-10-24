@@ -16,6 +16,12 @@ name="GCwines">
 			<cover>bottlelabel</cover>
 			<url>website</url>
 			<results></results>
+			<summary>
+				<field>vineyard</field>
+				<field>vintage</field>
+				<field>type</field>
+				<field>tags</field>
+			</summary>
 		</fields>
 
 		<values id="tasted">

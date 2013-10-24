@@ -18,7 +18,7 @@ package GCPlugins::GCboardgames::GCboardgamegeek;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -101,6 +101,8 @@ use GCPlugins::GCboardgames::GCboardgamesCommon;
             
             # Have to decode the html type characters here
             $self->{curInfo}->{description} = decode_entities($xml->{boardgame}->{description});
+            $self->{curInfo}->{description} =~ s/\<br\/>/\n/g;
+            $self->{curInfo}->{description} =~ s/<.*?>//g;
             
             if ($self->{bigPics})
             {
@@ -141,7 +143,18 @@ use GCPlugins::GCboardgames::GCboardgamesCommon;
             
             for my $expansion (@{$xml->{boardgame}->{boardgameexpansion}})
             {
-                push @{$self->{curInfo}->{expandedby}}, [$expansion->{content}];
+                if ($expansion->{inbound})
+                {
+                    if ($self->{curInfo}->{expansionfor})
+                    {
+                        $self->{curInfo}->{expansionfor} .= ", ";
+                    }
+                    $self->{curInfo}->{expansionfor} .= $expansion->{content};
+                }
+                else
+                {
+                    push @{$self->{curInfo}->{expandedby}}, [$expansion->{content}];
+                }
             }                         
             $self->{curInfo}->{web} = "http://boardgamegeek.com/boardgame/".$xml->{boardgame}->{objectid};
         }

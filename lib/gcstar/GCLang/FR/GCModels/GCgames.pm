@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
     
@@ -41,7 +41,7 @@
                   DX => 'Les jeux',
                   DD1 => 'Du jeu',
                   M1 => 'Ce jeu',
-                  C1 => ' élément',
+                  C1 => ' jeu',
                   DA1 => 'e jeu',
                   DAX => 'e jeux'},
         NewItem => 'Nouveau jeu',

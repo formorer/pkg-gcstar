@@ -27,6 +27,14 @@ name="GCbooks">
 				<field>edition</field>
 				<field>serie</field>
 			</results>
+			<summary>
+				<field>authors</field>
+				<field>publication</field>
+				<field>genre</field>
+				<field>format</field>
+				<field>borrower</field>
+				<field>tags</field>
+			</summary>
 		</fields>
 		<values id="favouriteYesno">
 			<value displayed="">0</value>

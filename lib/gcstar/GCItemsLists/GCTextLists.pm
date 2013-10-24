@@ -18,7 +18,7 @@ package GCTextLists;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -701,7 +701,7 @@ use locale;
         $self->{imgHeight} = 80;
         
         # Setting default options if they don't exist
-        $parent->{options}->listImgSize(2) if ! $parent->{options}->exists('listImgSize');
+        $self->{preferences}->detailImgSize(2) if ! $self->{preferences}->exists('detailImgSize');
         $self->{preferences}->details($self->{titleField})
             if ! $self->{preferences}->details;
         $self->{preferences}->groupedFirst(1)
@@ -710,7 +710,7 @@ use locale;
             if ! $self->{preferences}->exists('addCount');
 
         # Image size
-        my $size = $parent->{options}->listImgSize;
+        my $size = $self->{preferences}->detailImgSize;
         $self->{factor} = ($size == 0) ? 0.5
                         : ($size == 1) ? 0.8
                         : ($size == 3) ? 1.5
@@ -1160,7 +1160,6 @@ use locale;
     sub setGroupingInformation
     {
         my $self = shift;
-
         $self->{collectionField} = $self->{preferences}->groupBy;
         $self->{groupItems} = ($self->{collectionField} ne '');
     }

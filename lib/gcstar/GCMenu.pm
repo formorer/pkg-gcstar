@@ -18,7 +18,7 @@ package GCMenu;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 use utf8;
@@ -156,6 +156,7 @@ use strict;
                  [$self, 'newitem', 'MenuAddItem'],
                  [$self, 'deleteCurrentItem', 'MenuEditDeleteCurrent'],
                  [$self, 'selectAllItem', 'MenuEditSelectAllItems'],
+                 [$self, 'defaultValues', 'MenuDefaultValues'],
                  # Context menu labels
                  [$self->{parent}, 'contextNewWindow', 'MenuNewWindow'],
                  [$self->{parent}, 'contextDuplicateItem', 'MenuDuplicate'],
@@ -163,9 +164,9 @@ use strict;
                  [$self->{parent}, 'contextItemDelete', 'MenuEditDeleteCurrent'],
                  [$self->{parent}, 'contextViewAllItems', 'MenuViewAllItems'],
                 )
-	{
-	    $self->updateItem($_->[0]->{$_->[1]}, $_->[2]);
-	}
+        {
+            $self->updateItem($_->[0]->{$_->[1]}, $_->[2]);
+        }
     }
 
     sub initFilters
@@ -894,19 +895,11 @@ use strict;
         }, $self->{parent});
         $self->{menuConfig}->append($options);
 
-        my $displayOptions = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuDisplayOptions});
-        $displayOptions->set_accel_path('<main>/Config/Display');
-        $displayOptions->signal_connect ('activate' => sub {
-            $self->{parent}->displayOptions;
-        });
-        $self->{menuConfig}->append($displayOptions);
-
-        my $borrowers = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuBorrowers});
-        $borrowers->set_accel_path('<main>/Config/Borrowers');
-        $borrowers->signal_connect ('activate' => sub {
-            $self->{parent}->borrowers;
-        });
-        $self->{menuConfig}->append($borrowers);
+        $self->{displayItem} = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuDisplayMenu});
+        $self->{displayItem}->set_accel_path('<main>/Config/DisplayItem');
+        #$self->{displayItem}->set_submenu($self->createDisplayMenu);
+        $self->attachDisplayMenu;
+        $self->{menuConfig}->append($self->{displayItem});
 
         my $toolbarConfig = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuToolbarConfiguration});
         $toolbarConfig->set_accel_path('<main>/Config/Toolbar');
@@ -914,6 +907,29 @@ use strict;
             $self->{parent}->toolbarOptions;
         });
         $self->{menuConfig}->append($toolbarConfig);
+
+        $self->{menuConfig}->append(new Gtk2::SeparatorMenuItem);
+
+        my $displayOptions = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuDisplayOptions});
+        $displayOptions->set_accel_path('<main>/Config/Display');
+        $displayOptions->signal_connect ('activate' => sub {
+            $self->{parent}->displayOptions;
+        });
+        $self->{menuConfig}->append($displayOptions);
+
+        $self->{defaultValues} = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuDefaultValues});
+        $self->{defaultValues}->set_accel_path('<main>/Config/DefaultValues');
+        $self->{defaultValues}->signal_connect ('activate' => sub {
+            $self->{parent}->setDefaultValues;
+        });
+        $self->{menuConfig}->append($self->{defaultValues});
+
+        my $borrowers = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuBorrowers});
+        $borrowers->set_accel_path('<main>/Config/Borrowers');
+        $borrowers->signal_connect ('activate' => sub {
+            $self->{parent}->borrowers;
+        });
+        $self->{menuConfig}->append($borrowers);
 
         my $configitem = Gtk2::MenuItem->new_with_mnemonic($parent->{lang}->{MenuConfiguration});
         $configitem->set_submenu($self->{menuConfig});
@@ -1102,6 +1118,92 @@ use strict;
 
         $self->{deactivated} = 0;
         $self->{parent}->blockListUpdates(0);
+    }
+    
+    sub attachDisplayMenu
+    {
+        my ($self, $newParent) = @_;
+
+        $newParent = $self->{displayItem}
+            if !$newParent;
+
+        my $displayMenu;
+        if ($self->{displayMenu})
+        {
+            $displayMenu = $self->{displayMenu};
+            $displayMenu->detach;
+        }
+        else
+        {
+            $displayMenu = Gtk2::Menu->new;
+            $displayMenu->set_accel_path('<main>/Config/DisplayMenu');
+            $displayMenu->set_accel_group($self->{accel});
+    
+            my $fullScreen = Gtk2::CheckMenuItem->new_with_mnemonic($self->{parent}->{lang}->{MenuDisplayFullScreen});
+            $fullScreen->set_accel_path('<main>/Config/DisplayMenu/Fullscreen');
+            $fullScreen->signal_connect ('activate' => sub {
+                            my $parent = $self;
+                            my $self = shift;
+                            $parent->{parent}->setFullScreen($self->get_active);
+                            $self->toggled();
+            }, $fullScreen);
+            $displayMenu->append($fullScreen);
+            
+            $displayMenu->append(new Gtk2::SeparatorMenuItem);
+    
+            my $menuBar = Gtk2::CheckMenuItem->new_with_mnemonic($self->{parent}->{lang}->{MenuDisplayMenuBar});
+            $menuBar->set_accel_path('<main>/Config/DisplayMenu/MenuBar');
+            $menuBar->set_active($self->{parent}->{options}->displayMenuBar);
+            $menuBar->signal_connect ('activate' => sub {
+                            my $parent = $self;
+                            my $self = shift;
+                            $parent->{parent}->setDisplayMenuBar($self->get_active);
+                            $self->toggled();
+            }, $menuBar);
+            $displayMenu->append($menuBar);
+            
+            $self->{displayToolBar} = Gtk2::CheckMenuItem->new_with_mnemonic($self->{parent}->{lang}->{MenuDisplayToolBar});
+            $self->{displayToolBar}->set_accel_path('<main>/Config/DisplayMenu/ToolBar');
+            $self->{displayToolBar}->set_active($self->{parent}->{options}->toolbar);
+            $self->{displayToolBar}->signal_connect ('activate' => sub {
+                            my $parent = $self;
+                            my $self = shift;
+                            return if !$self->{acceptEvents};
+                            my $value = $self->get_active;
+                            # If activated, we set it to the system setting
+                            $value = 3
+                                if $value;
+                            $parent->{parent}->setDisplayToolBar($value);
+                            $self->toggled();
+            }, $self->{displayToolBar});
+            $self->{displayToolBar}->{acceptEvents} = 1;
+            $displayMenu->append($self->{displayToolBar});
+
+            my $statusBar = Gtk2::CheckMenuItem->new_with_mnemonic($self->{parent}->{lang}->{MenuDisplayStatusBar});
+            $statusBar->set_accel_path('<main>/Config/DisplayMenu/StatusBar');
+            $statusBar->set_active($self->{parent}->{options}->status);
+            $statusBar->signal_connect ('activate' => sub {
+                            my $parent = $self;
+                            my $self = shift;
+                            $parent->{parent}->setDisplayStatusBar($self->get_active);
+                            $self->toggled();
+            }, $statusBar);
+            $displayMenu->append($statusBar);
+
+            $self->{displayMenu} = $displayMenu;
+        }
+
+        $newParent->set_submenu($displayMenu);
+        $newParent->show_all;
+        #return $self->{displayMenu};
+    }
+    
+    sub setDisplayToolbarState
+    {
+        my ($self, $value) = @_;
+        #$self->{displayToolBar}->{acceptEvents} = 0;
+        $self->{displayToolBar}->set_active($value);
+        $self->{displayToolBar}->{acceptEvents} = 1;
     }
 }
 
@@ -1313,6 +1415,7 @@ use strict;
                     $self->{controls}->{userFiltersOption}->signal_connect('changed' => sub {
                         return if $self->{blocked};
                         my $idx = $self->{controls}->{userFiltersOption}->getValue;
+                        $self->{controls}->{userFiltersOption}->{changeInProgress} = 1;
                         if ($idx == -1)
                         {
                             $self->{parent}->removeSearch(0);
@@ -1322,6 +1425,7 @@ use strict;
                             $self->{parent}->removeSearch(1);
                             $self->{parent}->setSearchWithTypes(%{$self->{userFilters}->[$idx]});
                         }
+                        $self->{controls}->{userFiltersOption}->{changeInProgress} = 0;
                     });
                     
                     my $filterBox = new Gtk2::VBox(0,0);
@@ -1502,23 +1606,26 @@ use strict;
 	    if $self->{controls}->{'gtk-refresh'};
         
         # Update add button text
-        my $addText = $self->{lang}->{MenuAddItem};
-        $addText =~ s/\_//g;
-        my $widget = $self->{controls}->{'gtk-add'}->get_children;
-        while ($widget)
+        if ($self->{controls}->{'gtk-add'})
         {
-            if ($widget->isa(Gtk2::Label::))
+            my $addText = $self->{lang}->{MenuAddItem};
+            $addText =~ s/\_//g;
+            my $widget = $self->{controls}->{'gtk-add'}->get_children;
+            while ($widget)
             {
-                $widget->set_text($addText);
-                last;
+                if ($widget->isa(Gtk2::Label::))
+                {
+                    $widget->set_text($addText);
+                    last;
+                }
+                elsif ($widget->isa(Gtk2::Image::))
+                {
+                    last;
+                }
+                $widget = $widget->get_children;
             }
-            elsif ($widget->isa(Gtk2::Image::))
-            {
-                last;
-            }
-            $widget = $widget->get_children;
         }
-
+        
         # Hide tonight button if needed
         if ($self->{controls}->{'gtk-execute'})
         {
@@ -1580,8 +1687,15 @@ use strict;
     sub removeSearch
     {
         my $self = shift;
+        $self->{blocked} = 1;
         $self->{controls}->{quickEntry}->setValue('')
             if $self->{controls}->{quickEntry};
+        if ($self->{controls}->{userFiltersOption})
+        {
+            $self->{controls}->{userFiltersOption}->clear
+                if !$self->{controls}->{userFiltersOption}->{changeInProgress};
+        }
+        $self->{blocked} = 0;
     }
 
 }
@@ -1595,12 +1709,12 @@ use strict;
     {
         my ($proto, $parent) = @_;
         my $class = ref($proto) || $proto;
-        my $self  = $class->SUPER::new($parent, 'Toolbar configuration', 1);
+        my $self  = $class->SUPER::new($parent, 'Toolbar configuration', 1,
+            $parent->{lang}->{ImportExportFieldsUnused}, $parent->{lang}->{ImportExportFieldsUsed});
 
         bless($self, $class);
 
         $self->{separatorString} = $self->{parent}->{lang}->{ToolbarSeparator};
-        $self->addToPermanent($self->{separatorString});
 
         my $defaultButton = new GCButton->newFromStock('gtk-undo', 0, $parent->{lang}->{PanelRestoreDefault});
         $defaultButton->set_border_width($GCUtils::margin);
@@ -1613,8 +1727,9 @@ use strict;
             $self->clearList;
         });            
         
-        $self->{vboxUnused}->pack_start($defaultButton, 0, 0, 0);
-        $self->{vboxUsed}->pack_start($clearButton, 0, 0, 0);
+        $self->getDoubleList->addToPermanent($self->{separatorString});
+        $self->getDoubleList->setDataHandler($self);
+        $self->getDoubleList->addBottomButtons($defaultButton,$clearButton);
 
         $self->{configFile} = $ENV{GCS_CONFIG_HOME}.'/'.$GCToolBar::CONFIGURATION_FILE;
         $self->{conversionMap} = {};
@@ -1683,25 +1798,12 @@ use strict;
         close CONFIG;
     }
         
-    sub getUnusedLabel
-    {
-        my $self = shift;
-        
-        return $self->{parent}->{lang}->{ImportExportFieldsUnused};
-    }
-    sub getUsedLabel
-    {
-        my $self = shift;
-        
-        return $self->{parent}->{lang}->{ImportExportFieldsUsed};
-    }
-
     sub preFill
     {
         my $self = shift;
         
         my @data;
-        $self->setListData($self->getDefaultData);
+        $self->getDoubleList->setListData($self->getDefaultData);
     }
     
     sub getDataFromList

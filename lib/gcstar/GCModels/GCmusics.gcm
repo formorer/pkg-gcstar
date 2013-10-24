@@ -27,6 +27,14 @@ name="GCmusics">
 				<field>artist</field>
 				<field>release</field>
 			</results>
+			<summary>
+				<field>artist</field>
+				<field>release</field>
+				<field>genre</field>
+				<field>format</field>
+				<field>borrower</field>
+				<field>tags</field>
+			</summary>
 		</fields>
 
 

@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -135,9 +135,15 @@ För att avgöra vilken hemsida som äger informationen, så kan du använda <b>
             'MenuNoFilter' => '_Någon',
     
         'MenuConfiguration' => '_Inställningar',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Visad Information',
             'MenuBorrowers' => '_Låntagare',
             'MenuToolbarConfiguration' => '_Verktygsfältets kontroller',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => 'Genre _Konvertering',
         
         'MenuBookmarks' => 'Mina _Samlingar',
@@ -214,8 +220,7 @@ Nyall Dawson (Zombiepig): Programmerare
 TPF: Programmerare
 Adolfo González: Programmerare
 ',
-        'AboutLicense' => 'Distribuerad under GNU GPL Licensen, Logotyper Copyright le Spektre
-http://le-spektre.org',
+        'AboutLicense' => 'Distribuerad under GNU GPL Licensen, Logotyper Copyright le Spektre',
         'AboutTranslation' => 'Svensk översättning av anonym medarbetare',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logotyper och webbdesign skapad av le Spektre',
@@ -400,6 +405,7 @@ Logotyper och webbdesign skapad av le Spektre',
         'ImagesOptionsBgTooltip' => 'Ändra bakgrundsfärg',
         'ImagesOptionsFgTooltip'=> 'Ändra markeringsfärg',
         'ImagesOptionsResizeImgList' => 'Ändra automatiskt antalet kolumner',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Storlek',
         'ImagesOptionsSizeList' => {0 => 'Väldigt liten', 1 => 'Liten', 2 => 'Mellan', 3 => 'Stor', 4 => 'Extra Stor'},
         'ImagesOptionsSizeTooltip' => 'Välj en bildstorlek',
@@ -657,6 +663,8 @@ Filter under samlingens inställningar.',
         'StatsSave' => 'Spara statistik-bild till fil',
         'StatsAccumulate' => 'Samla ihop värden',
         'StatsShowAllDates' => 'Visa alla datum',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

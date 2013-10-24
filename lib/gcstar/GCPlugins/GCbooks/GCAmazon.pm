@@ -18,7 +18,7 @@ package GCPlugins::GCbooks::GCAmazon;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -261,22 +261,21 @@ use GCPlugins::GCbooks::GCbooksCommon;
     sub getSearchUrl
     {
 		my ($self, $word) = @_;		
-        use Switch;
 
-        my $key;
-        switch ($self->{searchField}) {        
-            case "authors" { $key = 'Author'; }
-            case "title" { $key = 'Title'; }
-            case "isbn" { $key = 'Keywords';
-                          $word =~ s/\D//g; }
-        }                        
+        my $key = 
+            ($self->{searchField} eq 'authors') ? 'Author' :
+            ($self->{searchField} eq 'title')   ? 'Title' :
+            ($self->{searchField} eq 'isbn')    ? 'Keywords' :
+                                                  '';
+       $word =~ s/\D//g
+            if $key eq 'Keywords';
 		return $self->baseAWSUrl."&Operation=ItemSearch&$key=$word&SearchIndex=Books&ResponseGroup=Medium";
     }
     
     sub baseAWSUrl
     {	
         my $self = shift;
-		return "http://sowacs.appspot.com/AWS/%5Bamazon\@gcstar.org%5D".$self->baseAmazonUrl()."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=AKIAJJ5TJWI62A5OOTQQ";
+		return "http://sowacs.appspot.com/AWS/%5Bamazon\@gcstar.org%5D".$self->baseAmazonUrl()."/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=AKIAJJ5TJWI62A5OOTQQ&AssociateTag=AKIAJJ5TJWI62A5OOTQQ";
     }
     
     sub baseAmazonUrl

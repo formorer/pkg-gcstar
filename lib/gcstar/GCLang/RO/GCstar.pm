@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -138,9 +138,15 @@ puteţi folosi <b>butonul aflat sub detaliile filmului</b>.',
             'MenuNoFilter' => '_Oricare',
 
         'MenuConfiguration' => '_Setări',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Informaţii afişate',
             'MenuBorrowers' => '_Persoane care au împrumutat',
             'MenuToolbarConfiguration' => '_Toolbar controls',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Conversie gen',
 
         'MenuBookmarks' => '_Colecţiile mele',
@@ -218,8 +224,7 @@ TPF : Programator
 Adolfo González : Programator
 ',
         'AboutLicense' => 'Distribuit în termenii licenţei GNU GPL
-Copyright logo le Spektre
-http://le-spektre.org',
+Copyright logo le Spektre',
         'AboutTranslation' => 'Traducerea în română de către Mugurel Tudor',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo şi design web de către le Spektre',
@@ -403,6 +408,7 @@ Logo şi design web de către le Spektre',
         'ImagesOptionsBgTooltip' => 'Schimbă culoarea pentru fundal',
         'ImagesOptionsFgTooltip'=> 'Schimbă culoarea pentru selecţie',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Mărime',
         'ImagesOptionsSizeList' => {0 => 'Foarte mică', 1 => 'Mică', 2 => 'Medie', 3 => 'Mare', 4 => 'Foarte mare'},
         'ImagesOptionsSizeTooltip' => 'Selectaţi mărimea imaginii',
@@ -659,6 +665,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

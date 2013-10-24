@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 #
@@ -142,9 +142,15 @@ Bilginin hangi siteden alındığını <b>film detaylarının altındaki link d�
             'MenuNoFilter' => '_Hepsi',
     
         'MenuConfiguration' => '_Ayarlar',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Bilgi Alanları',
             'MenuBorrowers' => '_Ödünç Alanlar',
             'MenuToolbarConfiguration' => '_Toolbar controls',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Tür Çevrimi',
         
         'MenuBookmarks' => 'My _Collections',
@@ -222,8 +228,7 @@ TPF: Programcı
 Adolfo González: Programcı
 ',
         'AboutLicense' => 'GNU GPL lisansı altında dağıtılmaktadır
-Logoların telif hakları le Spektre
-http://le-spektre.org\'a aittir.',
+Logoların telif hakları le Spektre',
         'AboutTranslation' => 'Türkçe çeviri KaraGarga\'ya aittir',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo ve webtasarımı: le Spektre',
@@ -407,6 +412,7 @@ Logo ve webtasarımı: le Spektre',
         'ImagesOptionsBgTooltip' => 'Arkaplanı değiştir',
         'ImagesOptionsFgTooltip'=> 'Seçili alan rengini değiştir',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Boyut',
         'ImagesOptionsSizeList' => {0 => 'Minik', 1 => 'Küçük', 2 => 'Orta', 3 => 'Büyük', 4 => 'Devasa'},
         'ImagesOptionsSizeTooltip' => 'Resim boyutu seçiniz',
@@ -664,6 +670,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -135,9 +135,15 @@ Da biste odredili koji sajt je vlasnik informacija, možete da koristite <b>dugm
             'MenuNoFilter' => '_Bilo Koji',
     
     	'MenuConfiguration' => '_Podešavanja',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
     		'MenuDisplayOptions' => '_Prikazane Informacije',
     		'MenuBorrowers' => '_Pozajmljivači',
             'MenuToolbarConfiguration' => '_Toolbar controls',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => 'Prebacivanje _Žanra',
     
         'MenuBookmarks' => 'My _Collections',
@@ -215,8 +221,7 @@ TPF: Programer
 Adolfo González: Programer
 ',
         'AboutLicense' => 'Distribuirano pod GNU GPL uslovima
-Logo Copyright le Spektre
-http://le-spektre.org',
+Logo Copyright le Spektre',
         'AboutTranslation' => 'Prevod na srpski Mario Tomić (http://www.mariotomic.com)',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo i web dizajn le Spektre',
@@ -400,6 +405,7 @@ Logo i web dizajn le Spektre',
         'ImagesOptionsBgTooltip' => 'Promeni boju pozadine',
         'ImagesOptionsFgTooltip'=> 'Promeni boju selekcije',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Veličina',
         'ImagesOptionsSizeList' => {0 => 'Vrlo mali', 1 => 'Mali', 2 => 'Srednji', 3 => 'Veliki', 4 => 'Vrlo veliki'},
         'ImagesOptionsSizeTooltip' => 'Odaberi veličinu slike',
@@ -656,6 +662,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

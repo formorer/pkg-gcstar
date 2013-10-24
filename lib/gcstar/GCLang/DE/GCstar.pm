@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -137,9 +137,15 @@ Webseite, von der die Informationen stammen.',
         'MenuNoFilter' => '_Alle',
 
         'MenuConfiguration' => '_Einstellungen',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
         'MenuDisplayOptions' => 'Sichtbare _Felder',
         'MenuBorrowers' => 'Ent_leiher',
         'MenuToolbarConfiguration' => '_Werkzeugleiste konfigurieren',
+        'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
         'MenuGenresConversion' => 'Genres _konvertieren',
 
         'MenuBookmarks' => 'Meine _Sammlung',
@@ -218,8 +224,7 @@ TPF : Programmierer
 Adolfo González : Programmierer
 ',
         'AboutLicense' => 'Veröffentlicht unter den Bedingungen der GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Deutsche Übersetzung von Gabriel Meier und FrenkX',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo und Webdesign von le Spektre',
@@ -405,7 +410,7 @@ Logo und Webdesign von le Spektre',
         'OptionsPicturesWorkingDir' => '%WORKING_DIR% oder . wird durch das Verzeichnis der Sammlung ersetzt (nur am Anfang der Pfadangabe nutzen!)',
         'OptionsPicturesFileBase' => '%FILE_BASE% wird durch den Dateinamen der Sammlung ohne Erweiterung (.gcs) ersetzt',
         'OptionsPicturesWorkingDirError' => '%WORKING_DIR% kann nur am Anfang der Pfadangabe für die Bilder genutzt werden',
-        'OptionsConfigureMailers' => 'Email Programmeinstellung',
+        'OptionsConfigureMailers' => 'E-Mail Programmeinstellung',
 
         'ImagesOptionsButton' => 'Einstellungen',
         'ImagesOptionsTitle' => 'Einstellungen für die Bilderliste',
@@ -417,6 +422,7 @@ Logo und Webdesign von le Spektre',
         'ImagesOptionsBgTooltip' => 'Hintergrundfarbe ändern',
         'ImagesOptionsFgTooltip'=> 'Farbe für die Auswahl einstellen',
         'ImagesOptionsResizeImgList' => 'Anzahl der Spalten automatisch anpassen',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Größe',
         'ImagesOptionsSizeList' => {0 => 'Sehr klein', 1 => 'Klein', 2 => 'Mittel', 3 => 'Groß', 4 => 'Sehr Groß'},
         'ImagesOptionsSizeTooltip' => 'Bildgröße auswählen',
@@ -545,7 +551,7 @@ Logo und Webdesign von le Spektre',
         'PluginsAuthor' => 'Autor',
         'PluginsLang' => 'Sprache',
         'PluginsUseSite' => 'Gewählte Seite für zukünftige Suchen verwenden',
-        'PluginsPreferredTooltip' => 'Site recommended by GCstar',
+        'PluginsPreferredTooltip' => 'Empfohlen von GCstar',
         'PluginDisabled' => 'Deaktiviert',
 
         'BorrowersTitle' => 'Entleiher bearbeiten',
@@ -612,7 +618,7 @@ Füge einige davon in der Filtersektion unter Einstellungen hinzu.',
         'PropertiesName' => 'Name der Sammlung',
         'PropertiesLang' => 'Sprachcode',
         'PropertiesOwner' => 'Besitzer',
-        'PropertiesEmail' => 'Email',
+        'PropertiesEmail' => 'E-Mail',
         'PropertiesDescription' => 'Beschreibung',
         'PropertiesFile' => 'Dateieigenschaften',
         'PropertiesFilePath' => 'Vollständiger Pfad',
@@ -622,14 +628,14 @@ Füge einige davon in der Filtersektion unter Einstellungen hinzu.',
         'PropertiesCollection' => 'Eigenschaften der Sammlung',
         'PropertiesDefaultPicture' => 'Standardbild',
 
-        'MailProgramsTitle' => 'Programm zum senden von Emails',
+        'MailProgramsTitle' => 'Programm zum senden von E-Mails',
         'MailProgramsName' => 'Name',
         'MailProgramsCommand' => 'Kommandozeile',
         'MailProgramsRestore' => 'Vorgabe wiederherstellen',
         'MailProgramsAdd' => 'Programm hinzufügen',
         'MailProgramsInstructions' => 'In der Kommandozeile werden einige Ersetzungen vorgenommen:
- %f wird ersetzt mit der Email Adresse des Nutzers.
- %t wird ersetzt mit der Email Adresse des Empfängers.
+ %f wird ersetzt mit der E-Mailadresse des Nutzers.
+ %t wird ersetzt mit der E-Mailadresse des Empfängers.
  %s wird ersetzt mit dem Betreff der Nachricht.
  %b wird ersetzt mit dem Nachrichtentext.',
 
@@ -673,6 +679,8 @@ Füge einige davon in der Filtersektion unter Einstellungen hinzu.',
         'StatsSave' => 'Diagramm als Grafik speichern',
         'StatsAccumulate' => 'Werte zusammenzählen',
         'StatsShowAllDates' => 'alle Daten berücksichtigen',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {1}',
     );
 }
 1;

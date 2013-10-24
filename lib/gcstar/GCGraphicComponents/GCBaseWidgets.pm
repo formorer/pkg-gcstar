@@ -1,4 +1,4 @@
-package GCGraphicComponents;
+package GCBaseWidgets;
 
 ###################################################
 #
@@ -18,7 +18,7 @@ package GCGraphicComponents;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 use utf8;
@@ -123,8 +123,17 @@ sub createWidget
     }
     elsif ($info->{type} eq 'date')
     {
-        $widget = new GCDate($parent->{window}, $parent->{lang}, 1,
-                             $parent->{options}->dateFormat);
+    	if ($comparison eq 'range')
+        {
+            $widget = new GCRange('date', $parent->{lang}, undef, undef, undef, $parent);
+            $widget->setWidth(16);
+            $withComparisonLabel = 0;
+        }
+        else
+        {
+			$widget = new GCDate($parent->{window}, $parent->{lang}, 1,
+            	                 $parent->{options}->dateFormat);
+        }
     }
     else
     {
@@ -224,6 +233,11 @@ sub createWidget
         my $self = shift;
         $self->{hasChanged} = 1;
         $somethingChanged = 1;
+    }
+
+    sub setWidth
+    {
+        my ($self, $value) = @_;
     }
 
     sub setHeight
@@ -967,7 +981,7 @@ BEGIN {
     
     sub new
     {
-        my ($proto, $type, $lang, $min, $max, $step) = @_;
+        my ($proto, $type, $lang, $min, $max, $step, $parent) = @_;
         my $class = ref($proto) || $proto;
     
         my $self = $class->SUPER::new;
@@ -980,8 +994,15 @@ BEGIN {
         }
         elsif ($type eq 'numeric text')
         {
-            $self->{from} = new GCCheckedText('0-9.');
+            new GCCheckedText('0-9.');
             $self->{to} = new GCCheckedText('0-9.');
+        }
+        elsif ($type eq 'date')
+        {
+            $self->{from} = new GCDate($parent->{window}, $lang, 1,
+           	                           $parent->{options}->dateFormat);
+            $self->{to} = new GCDate($parent->{window}, $lang, 1,
+           	                         $parent->{options}->dateFormat);
         }
         else
         {
@@ -1071,7 +1092,7 @@ BEGIN {
         my $self = shift;
         $self->{dialog} = new GCDateSelectionDialog($self->{mainParent})
             if ! $self->{dialog};
-        $self->{dialog}->date($self->getValue);
+        $self->{dialog}->date($self->getRawValue);
         if ($self->{dialog}->show)
         {
             $self->setValue($self->{dialog}->date);
@@ -1136,12 +1157,21 @@ BEGIN {
         return sprintf('%02d/%02d/%4d', $mday, $mon+1, 1900+$year);
     }
     
-    sub getValue
+    
+    sub getRawValue
     {
         my $self = shift;
         my $value = $self->{entry}->get_text;
         $value = GCUtils::strToTime($value, $self->{format})
             if $self->{format} && $value;
+        return $value;
+        
+    }
+    
+    sub getValue
+    {
+        my $self = shift;
+        my $value = $self->getRawValue;
         return GCPreProcess::reverseDate($value) if $self->{reverseDate};
         return $value;
     }
@@ -3710,15 +3740,17 @@ BEGIN {
     
     sub new
     {
-        my ($proto, $label) = @_;
+        my ($proto, $label, $bold) = @_;
         my $class = ref($proto) || $proto;
     
         my $self = $class->SUPER::new($label);
 
         bless ($self, $class);
         $self->{hbox} = new Gtk2::HBox(0,0);
-        $self->{label} = new Gtk2::Label;
+        $self->{label} = new Gtk2::Label($label);
         $self->{label}->set_alignment(0,0.5);
+        $self->{label}->set_markup("<b>$label</b>")
+            if $bold;
         $self->{description} = new Gtk2::Label;
         $self->{description}->set_alignment(0,0);
         eval {$self->{description}->set_line_wrap_mode('word');};
@@ -3861,7 +3893,7 @@ BEGIN {
     sub setModel
     {
         my ($self, $model) = @_;
-        
+
         $self->{listModel}->clear;
         my $field;
         my @fieldsInfo = @{$model->getDisplayedInfo};
@@ -3942,7 +3974,7 @@ BEGIN {
         $self->{options} = $parent->{options};
         $self->{window} = $parent;
 
-        ($widget, undef) = GCGraphicComponents::createWidget($self, $info, $comparison);
+        ($widget, undef) = GCBaseWidgets::createWidget($self, $info, $comparison);
 
         if ($info->{type} eq 'history text')
         {

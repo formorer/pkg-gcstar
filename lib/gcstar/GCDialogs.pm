@@ -18,7 +18,7 @@ package GCDialogs;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -190,12 +190,12 @@ $hasAboutDialog = 0 if $@;
                 my $logo = Gtk2::Gdk::Pixbuf->new_from_file($logoFile);
                 $self->{about}->set_logo($logo);
             }
-            $self->{about}->set_name('GCstar');
+            $self->{about}->set_program_name('GCstar');
             $self->{about}->set_comments($parent->{lang}->{AboutDesc});
             $self->{about}->set_version($version);
             $self->{about}->set_authors('', @authors);
             $self->{about}->set_documenters(("",'Christian Jodar (Tian)','http://wiki.gcstar.org/'));
-            $self->{about}->set_artists("",$parent->{lang}->{AboutDesign}, 'http://le-spektre.org/');
+            $self->{about}->set_artists("",$parent->{lang}->{AboutDesign});
             $self->{about}->set_copyright($parent->{lang}->{AboutLicense});
             $self->{about}->set_license($license);
             $self->{about}->set_translator_credits("\n".$parent->{lang}->{AboutTranslation});
@@ -233,13 +233,6 @@ $hasAboutDialog = 0 if $@;
     	        $parent->launch($url, 'url');
     	    }, $parent);
        	    my $labelDesign = Gtk2::Label->new($parent->{lang}->{AboutDesign});
-    	    my $designButton = Gtk2::Button->new_with_mnemonic('http://www.le-spektre.org/');
-    	    $designButton->child->set_padding(10,0);
-    	    $designButton->signal_connect('clicked', sub {
-    	        my ($widget, $parent) = @_;
-    	        (my $url = $widget->get_label) =~ s/^_//;
-    	        $parent->launch($url, 'url');
-    	    }, $parent);
     
     	    $self->vbox->set_homogeneous(0);
     	    if (-f $logoFile)
@@ -255,7 +248,6 @@ $hasAboutDialog = 0 if $@;
     	    $hbox->pack_start($button, 1, 0, 10);
     	    $self->vbox->pack_start($hbox, 0, 0, 4);
     	    my $hboxDesign = new Gtk2::HBox(0,0);
-    	    $hboxDesign->pack_start($designButton, 1, 0, 10);
     	    $self->vbox->pack_start($labelDesign, 1, 1, 4);
     	    $self->vbox->pack_start($hboxDesign, 0, 0, 4);
     	
@@ -923,24 +915,24 @@ $hasAboutDialog = 0 if $@;
     package GCDoubleListDialog;
 
     use base 'GCModalDialog';
-    
-    sub init
-    {
-        my $self = shift;
-        $self->setListData($self->getData) if !$self->{initialized};
-        $self->{initialized} = 1;
-    }
+    use GCGraphicComponents::GCDoubleLists;
     
     sub hideExtra
     {
         my $self = shift;
     }
     
+    sub clearList
+    {
+        my $self = shift;
+        $self->{doubleList}->clearList;
+    }
+    
     sub show
     {
         my $self = shift;
 
-        $self->setListData($self->getData);
+        $self->{doubleList}->setListData($self->getData);
 
         $self->SUPER::show();
         $self->show_all;
@@ -950,180 +942,22 @@ $hasAboutDialog = 0 if $@;
 
         if ($response eq 'ok')
         {
-           $self->saveList(\@{$self->{usedArray}});
+           $self->saveList($self->{doubleList}->getUsedItems);
         }
         $self->hide;
         return $response;
     }
     
-    sub compareItems
+    sub getDoubleList
     {
-        my ($self, $item1, $item2) = @_;
-        if ($self->{withPixbuf} && (ref $item1 eq 'ARRAY'))
-        {
-            return $item1->[1] cmp $item2->[1];
-        }
-        else
-        {
-            return $item1 cmp $item2;
-        }
-    }
-
-    sub moveFromTo
-    {
-        my ($self, $from, $to) = @_;
-        my $fromId = ($self->{$from}->get_selected_indices)[0];
-        my $fromItem = $self->{$from.'Array'}->[$fromId];
-        my $fromString;
-        if ($self->{withPixbuf})
-        {
-            $fromString = $fromItem->[1];
-        }
-        else
-        {
-            $fromString = $fromItem;
-        }
-        return if !$fromString;
-        my $toId = ($self->{$to}->get_selected_indices)[0];
-        my $toTotal = scalar @{$self->{$to.'Array'}};
-        $toId = $toTotal if $toId eq '';
-        $toId++ if $toId < $toTotal;
-        $toId = 0 if ($toId < 0);
-
-        if (($to eq 'unused') || (!$self->{permanent}->{$fromString}))
-        {
-            splice(@{$self->{$from}->{data}}, $fromId, 1);
-            splice(@{$self->{$from.'Array'}}, $fromId, 1);
-        }
-        if (($to eq 'used') || (!$self->{permanent}->{$fromString}))
-        {
-            splice(@{$self->{$to}->{data}}, $toId, 0, $fromItem);
-            splice(@{$self->{$to.'Array'}}, $toId, 0, $fromItem);
-        }
+        my $self = shift;
         
-        if ($to eq 'unused')
-        {
-            my @tmpSortedArray = sort 
-                {$self->compareItems($a, $b)}
-                @{$self->{unusedArray}};
-            $self->{unusedArray} = \@tmpSortedArray;
-            @{$self->{unused}->{data}} = ();
-            my $i = 0;
-            $toId = 0;
-            foreach (@tmpSortedArray)
-            {
-                $toId = $i if $_ eq $fromString;
-                my @item = ($self->{withPixbuf} ? $_ : [$_]);
-                push @{$self->{unused}->{data}}, @item;
-                $i++;
-            }
-        }
-        $self->{$to}->select($toId);
-        $self->{$from}->select($fromId);
-        $self->{$from}->grab_focus;
+        return $self->{doubleList};
     }
     
-    sub moveDownUp
-    {
-        my ($self, $dir) = @_;
-        my $currentId = ($self->{used}->get_selected_indices)[0];
-        my $newId = $currentId + $dir;
-        return if ($newId < 0) || ($newId >= scalar @{$self->{usedArray}});
-        ($self->{usedArray}->[$currentId], $self->{usedArray}->[$newId])
-         = ($self->{usedArray}->[$newId], $self->{usedArray}->[$currentId]);
-        @{$self->{used}->{data}} = ();
-        foreach (@{$self->{usedArray}})
-        {
-            if ($self->{withPixbuf})
-            {
-                push @{$self->{used}->{data}}, $_;               
-            }
-            else
-            {
-                push @{$self->{used}->{data}}, [$_];               
-            }
-        }
-        $self->{used}->select($newId);
-    }
-
-    sub setListData
-    {
-        my ($self, $new) = @_;
-        my $initial = $self->getInitData;
-        $self->{initialized} = 1;
-        my %tmpMap;
-        if ($self->{withPixbuf})
-        {
-            $tmpMap{$_->[1]} = $_ foreach (@$initial);
-        }
-        else
-        {
-            $tmpMap{$_} = 1 foreach (@$initial);
-        }
-        $self->{usedArray} = $new;
-        my $label;
-        foreach (@$new)
-        {
-            my $label = ($self->{withPixbuf} ? $_->[1] : $_);
-            delete $tmpMap{$label} if !$self->{permanent}->{$label};
-        }
-        my @tmpArray = sort {$self->compareItems($a, $b)} keys %tmpMap;
-        if ($self->{withPixbuf})
-        {
-            my @unusedArray = map {$tmpMap{$_}} @tmpArray;
-            $self->{unusedArray} = \@unusedArray;
-        }
-        else
-        {
-            $self->{unusedArray} = \@tmpArray;
-        }
-        @{$self->{unused}->{data}} = ();
-        
-        push @{$self->{unused}->{data}}, $_ foreach (@{$self->{unusedArray}});
-        @{$self->{used}->{data}} = ();
-        push @{$self->{used}->{data}}, $_ foreach (@{$self->{usedArray}});
-    }
-
-    sub setListFromIds
-    {
-        my ($self, $new) = @_;
-        my $count = scalar(@$new) - 1;
-        for my $i (0..$count)
-        {
-            $new->[$i] = $self->{fieldIdToName}->{$new->[$i]};
-        }
-        $self->setListData($new);
-    }
-
-    sub clearList
-    {
-        my $self = shift;
-        
-        $self->setListData(());
-    }
-    sub fillList
-    {
-        my $self = shift;
-        my @array = grep !$self->{permanent}->{$_},
-                         sort {$self->compareItems($a, $b)} @{$self->getInitData};
-        $self->setListData(\@array);
-    }
-
-    sub addToPermanent
-    {
-        my ($self, $id) = @_;
-        $self->{permanent}->{$id} = 1;
-    }
-            
-    sub removeFromPermanent
-    {
-        my ($self, $id) = @_;
-        delete $self->{permanent}->{$id};
-    }
-            
     sub new
     {
-        my ($proto, $parent, $title, $withPixbuf) = @_;
+        my ($proto, $parent, $title, $withPixbuf, $unusedLabel, $usedLabel) = @_;
         my $class = ref($proto) || $proto;
         my $self  = $class->SUPER::new($parent, $title);
 
@@ -1131,101 +965,14 @@ $hasAboutDialog = 0 if $@;
 
         $self->{options} = $parent->{options};
 
-        $self->{initialized} = 0;
-        $self->{withPixbuf} = $withPixbuf;
+        $self->{doubleList} = new GCDoubleListWidget($withPixbuf, $unusedLabel, $usedLabel);
 
-        my $hboxMain = new Gtk2::HBox(0,0);
-
-        if ($withPixbuf)
-        {
-            $self->{unused} = new Gtk2::SimpleList(
-                '' => 'pixbuf',
-                $self->getUnusedLabel => 'text'
-            );
-            $self->{used} = new Gtk2::SimpleList(
-                '' => 'pixbuf',
-                $self->getUsedLabel => 'text'
-            );
-        }
-        else
-        {
-            $self->{unused} = new Gtk2::SimpleList(
-                $self->getUnusedLabel => "text"
-            );
-            $self->{used} = new Gtk2::SimpleList(
-                $self->getUsedLabel => "text"
-            );
-        }
-        $self->{scrollPanelUnused} = new Gtk2::ScrolledWindow;
-        $self->{scrollPanelUnused}->set_policy ('never', 'automatic');
-        $self->{scrollPanelUnused}->set_shadow_type('etched-in');
-        $self->{scrollPanelUnused}->add($self->{unused});
-        $self->{vboxUnused} = new Gtk2::VBox(0,0);
-        $self->{vboxUnused}->pack_start($self->{scrollPanelUnused}, 1, 1, 0);
-
-        my $vboxChange = new Gtk2::VBox(1,1);
-        my $tmpVbox = new Gtk2::VBox(0,0);
-        my $toRight = new Gtk2::Button('->');
-        $toRight->remove($toRight->child);
-        $toRight->add(Gtk2::Image->new_from_stock('gtk-go-forward', 'button'));
-        $toRight->signal_connect('clicked' => sub {
-            $self->moveFromTo('unused', 'used');
-        });
-        my $toLeft = new Gtk2::Button('<-');
-        $toLeft->remove($toLeft->child);
-        $toLeft->add(Gtk2::Image->new_from_stock('gtk-go-back', 'button'));
-        $toLeft->signal_connect('clicked' => sub {
-            $self->moveFromTo('used', 'unused');
-        });
-        $tmpVbox->pack_start($toRight,0,0,$GCUtils::margin);
-        $tmpVbox->pack_start($toLeft,0,0,$GCUtils::margin);
-        $vboxChange->pack_start($tmpVbox,1,0,0);
-        
-        $self->{scrollPanelUsed} = new Gtk2::ScrolledWindow;
-        $self->{scrollPanelUsed}->set_policy ('never', 'automatic');
-        $self->{scrollPanelUsed}->set_shadow_type('etched-in');
-        $self->{scrollPanelUsed}->add($self->{used});
-        $self->{vboxUsed} = new Gtk2::VBox(0,0);
-        $self->{vboxUsed}->pack_start($self->{scrollPanelUsed}, 1, 1, 0);
-
-        $self->{unused}->signal_connect ('row-activated' => sub {
-            $self->moveFromTo('unused', 'used');
-        });
-        $self->{used}->signal_connect ('row-activated' => sub {
-            $self->moveFromTo('used', 'unused');
-        });
-                     
-        $self->{vboxRight} = new Gtk2::VBox(0,0);
-        my $toUp = new Gtk2::Button('^');
-        $toUp->remove($toUp->child);
-        $toUp->add(Gtk2::Image->new_from_stock('gtk-go-up', 'button'));
-        $toUp->signal_connect('clicked' => sub {
-            $self->moveDownUp(-1);
-        });
-        my $toDown = new Gtk2::Button('_');
-        $toDown->remove($toDown->child);
-        $toDown->add(Gtk2::Image->new_from_stock('gtk-go-down', 'button'));
-        $toDown->signal_connect('clicked' => sub {
-            $self->moveDownUp(1);
-        });
-        $self->{vboxRight}->pack_start($toUp, 0, 0, $GCUtils::margin);
-        $self->{vboxRight}->pack_start($toDown, 0, 0, $GCUtils::margin);
-                    
-        $hboxMain->pack_start(new Gtk2::HBox,0,0,$GCUtils::margin);
-        $hboxMain->pack_start($self->{vboxUnused},1,1,$GCUtils::halfMargin);
-        $hboxMain->pack_start($vboxChange,0,0,$GCUtils::halfMargin);
-        $hboxMain->pack_start($self->{vboxUsed},1,1,$GCUtils::halfMargin);
-        $hboxMain->pack_start($self->{vboxRight},0,0,$GCUtils::halfMargin);
-        $hboxMain->pack_start(new Gtk2::HBox,0,0,$GCUtils::quarterMargin);
-        
         $self->{marginBox} = new Gtk2::VBox;
         $self->vbox->pack_start($self->{marginBox}, 0, 0, $GCUtils::halfMargin);
-        $self->vbox->pack_start($hboxMain, 1, 1, 0);
+        $self->vbox->pack_start($self->{doubleList}, 1, 1, 0);
         
         # Without some default size, everything will be shrinked as there are some scrollers
         $self->set_default_size(200,400);
-        $self->{scrollPanelUnused}->set_size_request(150,-1);
-        $self->{scrollPanelUsed}->set_size_request(150,-1);
         
         return $self;
     }
@@ -1235,27 +982,53 @@ $hasAboutDialog = 0 if $@;
     #Class that is used to let user select
     #fields needed in export.
     package GCFieldsSelectionDialog;
-    use base qw/GCDoubleListDialog/;
+
+    use base 'GCModalDialog';
+    use GCGraphicComponents::GCDoubleLists;
     
-    sub getInitData
+    sub hideExtra
     {
         my $self = shift;
-        my @array;
-        @array = keys %{$self->{fieldNameToId}};
-        return \@array;
     }
     
-    sub getData
+    sub clearList
+    {
+        my $self = shift;
+        $self->{fieldsDoubleList}->clearList;
+    }
+    
+    sub show
+    {
+        my $self = shift;
+
+        $self->{fieldsDoubleList}->setListData($self->{fieldsDoubleList}->getData);
+
+        $self->SUPER::show();
+        $self->show_all;
+        $self->hideExtra;
+        
+        my $response = $self->run;
+
+#        if ($response eq 'ok')
+#        {
+#            $self->{parent}->{fields}
+#           $self->saveList($self->{fieldsDoubleList}->getUsedItems);
+#        }
+        $self->hide;
+        return $response eq 'ok';
+    }
+    
+    sub getSelectedIds
+    {
+        my $self = shift;
+        return $self->{fieldsDoubleList}->getSelectedIds;
+    }
+    
+    sub getDoubleList
     {
         my $self = shift;
         
-        my @array;
-        foreach (@{$self->{parent}->{fields}})
-        {
-            push @array, $self->{fieldIdToName}->{$_};
-        }
-        
-        return \@array;
+        return $self->{fieldsDoubleList};
     }
     
     sub saveList
@@ -1269,201 +1042,48 @@ $hasAboutDialog = 0 if $@;
         }
         $self->{parent}->{fields} = \@array;
     }
-
-    sub getUnusedLabel
-    {
-        my $self = shift;
-        
-        return $self->{parent}->{lang}->{ImportExportFieldsUnused};
-    }
-    sub getUsedLabel
-    {
-        my $self = shift;
-        
-        return $self->{parent}->{lang}->{ImportExportFieldsUsed};
-    }
-
-    sub loadFromFile
-    {
-        my $self = shift;
-        my $fileDialog = new GCFileChooserDialog($self->{parent}->{lang}->{FieldsListOpen}, $self, 'open', 1);
-        $fileDialog->set_filename($self->{filename});
-        my $response = $fileDialog->run;
-        if ($response eq 'ok')
-        {
-            $self->{filename} = $fileDialog->get_filename;
-            open FILE, '<'.$self->{filename};
-            my $model = <FILE>;
-            chop $model;
-            if ($model eq $self->{model}->getName)
-            {
-                $self->clearList;
-                my @data;
-                while (<FILE>)
-                {
-                    chop;
-                    push @data, $self->{fieldIdToName}->{$_};
-                }
-                $self->setListData(\@data);
-            }
-            else
-            {
-                my $dialog = Gtk2::MessageDialog->new($self,
-                                          [qw/modal destroy-with-parent/],
-                                          'error',
-                                          'ok',
-                                          $self->{parent}->{lang}->{FieldsListError});
-                $dialog->set_position('center-on-parent');
-                $dialog->run();
-                $dialog->destroy ;
-            }
-            close FILE;
-        }        
-        $fileDialog->destroy;
-    }
-
-    sub saveToFile
-    {
-        my $self = shift;
-        my $fileDialog = new GCFileChooserDialog($self->{parent}->{lang}->{FieldsListSave}, $self, 'save', 1);
-        $fileDialog->set_filename($self->{filename});
-        my $response = $fileDialog->run;
-        if ($response eq 'ok')
-        {
-            $self->{filename} = $fileDialog->get_filename;
-            open FILE, '>'.$self->{filename};
-            print FILE $self->{model}->getName, "\n" if $self->{model};
-            foreach (@{$self->{usedArray}})
-            {
-                print FILE $self->{fieldNameToId}->{$_}, "\n";
-            }
-            close FILE;
-        }        
-        $fileDialog->destroy;
-    }
-
-    sub compareItems
-    {
-        my ($self, $item1, $item2) = @_;
-        use locale;
-        my @values1 = split $self->{separator}, $item1;
-        my @values2 = split $self->{separator}, $item2;
-        if ($values1[0] eq $values2[0])
-        {
-            return $values1[1] cmp $values2[1];
-        }
-        else
-        {
-            return $self->{groupsOrder}->{$values1[0]} <=> $self->{groupsOrder}->{$values2[0]};
-        }
-    }
-
-    sub new
-    {
-        my ($proto, $parent, $title, $preList, $isIdList, $ignoreField) = @_;
-        my $class = ref($proto) || $proto;
-        my $self  = $class->SUPER::new(
-                                $parent,
-                                $title
-                            );
-
-        $self->{ignoreField} = $ignoreField;
-        bless ($self, $class);
-        $self->{lang} = $parent->{lang};
-        $self->{tooltips} = Gtk2::Tooltips->new();
-        my $fillButton = new Gtk2::Button($parent->{lang}->{ImportExportFieldsFill});
-        $fillButton->set_border_width($GCUtils::margin);
-        $fillButton->signal_connect('clicked' => sub {
-            $self->fillList;
-        });
-        my $clearButton = new Gtk2::Button($parent->{lang}->{ImportExportFieldsClear});
-        $clearButton->set_border_width($GCUtils::margin);
-        $clearButton->signal_connect('clicked' => sub {
-            $self->clearList;
-        });            
-        
-#        $self->{hboxAction}->pack_start($fillButton,1,1,4 * $GCUtils::margin);
-#        $self->{hboxAction}->pack_start($clearButton,1,1,4 * $GCUtils::margin);
-        $self->{vboxUnused}->pack_start($fillButton, 0, 0, 0);
-        $self->{vboxUsed}->pack_start($clearButton, 0, 0, 0);
-        
-        my $loadButton = new Gtk2::Button('open');
-        $self->{tooltips}->set_tip($loadButton,
-                                   $parent->{lang}->{FieldsListOpen});
-        $loadButton->remove($loadButton->child);
-        $loadButton->add(Gtk2::Image->new_from_stock('gtk-open', 'button'));
-        $loadButton->signal_connect('clicked' => sub {
-            $self->loadFromFile;
-        });
-        my $saveButton = new Gtk2::Button('save');
-        $self->{tooltips}->set_tip($saveButton,
-                                   $parent->{lang}->{FieldsListSave});
-        $saveButton->remove($saveButton->child);
-        $saveButton->add(Gtk2::Image->new_from_stock('gtk-save', 'button'));
-        $saveButton->signal_connect('clicked' => sub {
-            $self->saveToFile;
-        });            
-        
-        $self->{vboxRight}->pack_start($loadButton, 0, 0, $GCUtils::halfMargin);
-        $self->{vboxRight}->pack_start($saveButton, 0, 0, $GCUtils::halfMargin);
-        
-        $self->{fieldNameToId} = {};
-        $self->{groupsOrder} = {};
-
-        my $model = $self->{parent}->{parent}->{model};
-        if ($model)
-        {
-            my $groups = $model->getGroups;
-            $self->{separator} = $model->getDisplayedText('Separator');
-            while (my ($key, $value) = each %{$model->{fieldsInfo}})
-            {
-                next if !$value->{displayed};
-                my $displayed = $groups->{$value->{group}}->{displayed}
-                              . $self->{separator}
-                              . $value->{displayed};
-                $self->{fieldNameToId}->{$displayed} = $key;
-                $self->{fieldIdToName}->{$key} = $displayed;
-            }
-            my $order = 0;
-            foreach (@{$model->{groups}})
-            {
-                $self->{groupsOrder}->{$groups->{$_->{id}}->{displayed}} = $order++;
-            }
-            $self->{model} = $model;
-        }
-        $self->{scrollPanelUnused}->set_size_request(200,-1);
-        $self->{scrollPanelUsed}->set_size_request(200,-1);        
-        $self->fillList if ! $preList;
-        
-        if ($preList)
-        {
-            $self->setListData($preList) if !$isIdList;
-            $self->setListFromIds($preList) if $isIdList;
-        }
-        $self->saveList(\@{$self->{usedArray}});
-        return $self;
-    }
-
+    
     sub addIgnoreField
     {
         my ($self, $ignoreField) = @_;
-        $self->{ignoreString} = $self->{parent}->{lang}->{FieldsListIgnore};
-        $self->{fieldNameToId}->{$self->{ignoreString}} = $ignoreField;
-        $self->{fieldIdToName}->{$ignoreField} = $self->{ignoreString};
-        $self->addToPermanent($self->{ignoreString});
+        $self->{fieldsDoubleList}->addIgnoreField($ignoreField);
     }
 
     sub removeIgnoreField
     {
         my ($self) = @_;
-        $self->removeFromPermanent($self->{ignoreString});
+        $self->{fieldsDoubleList}->removeIgnoreField;
     }
+
+    sub new
+    {
+        my ($proto, $parent, $title, $preList, $isIdList, $ignoreField) = @_;
+
+        my $class = ref($proto) || $proto;
+        my $self  = $class->SUPER::new($parent, $title);
+
+        bless ($self, $class);
+
+        $self->{options} = $parent->{options};
+
+        $self->{fieldsDoubleList} = new GCFieldsSelectionWidget($parent->{parent}, $preList, $isIdList, $ignoreField);
+
+        $self->{marginBox} = new Gtk2::VBox;
+        $self->vbox->pack_start($self->{marginBox}, 0, 0, $GCUtils::halfMargin);
+        $self->vbox->pack_start($self->{fieldsDoubleList}, 1, 1, 0);
+        
+        # Without some default size, everything will be shrinked as there are some scrollers
+        $self->set_default_size(200,400);
+        
+        return $self;
+    }
+
 }
 
 
 {
     package GCFileChooserDialog;
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
     use File::Basename;
     use File::Spec;
     use Cwd 'realpath';
@@ -1742,7 +1362,7 @@ $hasAboutDialog = 0 if $@;
 {
     package GCItemWindow;
     use base 'GCModalDialog';
-    use GCGraphicComponents;
+    use GCGraphicComponents::GCBaseWidgets;
 
     sub show
     {
@@ -1819,6 +1439,26 @@ $hasAboutDialog = 0 if $@;
                                      $parent->{lang}->{RandomNextTip});
 
         $self->set_default_response('no');
+        return $self;
+    }
+}
+
+{
+    package GCDefaultValuesWindow;
+    use base 'GCItemWindow';
+
+    sub new
+    {
+        my ($proto, $parent, $title) = @_;
+        my $class = ref($proto) || $proto;
+        my $self  = $class->SUPER::new($parent, $title);
+        bless ($self, $class);
+        
+        my $label = new GCLabel('<span font-weight="bold">'.$parent->{lang}->{DefaultValuesTip}.'</span>');
+        $self->vbox->pack_start($label, 0, 0, $GCUtils::margin);
+        $self->vbox->reorder_child($label, 0);
+        $label->show_all;
+
         return $self;
     }
 }

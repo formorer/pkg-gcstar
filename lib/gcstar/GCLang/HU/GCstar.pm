@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
   
@@ -138,9 +138,15 @@ hogy melyik oldalról valók az információk.',
             'MenuNoFilter' => '_Minden',
     
         'MenuConfiguration' => '_Beállítások',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Megjelenítendő elemek',
             'MenuBorrowers' => '_Kölcsönvevők',
             'MenuToolbarConfiguration' => '_Eszköztár beállítása',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '_Jellemzők konvertálása',
         
         'MenuBookmarks' => 'S_aját gyűjtemények',
@@ -218,8 +224,7 @@ TPF: Programozó
 Adolfo González: Programozó
 ',
         'AboutLicense' => 'Készült a GNU GPL licensz alapján
-Logók Copyright le Spektre
-http://le-spektre.org',
+Logók Copyright le Spektre',
         'AboutTranslation' => 'Magyar fordítás: Takács László Krisztián tlk at t-online dot hu',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logó és webdizájn: le Spektre',
@@ -403,6 +408,7 @@ Logó és webdizájn: le Spektre',
         'ImagesOptionsBgTooltip' => 'Háttérszín változtatása',
         'ImagesOptionsFgTooltip'=> 'Kijelölés színének változtatása',
         'ImagesOptionsResizeImgList' => 'Az oszlopok számának automatikus változtatása',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Méret',
         'ImagesOptionsSizeList' => {0 => 'Nagyon kicsi', 1 => 'Kicsi', 2 => 'Közepes', 3 => 'Nagy', 4 => 'Nagyon nagy'},
         'ImagesOptionsSizeTooltip' => 'Képméret kiválasztása',
@@ -660,6 +666,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;

@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
     
@@ -119,9 +119,15 @@
             'MenuNoFilter' => '全部(_A)',
     
         'MenuConfiguration' => '設定(_S)',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '顯示資訊(_D)',
             'MenuBorrowers' => '出借對象(_B)',
             'MenuToolbarConfiguration' => '工具列控制（_T）',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => '類型轉換(_C)',
         
         'MenuBookmarks' => '我的收藏集(_C)',
@@ -199,8 +205,7 @@ TPF: Programmer
 Adolfo González: Programmer
 ',
         'AboutLicense' => '以GNU GPL授權發佈
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => '中文翻譯由林雪凡製作
 http://wfst.blogspot.com',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
@@ -383,6 +388,7 @@ Logo和網路設計： le Spektre',
         'ImagesOptionsBgTooltip' => '改變背景色',
         'ImagesOptionsFgTooltip'=> '改變選擇顏色',
         'ImagesOptionsResizeImgList' => '自動改變欄的數字',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => '尺寸',
         'ImagesOptionsSizeList' => {0 => '極小', 1 => '小', 2 => '中', 3 => '大', 4 => '極大'},
         'ImagesOptionsSizeTooltip' => '選擇圖片尺寸',
@@ -640,6 +646,9 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsDisplayNumber' => 'Show numbers',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
-        'StatsShowAllDates' => 'Show all dates',    );
+        'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
+    );
 }
 1;

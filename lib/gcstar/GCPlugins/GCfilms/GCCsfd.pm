@@ -21,7 +21,7 @@ package GCPlugins::GCfilms::GCCsfd;
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -376,13 +376,6 @@ use GCPlugins::GCfilms::GCfilmsCommon;
                 $self->{insideGenre} = 1;
             }
 
-            # Directors and Actors
-            if ($tagname eq "div")
-            {
-                $self->{insideDirectors} = 1 if ($attr->{class} eq "directors");
-                $self->{insideActors}    = 1 if ($attr->{class} eq "actors");
-            }
-
             # Info (country ,date, time = duration)
             if ($tagname eq "p" and $attr->{class} eq "origin")
             {
@@ -616,11 +609,12 @@ use GCPlugins::GCfilms::GCfilmsCommon;
             }
 
             # Directors and Actors
-            if ($self->{insideDirectorsOrActors})
+            if ($self->{inside}->{h4})
             {
                 $self->{insideDirectors} = 1 if ($origtext =~ /^Režie:/);
                 $self->{insideActors}    = 1 if ($origtext =~ /^Hrají:/);
             }
+
             if ($self->{inside}->{a} and $self->{insideDirectors})
             {
                 push @{$self->{directors}}, $origtext;

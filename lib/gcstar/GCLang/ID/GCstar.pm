@@ -20,7 +20,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with GCstar; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
 #
 ###################################################
 
@@ -138,9 +138,15 @@ may use the <b>button below item details</b>.',
             'MenuNoFilter' => '_Any',
     
         'MenuConfiguration' => '_Settings',
+            'MenuDisplayMenu' => 'Display',
+                'MenuDisplayFullScreen' => 'Full screen',
+                'MenuDisplayMenuBar' => 'Menus',
+                'MenuDisplayToolBar' => 'Toolbar',
+                'MenuDisplayStatusBar' => 'Bottom bar',
             'MenuDisplayOptions' => '_Displayed Information',
             'MenuBorrowers' => '_Borrowers',
             'MenuToolbarConfiguration' => '_Toolbar controls',
+            'MenuDefaultValues' => 'Default values for new item', # Accepts model codes
             'MenuGenresConversion' => 'Genre _Conversion',
         
         'MenuBookmarks' => 'My _Collections',
@@ -218,8 +224,7 @@ TPF: Programmer
 Adolfo González: Programmer
 ',
         'AboutLicense' => 'Distributed under the terms of the GNU GPL
-Logos Copyright le Spektre
-http://le-spektre.org',
+Logos Copyright le Spektre',
         'AboutTranslation' => 'Terjemahan bahasa Ingrris oleh Yuda Nugrahadi',
         'AboutDesign' => 'Łukasz Kowalczk (Qoolman): Skin Designer
 Logo dan desain web oleh le Spektre',
@@ -403,6 +408,7 @@ Logo dan desain web oleh le Spektre',
         'ImagesOptionsBgTooltip' => 'Change background color',
         'ImagesOptionsFgTooltip'=> 'Change selection color',
         'ImagesOptionsResizeImgList' => 'Automatically change number of columns',
+        'ImagesOptionsAnimateImgList' => 'Use animations',
         'ImagesOptionsSizeLabel' => 'Ukuran',
         'ImagesOptionsSizeList' => {0 => 'Sangat Kecil', 1 => 'Kecil', 2 => 'Medium', 3 => 'Besar', 4 => 'Sangat besar'},
         'ImagesOptionsSizeTooltip' => 'Pilih ukuran gambar',
@@ -660,6 +666,8 @@ Add some of them in the Filters tab of the collection settings.',
         'StatsSave' => 'Save statistics image to a file',
         'StatsAccumulate' => 'Accumulate values',
         'StatsShowAllDates' => 'Show all dates',
+
+        'DefaultValuesTip' => 'Values set in this window will be used as the default values when creating a new {lowercase1}',
     );
 }
 1;
