@@ -1,3 +1,15 @@
+gcstar (1.7.0-1) unstable; urgency=low
+
+  * [9114d35] Remove obsolete file
+  * [913984c] Depend on fonts-liberation instead of ttf-liberation
+    (Closes: #722409)
+  * [a04a938] Imported Upstream version 1.7.0
+    - fix plugins (Closes: #648634)
+    - new upstream verision (Closes: #703251)
+    - fix import plugin (Closes: #689146)
+
+ -- Alexander Wirt <formorer@debian.org>  Thu, 24 Oct 2013 22:04:36 +0200
+
 gcstar (1.6.2-1) unstable; urgency=low
 
   * [0a00985] Imported Upstream version 1.6.2
